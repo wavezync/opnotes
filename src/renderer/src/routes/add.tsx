@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@renderer/components/ui/select'
-import { Printer, Save } from 'lucide-react'
+import { LucideArrowDown, Printer, Save, SearchIcon } from 'lucide-react'
 import { useState } from 'react'
 
 const SectionHeader = ({ title }: { title: string }) => (
@@ -23,6 +23,7 @@ export interface FormLabelProps extends React.HTMLProps<HTMLLabelElement> {
 
 export const AddNew = () => {
   const [date, setDate] = useState<Date | undefined>(undefined)
+  const [surgery, setSurgery] = useState<string>('')
 
   return (
     <div className="flex flex-col h-full">
@@ -39,13 +40,34 @@ export const AddNew = () => {
         </div>
       </div>
 
-      <form onSubmit={() => {}}>
+      <div>
         <section>
           <SectionHeader title="Patient Details" />
 
           {/* Patient Details */}
           <div className="flex flex-col mt-2">
-            <div className="md:flex flex-col md:flex-row items-center justify-center w-full md:space-x-2 md:items-end">
+            <div className="">
+              <div className="flex flex-col w-full md:w-1/2">
+                <label htmlFor="name" className="pb-1">
+                  PHN
+                </label>
+                <div className="flex justify-center items-center space-x-1">
+                  <Input
+                    type="text"
+                    id="name"
+                    placeholder="Search of add by PHN..."
+                    className="w-full"
+                  />
+
+                  <Button variant={'secondary'} size={'sm'}>
+                    <SearchIcon className="mr-1 w-5 h-5" />
+                    Search
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            <div className="md:flex flex-col md:flex-row items-center  w-full md:space-x-2 md:items-end">
               <div className="flex flex-col w-full md:w-1/2">
                 <label htmlFor="name" className="pb-1">
                   Name
@@ -73,29 +95,6 @@ export const AddNew = () => {
                   </SelectContent>
                 </Select>
               </div>
-
-              <div className="flex flex-col">
-                <label htmlFor="date" className="pb-1">
-                  Date
-                </label>
-                <DatePicker label="Select Operation Date" onSelect={setDate} selected={date} />
-              </div>
-            </div>
-
-            <div className="flex flex-col md:flex-row md:items-end md:space-x-2 w-full mt-1">
-              <div className="flex flex-col w-full md:w-1/2">
-                <label htmlFor="bht" className="pb-1">
-                  BHT
-                </label>
-                <Input type="text" placeholder="BHT" className="w-full" />
-              </div>
-
-              <div className="flex flex-col w-full md:w-1/2">
-                <label htmlFor="ward" className="pb-1">
-                  Ward
-                </label>
-                <Input type="text" placeholder="Ward" />
-              </div>
             </div>
           </div>
         </section>
@@ -110,8 +109,50 @@ export const AddNew = () => {
                 <label htmlFor="surgery" className="pb-1">
                   Surgery
                 </label>
-                <Input type="text" placeholder="Surgery Title..." className="w-full" />
+                <div className="flex">
+                  <Input
+                    type="text"
+                    placeholder="Surgery Title..."
+                    className="w-full"
+                    value={surgery}
+                    onChange={(e) => setSurgery(e.target.value)}
+                  />
+
+                  <Button
+                    size={'icon'}
+                    variant={'ghost'}
+                    className="ml-1"
+                    onClick={() => {
+                      setSurgery((old) => old + '↓')
+                    }}
+                  >
+                    <LucideArrowDown className="w-6 h-6" />
+                  </Button>
+                </div>
               </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col md:flex-row md:items-end md:space-x-2 w-full mt-1">
+            <div className="flex flex-col w-full md:w-1/2">
+              <label htmlFor="bht" className="pb-1">
+                BHT
+              </label>
+              <Input type="text" placeholder="BHT" className="w-full" />
+            </div>
+
+            <div className="flex flex-col w-full md:w-1/2">
+              <label htmlFor="ward" className="pb-1">
+                Ward
+              </label>
+              <Input type="text" placeholder="Ward" />
+            </div>
+
+            <div className="flex flex-col">
+              <label htmlFor="date" className="pb-1">
+                Operation Date
+              </label>
+              <DatePicker label="Select Operation Date" onSelect={setDate} selected={date} />
             </div>
           </div>
 
@@ -121,22 +162,7 @@ export const AddNew = () => {
                 <label htmlFor="doctor" className="pb-1">
                   Done By
                 </label>
-                <AutoCompleteInput
-                  items={[
-                    {
-                      value: '1',
-                      label: 'Dr. John Doe'
-                    },
-                    {
-                      value: '2',
-                      label: 'Dr. William'
-                    },
-                    {
-                      value: '3',
-                      label: 'Dr. N Doe'
-                    }
-                  ]}
-                />
+                <AutoCompleteInput multiple={true} />
               </div>
 
               <div className="flex flex-col w-full md:w-1/2 mt-1">
@@ -158,7 +184,7 @@ export const AddNew = () => {
             <RichTextEditor content={''} />
           </div>
         </section>
-      </form>
+      </div>
     </div>
   )
 }

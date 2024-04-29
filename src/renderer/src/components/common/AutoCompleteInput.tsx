@@ -1,5 +1,4 @@
-import * as React from 'react'
-import { Check, ChevronsUpDown, PlusIcon } from 'lucide-react'
+import { Check, PlusIcon } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -11,7 +10,9 @@ import {
   CommandItem
 } from '@/components/ui/command'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { CommandList } from 'cmdk'
+import { CommandList, CommandLoading, CommandSeparator } from 'cmdk'
+import { useCallback, useState } from 'react'
+import { Progress } from '../ui/progress'
 
 export interface Item {
   value: any
@@ -21,24 +22,45 @@ export interface Item {
 export interface AutoCompleteInputProps {
   items?: Item[]
   selectedItems?: Item[]
-  onItemSelect?: (item: Item) => void
-  onAddNewItem?: (item: Partial<Item>) => void
+  onItemSelected?: (item: Item) => void
+  onSelectedItemsChange?: (items: Item[]) => void
+  onAddNewItem?: () => void
+  multiple?: boolean
+  onSearchChange?: (value: string) => void
+  isLoading?: boolean
+  placeholder?: string
 }
 
 export function AutoCompleteInput({
   items,
   selectedItems,
   onAddNewItem,
-  onItemSelect
+  onItemSelected,
+  onSelectedItemsChange,
+  multiple,
+  onSearchChange,
+  placeholder = 'Search or Add New...',
+  isLoading
 }: AutoCompleteInputProps) {
-  const [open, setOpen] = React.useState(false)
-  const [value, setValue] = React.useState('')
-  const [currentTypedValue, setCurrentTypedValue] = React.useState('')
+  const [open, setOpen] = useState(false)
+  const [currentTypedValue, setCurrentTypedValue] = useState('')
 
-  const handleOpenChange = React.useCallback((open: boolean) => {
+  const isSelected = (value: any) => {
+    return selectedItems?.some((item) => item.value === value)
+  }
+
+  const handleOpenChange = useCallback((open: boolean) => {
     setCurrentTypedValue('')
     setOpen(open)
   }, [])
+
+  const handleOnSearchChange = useCallback(
+    (value: string) => {
+      setCurrentTypedValue(value)
+      onSearchChange?.(value)
+    },
+    [onSearchChange]
+  )
 
   return (
     <Popover open={open} onOpenChange={handleOpenChange}>
@@ -55,40 +77,65 @@ export function AutoCompleteInput({
       </PopoverTrigger>
       <PopoverContent className="w-[300px] p-0" avoidCollisions side="bottom" align="start">
         <Command>
-          <CommandInput
-            placeholder="Search or Add New..."
-            onInput={(e) => setCurrentTypedValue(e.currentTarget.value)}
-          />
+          <CommandInput placeholder={placeholder} onValueChange={handleOnSearchChange} />
+          {isLoading && (
+            <CommandLoading>
+              <Progress className="h-1 animate-pulse" />
+            </CommandLoading>
+          )}
           <CommandList>
             <CommandEmpty>
-              {!!currentTypedValue ? (
-                <Button variant={'ghost'} className="flex justify-center items-center w-full">
-                  <PlusIcon className="mr-2 h-4 w-4" />
-                  <strong>{currentTypedValue}</strong>
+              No results found for <strong>{currentTypedValue}</strong>
+              <div className="mt-2">
+                <Button
+                  variant="ghost"
+                  onClick={() => {
+                    onAddNewItem?.()
+                    setOpen(false)
+                  }}
+                >
+                  Add New Entry
                 </Button>
-              ) : (
-                'Add a new entry or search...'
-              )}
+              </div>
             </CommandEmpty>
-            <CommandGroup>
+            <CommandGroup className="max-h-48 overflow-y-auto">
               {items?.map((item) => (
                 <CommandItem
                   key={item.value}
                   value={item.value}
-                  onSelect={(currentValue) => {
-                    setValue(currentValue === value ? '' : currentValue)
-                    setOpen(false)
+                  onSelect={(_currentValue) => {
+                    if (multiple) {
+                      onItemSelected?.(item)
+                      if (isSelected(item.value)) {
+                        onSelectedItemsChange?.(
+                          selectedItems?.filter((i) => i.value !== item.value) || []
+                        )
+                      } else {
+                        onSelectedItemsChange?.([...(selectedItems || []), item])
+                      }
+                    } else {
+                      onItemSelected?.(item)
+                      setOpen(false)
+                    }
                   }}
                 >
                   <Check
                     className={cn(
                       'mr-2 h-4 w-4',
-                      value === item.value ? 'opacity-100' : 'opacity-0'
+                      isSelected(item.value) ? 'opacity-100' : 'opacity-0'
                     )}
                   />
                   {item.label}
                 </CommandItem>
               ))}
+            </CommandGroup>
+
+            <CommandSeparator />
+            <CommandGroup heading="Actions">
+              <CommandItem onSelect={() => onAddNewItem?.()} key={'add-new'}>
+                <PlusIcon className="mr-2 h-4 w-4" />
+                Add New Entry
+              </CommandItem>
             </CommandGroup>
           </CommandList>
         </Command>
