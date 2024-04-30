@@ -25,7 +25,7 @@ export default function Home() {
       <h1 className="flex text-5xl font-extrabold items-center justify-center">OpNotes</h1>
       <img src={hero} alt="hero" className="w-96 h-96" />
       <div className="pt-5 w-full max-w-md flex justify-center items-center">
-        <Input type="text" placeholder="Search By BHT, Doctor, Pt Name..." />
+        <Input type="text" placeholder="Search By PHN, BHT, Pt Name..." />
         <Button className="ml-2" variant="default">
           <SearchIcon />
           Search

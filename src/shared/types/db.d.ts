@@ -7,8 +7,8 @@ export interface PatientTable {
   birth_year: number
   gender: 'M' | 'F'
 
-  created_at: ColumnType<Date, string, never>
-  updated_at: ColumnType<Date, string, string>
+  created_at: ColumnType<Date, number, never>
+  updated_at: ColumnType<Date, number, number>
 }
 
 export interface SurgeryTable {
@@ -16,7 +16,7 @@ export interface SurgeryTable {
   title: string
   bht: string
   ward: string
-  date: ColumnType<Date, number, never>
+  date: ColumnType<Date, number, number>
   notes: string | null
   post_op_notes: string | null
 
@@ -55,6 +55,24 @@ export interface SurgeryFollowUpTable {
   updated_at: ColumnType<Date, number, number>
 }
 
+export interface PatientsFTS {
+  patient_id: number
+  name: string
+  phn: string
+}
+
+export interface SurgeriesFTS {
+  surgery_id: number
+  title: string
+  bht: string
+}
+
+export interface DoctorsFTS {
+  doctor_id: number
+  name: string
+  slmc_reg_no: string
+}
+
 export interface Database {
   patients: PatientTable
   surgeries: SurgeryTable
@@ -62,6 +80,10 @@ export interface Database {
   surgery_doctor_done_by: SurgeryDoctorsDoneByTable
   surgery_doctor_assisted_by: SurgeryDoctorsAssistedByTable
   surgery_follow_ups: SurgeryFollowUpTable
+
+  patients_fts: PatientsFTS
+  surgeries_fts: SurgeriesFTS
+  doctors_fts: DoctorsFTS
 }
 
 export type Patient = Selectable<PatientTable>

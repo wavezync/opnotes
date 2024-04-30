@@ -64,64 +64,79 @@ export async function up(db: Kysely<any>): Promise<void> {
 
   await sql`
     CREATE VIRTUAL TABLE patients_fts USING fts5(
+      patient_id,
       name,
       phn,
-      content='patients',
-      content_rowid='id'
     )
   `.execute(db)
 
-  await sql`CREATE VIRTUAL TABLE surgeries_fts USING fts5(
+  await sql`
+    CREATE VIRTUAL TABLE surgeries_fts USING fts5(
+      surgery_id,
       title,
       bht,
-      content='surgeries',
-      content_rowid='id'
     )
   `.execute(db)
 
-  await sql`CREATE VIRTUAL TABLE doctors_fts USING fts5(
+  await sql`
+    CREATE VIRTUAL TABLE doctors_fts USING fts5(
+      doctor_id,
       name,
-      content='doctors',
-      content_rowid='id'
-    )`.execute(db)
+      slmc_reg_no,
+    )
+  `.execute(db)
 
-  await sql`CREATE TRIGGER patients_ai AFTER INSERT ON patients BEGIN
-      INSERT INTO patients_fts(rowid, name, phn) VALUES (new.id, new.name, new.phn);
-    END`.execute(db)
+  await sql`
+    CREATE TRIGGER insert_patient_fts AFTER INSERT ON patients BEGIN
+      INSERT INTO patients_fts (patient_id, name, phn) VALUES (NEW.id, NEW.name, NEW.phn);
+    END
+  `.execute(db)
 
-  await sql`CREATE TRIGGER patients_ad AFTER DELETE ON patients BEGIN
-      INSERT INTO patients_fts(patients_fts, rowid, name, phn) VALUES ('delete', old.id, old.name, old.phn);
-    END`.execute(db)
+  await sql`
+    CREATE TRIGGER update_patient_fts AFTER UPDATE ON patients BEGIN
+      UPDATE patients_fts SET name = NEW.name, phn = NEW.phn WHERE patient_id = NEW.id;
+    END
+  `.execute(db)
 
-  await sql`CREATE TRIGGER patients_au AFTER UPDATE ON patients BEGIN
-      INSERT INTO patients_fts(patients_fts, rowid, name, phn) VALUES ('delete', old.id, old.name, old.phn);
-      INSERT INTO patients_fts(rowid, name, phn) VALUES (new.id, new.name, new.phn);
-    END`.execute(db)
+  await sql`
+    CREATE TRIGGER delete_patient_fts AFTER DELETE ON patients BEGIN
+      DELETE FROM patients_fts WHERE patient_id = OLD.id;
+    END
+  `.execute(db)
 
-  await sql`CREATE TRIGGER surgeries_ai AFTER INSERT ON surgeries BEGIN
-      INSERT INTO surgeries_fts(rowid, title, bht) VALUES (new.id, new.title, new.bht);
-    END`.execute(db)
+  await sql`
+    CREATE TRIGGER insert_surgery_fts AFTER INSERT ON surgeries BEGIN
+      INSERT INTO surgeries_fts (surgery_id, title, bht) VALUES (NEW.id, NEW.title, NEW.bht);
+    END
+  `.execute(db)
 
-  await sql`CREATE TRIGGER surgeries_ad AFTER DELETE ON surgeries BEGIN
-      INSERT INTO surgeries_fts(surgeries_fts, rowid, title, bht) VALUES ('delete', old.id, old.title, old.bht);
-    END`.execute(db)
+  await sql`
+    CREATE TRIGGER update_surgery_fts AFTER UPDATE ON surgeries BEGIN
+      UPDATE surgeries_fts SET title = NEW.title, bht = NEW.bht WHERE surgery_id = NEW.id;
+    END
+  `.execute(db)
 
-  await sql`CREATE TRIGGER surgeries_au AFTER UPDATE ON surgeries BEGIN
-      INSERT INTO surgeries_fts(surgeries_fts, rowid, title, bht) VALUES ('delete', old.id, old.title, old.bht);
-      INSERT INTO surgeries_fts(rowid, title, bht) VALUES (new.id, new.title, new.bht);
-    END`.execute(db)
+  await sql`
+    CREATE TRIGGER delete_surgery_fts AFTER DELETE ON surgeries BEGIN
+      DELETE FROM surgeries_fts WHERE surgery_id = OLD.id;
+    END
+  `.execute(db)
 
-  await sql`CREATE TRIGGER doctors_ai AFTER INSERT ON doctors BEGIN
-      INSERT INTO doctors_fts(rowid, name) VALUES (new.id, new.name);
-    END`.execute(db)
+  await sql`
+    CREATE TRIGGER insert_doctor_fts AFTER INSERT ON doctors BEGIN
+      INSERT INTO doctors_fts (doctor_id, name, slmc_reg_no) VALUES (NEW.id, NEW.name, NEW.slmc_reg_no);
+    END
+  `.execute(db)
 
-  await sql`CREATE TRIGGER doctors_ad AFTER DELETE ON doctors BEGIN
-      INSERT INTO doctors_fts(doctors_fts, rowid, name) VALUES ('delete', old.id, old.name);
-    END`.execute(db)
+  await sql`
+    CREATE TRIGGER update_doctor_fts AFTER UPDATE ON doctors BEGIN
+      UPDATE doctors_fts SET name = NEW.name, slmc_reg_no = NEW.slmc_reg_no WHERE doctor_id = NEW.id;
+    END
+  `.execute(db)
 
-  await sql`CREATE TRIGGER doctors_au AFTER UPDATE ON doctors BEGIN
-      INSERT INTO doctors_fts(doctors_fts, rowid, name) VALUES ('delete', old.id, old.name);
-      INSERT INTO doctors_fts(rowid, name) VALUES (new.id, new.name);
+  await sql`
+    CREATE TRIGGER delete_doctor_fts AFTER DELETE ON doctors BEGIN
+      DELETE FROM doctors_fts WHERE doctor_id = OLD.id;
     END
   `.execute(db)
 }
@@ -133,54 +148,6 @@ export async function down(db: Kysely<any>): Promise<void> {
   await db.schema.dropTable('surgery_doctors_done_by').execute()
   await db.schema.dropTable('surgery_doctors_assisted_by').execute()
   await db.schema.dropTable('surgery_follow_up').execute()
-
-  await sql`
-    DROP TABLE patients_fts
-  `.execute(db)
-
-  await sql`
-    DROP TABLE surgeries_fts
-  `.execute(db)
-
-  await sql`
-    DROP TABLE doctors_fts
-  `.execute(db)
-
-  await sql`
-    DROP TRIGGER patients_ai
-  `.execute(db)
-
-  await sql`
-    DROP TRIGGER patients_ad
-  `.execute(db)
-
-  await sql`
-    DROP TRIGGER patients_au
-  `.execute(db)
-
-  await sql`
-    DROP TRIGGER surgeries_ai
-  `.execute(db)
-
-  await sql`
-    DROP TRIGGER surgeries_ad
-  `.execute(db)
-
-  await sql`
-    DROP TRIGGER surgeries_au
-  `.execute(db)
-
-  await sql`
-    DROP TRIGGER doctors_ai
-  `.execute(db)
-
-  await sql`
-    DROP TRIGGER doctors_ad
-  `.execute(db)
-
-  await sql`
-    DROP TRIGGER doctors_au
-  `.execute(db)
 
   await db.schema.dropIndex('patients_phn_index').on('patients').execute()
 }

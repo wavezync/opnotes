@@ -1,3 +1,4 @@
+import { sql } from 'kysely'
 import { NewDoctor, DoctorUpdate } from '../../shared/types/db'
 import { db } from '../db'
 
@@ -11,4 +12,43 @@ export const getDoctorById = async (id: number) => {
 
 export const updateDoctorById = async (id: number, doctor: DoctorUpdate) => {
   return await db.updateTable('doctors').set(doctor).where('id', '=', id).execute()
+}
+
+export interface DoctorFilter {
+  search?: string
+
+  pageSize?: number
+  page?: number
+}
+
+export const listDoctors = async (filter: DoctorFilter) => {
+  const { search, pageSize = 50, page = 0 } = filter
+
+  let query = db.selectFrom('doctors').selectAll('doctors')
+
+  if (search) {
+    query = query
+      .leftJoin('doctors_fts', 'doctors_fts.doctor_id', 'doctors.id')
+      .where(sql<boolean>`doctors_fts MATCH ${search}`)
+      .orderBy(sql`rank`, 'desc')
+  }
+
+  const doctors = await query
+    .orderBy('created_at desc')
+    .limit(pageSize)
+    .offset(page * pageSize)
+    .execute()
+
+  const totalResult = await query
+    .clearSelect()
+    .clearOrderBy()
+    .clearLimit()
+    .clearOffset()
+    .select((eb) => eb.fn.countAll<number>().as('total'))
+    .executeTakeFirst()
+
+  const total = totalResult?.total ?? 0
+  const pages = Math.ceil(total / pageSize)
+
+  return { data: doctors, total, pages }
 }
