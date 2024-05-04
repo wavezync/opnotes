@@ -1,9 +1,9 @@
 import SQLite from 'better-sqlite3'
 import { Kysely, Migrator, SqliteDialect } from 'kysely'
 import { Database } from '../shared/types/db'
-import { app } from 'electron'
 import { join } from 'path'
 import { MemoryMigrationProvider } from './db/memory-migration-provider'
+import { app } from 'electron'
 
 const DB_PATH = join(app.getPath('userData'), 'data.db')
 console.log('DB_PATH:', DB_PATH)

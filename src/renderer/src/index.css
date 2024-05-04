@@ -35,7 +35,7 @@
     --radius: 0.5rem;
   }
 
-  :root[data-theme="dark"] {
+  :root[data-theme='dark'] {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
 
@@ -66,7 +66,6 @@
   }
 }
 
-
 @layer base {
   * {
     @apply border-border;
@@ -89,5 +88,13 @@
 
   ::-webkit-scrollbar-thumb:hover {
     background-color: hsl(from hsl(var(--border)) calc(h + 5) s l);
+  }
+
+  .tiptap p.is-editor-empty:first-child::before {
+    color: #adb5bd;
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    pointer-events: none;
   }
 }

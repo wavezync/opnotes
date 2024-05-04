@@ -1,9 +1,11 @@
 import { sql } from 'kysely'
 import { NewPatient, Patient, PatientUpdate } from '../../shared/types/db'
 import { db } from '../db'
+import { NewWithoutTimestamps, addTimestamps } from '../utils/sql'
 
-export const createNewPatient = async (patient: NewPatient) => {
-  return await db.insertInto('patients').values(patient).returningAll().execute()
+export const createNewPatient = async (patient: NewWithoutTimestamps<NewPatient>) => {
+  const data = addTimestamps(patient)
+  return await db.insertInto('patients').values(data).returningAll().executeTakeFirst()
 }
 
 export const getPatientById = async (id: number) => {
@@ -12,6 +14,10 @@ export const getPatientById = async (id: number) => {
 
 export const updatePatientById = async (id: number, patient: PatientUpdate) => {
   return await db.updateTable('patients').set(patient).where('id', '=', id).execute()
+}
+
+export const findPatientByPHN = async (phn: string) => {
+  return await db.selectFrom('patients').where('phn', '=', phn).selectAll().executeTakeFirst()
 }
 
 export const lookupPatient = async (search: string) => {
@@ -41,7 +47,9 @@ export const listPatients = async (filter: PatientFilter) => {
   if (search) {
     query = query
       .leftJoin('patients_fts', 'patients_fts.patient_id', 'patients.id')
+      .leftJoin('surgeries_fts', 'surgeries_fts.patient_id', 'patients.id')
       .where(sql<boolean>`patients_fts MATCH ${search}`)
+      .where(sql<boolean>`surgeries_fts MATCH ${search}`)
       .orderBy(sql`rank`, 'desc')
   }
 
@@ -63,4 +71,11 @@ export const listPatients = async (filter: PatientFilter) => {
   const pages = Math.ceil(total / pageSize)
 
   return { data: patients, total, pages }
+}
+
+export const countAllPatients = async () => {
+  return await db
+    .selectFrom('patients')
+    .select((eb) => eb.fn.countAll<number>().as('total'))
+    .executeTakeFirst()
 }

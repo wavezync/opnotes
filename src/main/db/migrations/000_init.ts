@@ -7,6 +7,11 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn('name', 'text')
     .addColumn('phn', 'text', (col) => col.unique().notNull())
     .addColumn('gender', 'text', (col) => col.notNull())
+    .addColumn('address', 'text')
+    .addColumn('phone', 'text')
+    .addColumn('emergency_contact', 'text')
+    .addColumn('emergency_phone', 'text')
+    .addColumn('remarks', 'text')
     .addColumn('birth_year', 'integer')
     .addColumn('created_at', 'integer')
     .addColumn('updated_at', 'integer')
@@ -72,6 +77,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 
   await sql`
     CREATE VIRTUAL TABLE surgeries_fts USING fts5(
+      patient_id,
       surgery_id,
       title,
       bht,
@@ -106,7 +112,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 
   await sql`
     CREATE TRIGGER insert_surgery_fts AFTER INSERT ON surgeries BEGIN
-      INSERT INTO surgeries_fts (surgery_id, title, bht) VALUES (NEW.id, NEW.title, NEW.bht);
+      INSERT INTO surgeries_fts (patient_id, surgery_id, title, bht) VALUES (NEW.patient_id, NEW.id, NEW.title, NEW.bht);
     END
   `.execute(db)
 

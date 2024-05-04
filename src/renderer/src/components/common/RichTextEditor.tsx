@@ -21,6 +21,8 @@ import {
   StrikethroughIcon,
   UndoIcon
 } from 'lucide-react'
+import { useEffect } from 'react'
+import Placeholder from '@tiptap/extension-placeholder'
 
 interface ToolbarButtonProps extends ButtonProps {
   isActive?: boolean
@@ -163,23 +165,34 @@ const extensions = [
       keepMarks: true,
       keepAttributes: false
     }
+  }),
+  Placeholder.configure({
+    emptyEditorClass: 'is-editor-empty'
   })
 ]
 
 export interface RichTextEditorProps {
-  content?: string
+  initialContent?: string
+  onUpdate?: (content: string) => void
 }
 
-export const RichTextEditor = ({ content }: RichTextEditorProps) => {
+export const RichTextEditor = ({ initialContent, onUpdate }: RichTextEditorProps) => {
   const editor = useEditor({
-    content,
     extensions,
     editorProps: {
       attributes: {
         class: 'prose dark:prose-invert prose-sm sm:prose-base m-2 focus:outline-none'
       }
+    },
+    onUpdate({ editor }) {
+      const html = editor.getHTML()
+      onUpdate?.(html)
     }
   })
+
+  useEffect(() => {
+    editor?.commands.setContent(initialContent || '')
+  }, [initialContent, editor])
 
   return (
     <div className="dark">

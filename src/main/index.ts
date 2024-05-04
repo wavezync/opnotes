@@ -2,8 +2,9 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import { sql } from 'kysely'
+
 import { db, migrateToLatest } from './db'
+import { registerApi } from './api'
 
 function createWindow(): void {
   // Create the browser window.
@@ -20,8 +21,6 @@ function createWindow(): void {
   })
 
   mainWindow.on('ready-to-show', async () => {
-    await sql`SELECT 1`.execute(db)
-    await migrateToLatest(db)
     mainWindow.show()
   })
 
@@ -36,6 +35,10 @@ function createWindow(): void {
     mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
+  }
+
+  if (is.dev) {
+    mainWindow.webContents.openDevTools()
   }
 }
 
@@ -57,6 +60,10 @@ app.whenReady().then(() => {
   ipcMain.on('ping', () => console.log('pong'))
 
   createWindow()
+  migrateToLatest(db)
+    .then(() => {})
+    .catch(console.error)
+  registerApi()
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the

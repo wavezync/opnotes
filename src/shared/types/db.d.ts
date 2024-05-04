@@ -6,6 +6,11 @@ export interface PatientTable {
   name: string
   birth_year: number
   gender: 'M' | 'F'
+  address: string | null
+  phone: string | null
+  emergency_contact: string | null
+  emergency_phone: string | null
+  remarks: string | null
 
   created_at: ColumnType<Date, number, never>
   updated_at: ColumnType<Date, number, number>
@@ -62,6 +67,7 @@ export interface PatientsFTS {
 }
 
 export interface SurgeriesFTS {
+  patient_id: number
   surgery_id: number
   title: string
   bht: string

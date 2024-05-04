@@ -1,15 +1,9 @@
 import { AutoCompleteInput } from '@renderer/components/common/AutoCompleteInput'
 import { RichTextEditor } from '@renderer/components/common/RichTextEditor'
+import { CreatePatientForm } from '@renderer/components/patient/NewPatientForm'
 import { Button } from '@renderer/components/ui/button'
 import { DatePicker } from '@renderer/components/ui/date-picker'
 import { Input } from '@renderer/components/ui/input'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@renderer/components/ui/select'
 import { LucideArrowDown, Printer, Save, SearchIcon } from 'lucide-react'
 import { useState } from 'react'
 
@@ -48,14 +42,11 @@ export const AddNew = () => {
           <div className="flex flex-col mt-2">
             <div className="">
               <div className="flex flex-col w-full md:w-1/2">
-                <label htmlFor="name" className="pb-1">
-                  PHN
-                </label>
                 <div className="flex justify-center items-center space-x-1">
                   <Input
                     type="text"
-                    id="name"
-                    placeholder="Search of add by PHN..."
+                    id="phn_search"
+                    placeholder="Lookup patient by PHN..."
                     className="w-full"
                   />
 
@@ -67,35 +58,7 @@ export const AddNew = () => {
               </div>
             </div>
 
-            <div className="md:flex flex-col md:flex-row items-center  w-full md:space-x-2 md:items-end">
-              <div className="flex flex-col w-full md:w-1/2">
-                <label htmlFor="name" className="pb-1">
-                  Name
-                </label>
-                <Input type="text" id="name" placeholder="Name of Patient" className="w-full" />
-              </div>
-              <div className="flex flex-col w-full md:w-1/3">
-                <label htmlFor="age" className="pb-1">
-                  Age
-                </label>
-                <Input type="text" placeholder="Age of Patient(eg: 25y, 1y 10m)" className="" />
-              </div>
-
-              <div className="flex flex-col">
-                <label htmlFor="gender" className="pb-1">
-                  Gender
-                </label>
-                <Select>
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Select Gender..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="male">Male</SelectItem>
-                    <SelectItem value="female">Female</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
+            <CreatePatientForm />
           </div>
         </section>
 
@@ -176,12 +139,12 @@ export const AddNew = () => {
 
           <div className="flex flex-col">
             <div className="font-semibold">Notes</div>
-            <RichTextEditor content={''} />
+            <RichTextEditor initialContent={''} />
           </div>
 
           <div className="flex flex-col">
             <div className="font-semibold">Post Op Notes</div>
-            <RichTextEditor content={''} />
+            <RichTextEditor initialContent={''} />
           </div>
         </section>
       </div>
