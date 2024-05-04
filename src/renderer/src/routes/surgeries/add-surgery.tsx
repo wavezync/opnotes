@@ -1,10 +1,9 @@
 import { AutoCompleteInput } from '@renderer/components/common/AutoCompleteInput'
 import { RichTextEditor } from '@renderer/components/common/RichTextEditor'
-import { CreatePatientForm } from '@renderer/components/patient/NewPatientForm'
 import { Button } from '@renderer/components/ui/button'
 import { DatePicker } from '@renderer/components/ui/date-picker'
 import { Input } from '@renderer/components/ui/input'
-import { LucideArrowDown, Printer, Save, SearchIcon } from 'lucide-react'
+import { LucideArrowDown, Printer, Save } from 'lucide-react'
 import { useState } from 'react'
 
 const SectionHeader = ({ title }: { title: string }) => (
@@ -35,33 +34,6 @@ export const AddNew = () => {
       </div>
 
       <div>
-        <section>
-          <SectionHeader title="Patient Details" />
-
-          {/* Patient Details */}
-          <div className="flex flex-col mt-2">
-            <div className="">
-              <div className="flex flex-col w-full md:w-1/2">
-                <div className="flex justify-center items-center space-x-1">
-                  <Input
-                    type="text"
-                    id="phn_search"
-                    placeholder="Lookup patient by PHN..."
-                    className="w-full"
-                  />
-
-                  <Button variant={'secondary'} size={'sm'}>
-                    <SearchIcon className="mr-1 w-5 h-5" />
-                    Search
-                  </Button>
-                </div>
-              </div>
-            </div>
-
-            <CreatePatientForm />
-          </div>
-        </section>
-
         {/* Surgery Details */}
         <section className="mt-1">
           <SectionHeader title="Surgery Details" />

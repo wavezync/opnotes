@@ -6,10 +6,10 @@ import { RouterProvider, createMemoryRouter } from 'react-router-dom'
 import Root from './routes/root'
 import Home from './routes/home'
 import ErrorPage from './components/common/ErrorComponent'
-import { AddNew } from './routes/surgeries/add'
+import { AddNew } from './routes/surgeries/add-surgery'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import { PatientsIndex } from './routes/patients'
+import { PatientsIndex } from './routes/patients/list-patients'
 
 const queryClient = new QueryClient({
   defaultOptions: {
