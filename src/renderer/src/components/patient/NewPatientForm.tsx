@@ -89,7 +89,7 @@ const patientSchema = z.object({
 
 type FormSchema = z.infer<typeof patientSchema>
 
-export const CreatePatientForm = ({ onRecordUpdated, values }: CreatePatientFormProps) => {
+export const NewPatientForm = ({ onRecordUpdated, values }: CreatePatientFormProps) => {
   const form = useForm<FormSchema>({
     resolver: zodResolver(patientSchema),
     defaultValues: {
@@ -104,7 +104,8 @@ export const CreatePatientForm = ({ onRecordUpdated, values }: CreatePatientForm
       age: values && values.birth_year ? `${birthYearFromAge(values.birth_year)}y` : ''
     }
   })
-  const isUpdate = values && values.id
+  const isUpdate = values && !!values.id
+  console.log({ isUpdate, v: form.getValues() })
 
   const watchAge = form.watch('age')
   const birthYear = useMemo(() => approximateBirthYear(watchAge), [watchAge])
@@ -131,42 +132,87 @@ export const CreatePatientForm = ({ onRecordUpdated, values }: CreatePatientForm
     })
   }, [form])
 
-  const onSubmit = async (data: FormSchema) => {
+  const createNewRecord = async (data: FormSchema) => {
     if (!birthYear) {
       return
     }
+    const { result, error } = await window.api.invoke('createNewPatient', {
+      phn: data.phn,
+      name: data.name,
+      birth_year: birthYear,
+      gender: data.gender,
+      address: data.address,
+      phone: data.phone,
+      emergency_contact: data.emergency_contact,
+      emergency_phone: data.emergency_phone,
+      remarks: data.remarks
+    })
 
+    if (error) {
+      if (error.extra && error.extra['code'] === 'SQLITE_CONSTRAINT_UNIQUE') {
+        toast.error('Patient with the same PHN already exists')
+        return
+      }
+    }
+
+    if (result) {
+      onRecordUpdated?.(result)
+
+      resetForm()
+    }
+
+    return result
+  }
+
+  const updateRecord = async (data: FormSchema) => {
+    if (!birthYear) {
+      return
+    }
+    if (!values?.id) {
+      return
+    }
+
+    const { result, error } = await window.api.invoke('updatePatientById', values.id, {
+      phn: data.phn,
+      name: data.name,
+      birth_year: birthYear,
+      gender: data.gender,
+      address: data.address,
+      phone: data.phone,
+      emergency_contact: data.emergency_contact,
+      emergency_phone: data.emergency_phone,
+      remarks: data.remarks
+    })
+
+    if (error) {
+      if (error.extra && error.extra['code'] === 'SQLITE_CONSTRAINT_UNIQUE') {
+        toast.error('Patient with the same PHN already exists')
+        return
+      }
+    }
+
+    if (result) {
+      onRecordUpdated?.(result)
+    }
+
+    return result
+  }
+
+  const onSubmit = async (data: FormSchema) => {
     try {
-      const { result, error } = await window.api.invoke('createNewPatient', {
-        phn: data.phn,
-        name: data.name,
-        birth_year: birthYear,
-        gender: data.gender,
-        address: data.address,
-        phone: data.phone,
-        emergency_contact: data.emergency_contact,
-        emergency_phone: data.emergency_phone,
-        remarks: data.remarks
-      })
-
-      if (error) {
-        if (error.extra && error.extra['code'] === 'SQLITE_CONSTRAINT_UNIQUE') {
-          toast.error('Patient with the same PHN already exists')
-          return
-        }
+      if (!isUpdate) {
+        await createNewRecord(data)
+        return
       }
 
-      if (result) {
-        onRecordUpdated?.(result)
-        if (!isUpdate) {
-          resetForm()
-        }
-      }
+      await updateRecord(data)
     } catch (error) {
       console.log(error)
       toast.error(`Failed to update patient: ${(error as any).message}`)
     }
   }
+
+  const submitForm = form.handleSubmit(onSubmit)
 
   return (
     <Form {...form}>
@@ -271,25 +317,25 @@ export const CreatePatientForm = ({ onRecordUpdated, values }: CreatePatientForm
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="phone"
-          render={({ field: { value, ...field } }) => (
-            <FormItem>
-              <FormLabel>Phone</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Enter the phone number of patient"
-                  value={value || ''}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
         <div className="flex grow space-x-1 w-full">
+          <FormField
+            control={form.control}
+            name="phone"
+            render={({ field: { value, ...field } }) => (
+              <FormItem className="w-full">
+                <FormLabel>Phone</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Enter the phone number of patient"
+                    value={value || ''}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <FormField
             control={form.control}
             name="emergency_contact"
@@ -331,16 +377,18 @@ export const CreatePatientForm = ({ onRecordUpdated, values }: CreatePatientForm
               <FormControl>
                 <RichTextEditor initialContent={value || undefined} onUpdate={field.onChange} />
               </FormControl>
-              <FormDescription>Any additional remarks about the patient</FormDescription>
+              <FormDescription className="mx-1">
+                Any additional remarks about the patient
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        <div className="flex space-x-2">
+        <div className="flex space-x-2 justify-end">
           <Button
             type="submit"
-            onClick={form.handleSubmit(onSubmit)}
+            onClick={submitForm}
             loadingText={'Saving...'}
             leftIcon={<SaveIcon className="w-5 h-5" />}
           >

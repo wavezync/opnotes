@@ -22,14 +22,15 @@ export interface DoctorFilter {
 }
 
 export const listDoctors = async (filter: DoctorFilter) => {
-  const { search, pageSize = 50, page = 0 } = filter
+  const { search, pageSize = 25, page = 0 } = filter
 
   let query = db.selectFrom('doctors').selectAll('doctors')
 
   if (search) {
+    const term = `${search}*`
     query = query
       .leftJoin('doctors_fts', 'doctors_fts.doctor_id', 'doctors.id')
-      .where(sql<boolean>`doctors_fts MATCH ${search}`)
+      .where(sql<boolean>`doctors_fts MATCH ${term}`)
       .orderBy(sql`rank`, 'desc')
   }
 

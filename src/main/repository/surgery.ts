@@ -1,5 +1,5 @@
 import { sql } from 'kysely'
-import { NewSurgery, Surgery, SurgeryUpdate } from '../../shared/types/db'
+import { NewSurgery, SurgeryUpdate } from '../../shared/types/db'
 import { db } from '../db'
 import { NewWithoutTimestamps, UpdateWithoutTimestamps, addTimestamps } from '../utils/sql'
 
@@ -82,13 +82,20 @@ export const lookupSurgery = async (search: string) => {
   // use a full text search to find the surgery by bht or phn or patient name
   // with sqlite fts5, we can use the match operator to search for the terms
 
-  return await sql<Surgery[]>`
-    SELECT surgeries.* FROM surgeries
-    INNER JOIN patients_fts ON surgeries.patient_id = patients_fts.patient_id
-    INNER JOIN surgeries_fts ON surgeries.id = surgeries_fts.surgery_id
-    WHERE patients_fts MATCH ${search} OR surgeries_fts MATCH ${search}
-    ORDER BY rank, surgeries.date DESC
-  `.execute(db)
+  return await db
+    .selectFrom('surgeries')
+    .selectAll('surgeries')
+    .leftJoin('surgeries_fts', 'surgeries_fts.surgery_id', 'surgeries.id')
+    .leftJoin('patients_fts', 'patients_fts.patient_id', 'surgeries.patient_id')
+    .where((eb) =>
+      eb.or([
+        sql<boolean>`surgeries_fts MATCH ${search}`,
+        sql<boolean>`patients_fts MATCH ${search}`
+      ])
+    )
+
+    .orderBy(sql`rank`, 'desc')
+    .execute()
 }
 
 export interface SurgeryFilter {
@@ -154,4 +161,10 @@ export const listSurgeries = async (filter: SurgeryFilter) => {
   const pages = Math.ceil(total / pageSize)
 
   return { data: surgeries, total, pages }
+}
+
+export const getWards = async () => {
+  return (await db.selectFrom('surgeries').select('ward').distinct().execute()).map(
+    (row) => row.ward
+  )
 }

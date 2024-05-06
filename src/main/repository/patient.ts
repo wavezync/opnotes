@@ -1,7 +1,9 @@
 import { sql } from 'kysely'
-import { NewPatient, Patient, PatientUpdate } from '../../shared/types/db'
+import { NewPatient, PatientUpdate } from '../../shared/types/db'
 import { db } from '../db'
 import { NewWithoutTimestamps, addTimestamps } from '../utils/sql'
+import { PatientModel } from '../../shared/models/PatientModel'
+import { PatientFilter } from '../../shared/types/api'
 
 export const createNewPatient = async (patient: NewWithoutTimestamps<NewPatient>) => {
   const data = addTimestamps(patient)
@@ -9,55 +11,76 @@ export const createNewPatient = async (patient: NewWithoutTimestamps<NewPatient>
 }
 
 export const getPatientById = async (id: number) => {
-  return await db.selectFrom('patients').where('id', '=', id).selectAll().executeTakeFirst()
+  const result = await db.selectFrom('patients').where('id', '=', id).selectAll().executeTakeFirst()
+
+  if (result) {
+    return new PatientModel(result)
+  }
+
+  return undefined
 }
 
 export const updatePatientById = async (id: number, patient: PatientUpdate) => {
-  return await db.updateTable('patients').set(patient).where('id', '=', id).execute()
+  const result = await db
+    .updateTable('patients')
+    .set(patient)
+    .where('id', '=', id)
+    .returningAll()
+    .executeTakeFirst()
+
+  if (result) {
+    return new PatientModel(result)
+  }
+
+  return undefined
 }
 
 export const findPatientByPHN = async (phn: string) => {
-  return await db.selectFrom('patients').where('phn', '=', phn).selectAll().executeTakeFirst()
-}
+  const result = await db
+    .selectFrom('patients')
+    .where('phn', '=', phn)
+    .selectAll()
+    .executeTakeFirst()
+  if (result) {
+    return new PatientModel(result)
+  }
 
-export const lookupPatient = async (search: string) => {
-  // use a full text search to find the patient by name or phn
-  // with sqlite fts5, we can use the match operator to search for the terms
-
-  return await sql<Patient[]>`
-    SELECT * FROM patients
-    INNER JOIN patients_fts ON patients.id = patients_fts.patient_id
-    WHERE patients_fts MATCH ${search}
-    ORDER BY rank, patients.updated_at DESC
-  `.execute(db)
-}
-
-export interface PatientFilter {
-  search?: string
-
-  pageSize?: number
-  page?: number
+  return undefined
 }
 
 export const listPatients = async (filter: PatientFilter) => {
-  const { search, pageSize = 50, page = 0 } = filter
+  const { search, pageSize = 25, page = 0 } = filter
 
-  let query = db.selectFrom('patients').selectAll('patients')
-
+  let query = db.selectFrom('patients')
   if (search) {
+    const term = `${search}*`
     query = query
-      .leftJoin('patients_fts', 'patients_fts.patient_id', 'patients.id')
-      .leftJoin('surgeries_fts', 'surgeries_fts.patient_id', 'patients.id')
-      .where(sql<boolean>`patients_fts MATCH ${search}`)
-      .where(sql<boolean>`surgeries_fts MATCH ${search}`)
-      .orderBy(sql`rank`, 'desc')
+      .leftJoin(
+        (eb) =>
+          eb
+            .selectFrom('patients_fts')
+            .select(['patient_id', sql<number>`rank`.as('rank')])
+            .where(sql<boolean>`patients_fts MATCH ${term}`)
+            .union((eb) =>
+              eb
+                .selectFrom('surgeries_fts')
+                .select(['patient_id', sql<number>`rank`.as('rank')])
+                .where(sql<boolean>`surgeries_fts MATCH ${term}`)
+            )
+            .as('matching_patients'),
+        (join) => join.onRef('matching_patients.patient_id', '=', 'patients.id')
+      )
+      .where('matching_patients.patient_id', 'is not', null)
+      .orderBy('rank', 'desc')
   }
-
   const patients = await query
+    .selectAll('patients')
     .orderBy('created_at desc')
     .limit(pageSize)
     .offset(page * pageSize)
     .execute()
+
+  const mappedPatients = patients.map((patient) => new PatientModel(patient))
 
   const totalResult = await query
     .clearSelect()
@@ -70,7 +93,7 @@ export const listPatients = async (filter: PatientFilter) => {
   const total = totalResult?.total ?? 0
   const pages = Math.ceil(total / pageSize)
 
-  return { data: patients, total, pages }
+  return { data: mappedPatients, total, pages }
 }
 
 export const countAllPatients = async () => {

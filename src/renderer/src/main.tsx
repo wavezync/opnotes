@@ -2,7 +2,7 @@ import './index.css'
 
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { RouterProvider, createMemoryRouter } from 'react-router-dom'
+import { RouterProvider, createBrowserRouter, createMemoryRouter } from 'react-router-dom'
 import Root from './routes/root'
 import Home from './routes/home'
 import ErrorPage from './components/common/ErrorComponent'
@@ -10,6 +10,10 @@ import { AddNew } from './routes/surgeries/add-surgery'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { PatientsIndex } from './routes/patients/list-patients'
+import { AddNewPatient } from './routes/patients/add-new-patient'
+import { ViewPatient } from './routes/patients/view-patient'
+import { BreadcrumbContext, BreadcrumbProvider } from './contexts/BreadcrumbContext'
+import { EditPatient } from './routes/patients/edit-patient'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -19,7 +23,7 @@ const queryClient = new QueryClient({
   }
 })
 
-const router = createMemoryRouter([
+const router = createBrowserRouter([
   {
     path: '/',
     element: <Root />,
@@ -30,16 +34,28 @@ const router = createMemoryRouter([
         element: <Home />
       },
       {
-        path: '/new',
-        element: <AddNew />
-      },
-      {
         path: '/patients',
         element: <PatientsIndex />
       },
       {
-        path: '/search',
-        element: <div>Search</div>
+        path: '/patients/add',
+        element: <AddNewPatient />
+      },
+      {
+        path: '/patients/:id',
+        element: <ViewPatient />
+      },
+      {
+        path: '/patients/:id/edit',
+        element: <EditPatient />
+      },
+      {
+        path: '/patients/:id/surgeries/add',
+        element: <AddNew />
+      },
+      {
+        path: '*',
+        element: <ErrorPage />
       }
     ]
   }
@@ -48,8 +64,10 @@ const router = createMemoryRouter([
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
-      <ReactQueryDevtools position="bottom" />
+      <BreadcrumbProvider>
+        <RouterProvider router={router} />
+        <ReactQueryDevtools position="bottom" />
+      </BreadcrumbProvider>
     </QueryClientProvider>
   </React.StrictMode>
 )

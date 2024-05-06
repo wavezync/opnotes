@@ -14,17 +14,19 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
+import { LucideLoader } from 'lucide-react'
 
 interface DataTablePaginationProps<TData> {
   table: Table<TData>
+  isLoading?: boolean
 }
 
-export function DataTablePagination<TData>({ table }: DataTablePaginationProps<TData>) {
+export function DataTablePagination<TData>({ table, isLoading }: DataTablePaginationProps<TData>) {
   return (
     <div className="flex items-center justify-between px-2">
-      <div className="flex-1 text-sm text-muted-foreground">
-        {table.getFilteredSelectedRowModel().rows.length} of{' '}
-        {table.getFilteredRowModel().rows.length} row(s) selected.
+      <div className="flex-1 text-sm text-muted-foreground flex items-center">
+        {table.getFilteredRowModel().rows.length} total rows
+        {isLoading && <LucideLoader className="h-4 w-4 ml-1 animate-spin" />}
       </div>
       <div className="flex items-center space-x-6 lg:space-x-8">
         <div className="flex items-center space-x-2">

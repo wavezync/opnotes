@@ -2,7 +2,6 @@ import {
   createNewPatient,
   getPatientById,
   listPatients,
-  lookupPatient,
   updatePatientById,
   findPatientByPHN
 } from './repository/patient'
@@ -30,7 +29,6 @@ export const api = {
   getPatientById,
   updatePatientById,
   listPatients,
-  lookupPatient,
   findPatientByPHN,
 
   createNewDoctor,

@@ -181,7 +181,7 @@ export const RichTextEditor = ({ initialContent, onUpdate }: RichTextEditorProps
     extensions,
     editorProps: {
       attributes: {
-        class: 'prose dark:prose-invert prose-sm sm:prose-base m-2 focus:outline-none'
+        class: 'prose dark:prose-invert prose-sm sm:prose-base m-2 focus:outline-none max-w-none'
       }
     },
     onUpdate({ editor }) {
@@ -191,11 +191,16 @@ export const RichTextEditor = ({ initialContent, onUpdate }: RichTextEditorProps
   })
 
   useEffect(() => {
-    editor?.commands.setContent(initialContent || '')
-  }, [initialContent, editor])
+    if (!editor) return
+    let { from, to } = editor.state.selection
+    editor.commands.setContent(initialContent || '', false, {
+      preserveWhitespace: 'full'
+    })
+    editor.commands.setTextSelection({ from, to })
+  }, [editor, initialContent])
 
   return (
-    <div className="dark">
+    <div className="dark w-full">
       <MenuBar editor={editor} />
       <EditorContent
         editor={editor}

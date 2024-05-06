@@ -5,8 +5,8 @@ import { electronAPI } from '@electron-toolkit/preload'
 // renderer only if context isolation is enabled, otherwise
 // just add to the DOM global.
 
-const invoke = async (method, args) => {
-  return await ipcRenderer.invoke('invokeApiCall', method, args)
+const invoke = async (method, ...args) => {
+  return await ipcRenderer.invoke('invokeApiCall', method, ...args)
 }
 
 if (process.contextIsolated) {

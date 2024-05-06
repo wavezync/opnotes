@@ -1,5 +1,5 @@
 import SQLite from 'better-sqlite3'
-import { Kysely, Migrator, SqliteDialect } from 'kysely'
+import { CompiledQuery, Kysely, Migrator, SqliteDialect } from 'kysely'
 import { Database } from '../shared/types/db'
 import { join } from 'path'
 import { MemoryMigrationProvider } from './db/memory-migration-provider'
@@ -11,7 +11,10 @@ console.log('DB_PATH:', DB_PATH)
 const dialect = new SqliteDialect({
   database: new SQLite(DB_PATH, {
     verbose: console.log
-  })
+  }),
+  onCreateConnection: async (connection) => {
+    await connection.executeQuery(CompiledQuery.raw('PRAGMA journal_mode=WAL'))
+  }
 })
 
 // Database interface is passed to Kysely's constructor, and from now on, Kysely

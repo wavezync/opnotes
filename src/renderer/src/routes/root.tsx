@@ -23,7 +23,7 @@ export default function Root() {
       </nav>
       <div className="grow m-1 p-3 overflow-y-auto">
         <Outlet />
-        <Toaster position="bottom-right" />
+        <Toaster position="top-right" />
       </div>
     </main>
   )
