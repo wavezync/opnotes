@@ -5,7 +5,7 @@ const NavLinkComponent = ({ to, children }) => {
   return (
     <Link
       to={to}
-      className="text-primary text-sm underline-offset-4 hover:underline cursor-pointer hover:bg-secondary/80 p-2 rounded-lg"
+      className="text-secondary-foreground text-sm underline-offset-4 hover:underline cursor-pointer hover:bg-primary/10 p-2 rounded-lg"
     >
       {children}
     </Link>

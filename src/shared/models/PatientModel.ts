@@ -13,8 +13,9 @@ export class PatientModel implements Patient {
   created_at: Date
   updated_at: Date
   age: number
+  ward?: string
 
-  constructor(data: Patient) {
+  constructor(data: Patient & { ward?: string }) {
     this.id = data.id
     this.phn = data.phn
     this.name = data.name
@@ -27,6 +28,7 @@ export class PatientModel implements Patient {
     this.remarks = data.remarks
     this.created_at = new Date(data.created_at)
     this.updated_at = new Date(data.updated_at)
+    this.ward = data.ward
 
     const now = new Date()
     this.age = now.getFullYear() - this.birth_year

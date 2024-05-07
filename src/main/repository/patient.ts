@@ -11,6 +11,8 @@ export const createNewPatient = async (patient: NewWithoutTimestamps<NewPatient>
 }
 
 export const getPatientById = async (id: number) => {
+  // select patient and the ward from last surgery
+
   const result = await db.selectFrom('patients').where('id', '=', id).selectAll().executeTakeFirst()
 
   if (result) {

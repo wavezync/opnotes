@@ -13,12 +13,12 @@ import {
 import { Input } from '@renderer/components/ui/input'
 import { useBreadcrumbs } from '@renderer/contexts/BreadcrumbContext'
 import { queries } from '@renderer/lib/queries'
-import { keepPreviousData, queryOptions, useQuery } from '@tanstack/react-query'
+import { QueryClient, keepPreviousData, queryOptions, useQuery } from '@tanstack/react-query'
 import { ColumnDef, PaginationState } from '@tanstack/react-table'
 import { MoreHorizontal, PlusSquare } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, LoaderFunctionArgs, useNavigate } from 'react-router-dom'
 import { PatientModel } from 'src/shared/models/PatientModel'
 import { PatientFilter } from 'src/shared/types/api'
 
@@ -28,11 +28,27 @@ const patientListQuery = (filter: PatientFilter) =>
     placeholderData: keepPreviousData
   })
 
+export const loader =
+  (queryClient: QueryClient) =>
+  async ({ request }: LoaderFunctionArgs) => {
+    const url = new URL(request.url)
+    const q = url.searchParams.get('q') ?? ''
+    const page = parseInt(url.searchParams.get('page') ?? '0')
+    const pageSize = parseInt(url.searchParams.get('pageSize') ?? '10')
+    await queryClient.ensureQueryData(patientListQuery({ search: q, page, pageSize }))
+    return { q, page, pageSize }
+  }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const columns: ColumnDef<PatientModel, any>[] = [
   {
     id: 'phn',
     header: 'PHN',
-    cell: (cell) => cell.row.original.phn
+    cell: (cell) => (
+      <Link to={`/patients/${cell.row.original.id}`} className="hover:underline">
+        {cell.row.original.phn}
+      </Link>
+    )
   },
   {
     id: 'name',
@@ -98,7 +114,11 @@ const columns: ColumnDef<PatientModel, any>[] = [
 export const PatientsIndex = () => {
   const { setBreadcrumbs } = useBreadcrumbs()
   const navigate = useNavigate()
-  const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 10 })
+
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10
+  })
   const [search, setSearch] = useState('')
   const { data, isLoading } = useQuery(
     patientListQuery({
@@ -107,7 +127,6 @@ export const PatientsIndex = () => {
       pageSize: pagination.pageSize
     })
   )
-  console.log(pagination)
 
   useEffect(() => {
     setBreadcrumbs([{ label: 'Patients', to: '/patients' }])
@@ -126,6 +145,7 @@ export const PatientsIndex = () => {
           <Button
             variant="default"
             leftIcon={<PlusSquare />}
+            size={'sm'}
             onClick={() => navigate('/patients/add')}
           >
             Add New

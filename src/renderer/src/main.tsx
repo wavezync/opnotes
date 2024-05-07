@@ -2,17 +2,17 @@ import './index.css'
 
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { RouterProvider, createBrowserRouter, createMemoryRouter } from 'react-router-dom'
+import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import Root from './routes/root'
 import Home from './routes/home'
 import ErrorPage from './components/common/ErrorComponent'
-import { AddNew } from './routes/surgeries/add-surgery'
+import { AddNewSurgery } from './routes/surgeries/add-surgery'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { PatientsIndex } from './routes/patients/list-patients'
 import { AddNewPatient } from './routes/patients/add-new-patient'
-import { ViewPatient } from './routes/patients/view-patient'
-import { BreadcrumbContext, BreadcrumbProvider } from './contexts/BreadcrumbContext'
+import { ViewPatient, loader as patientLoader } from './routes/patients/view-patient'
+import { BreadcrumbProvider } from './contexts/BreadcrumbContext'
 import { EditPatient } from './routes/patients/edit-patient'
 
 const queryClient = new QueryClient({
@@ -43,6 +43,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/patients/:id',
+        loader: patientLoader(queryClient),
         element: <ViewPatient />
       },
       {
@@ -50,8 +51,8 @@ const router = createBrowserRouter([
         element: <EditPatient />
       },
       {
-        path: '/patients/:id/surgeries/add',
-        element: <AddNew />
+        path: '/patients/:patientId/surgeries/add',
+        element: <AddNewSurgery />
       },
       {
         path: '*',

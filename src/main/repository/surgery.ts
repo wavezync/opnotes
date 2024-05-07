@@ -2,6 +2,7 @@ import { sql } from 'kysely'
 import { NewSurgery, SurgeryUpdate } from '../../shared/types/db'
 import { db } from '../db'
 import { NewWithoutTimestamps, UpdateWithoutTimestamps, addTimestamps } from '../utils/sql'
+import { SurgeryFilter } from '../../shared/types/api'
 
 export const createNewSurgery = async (surgery: NewWithoutTimestamps<NewSurgery>) => {
   const data = addTimestamps(surgery)
@@ -96,17 +97,6 @@ export const lookupSurgery = async (search: string) => {
 
     .orderBy(sql`rank`, 'desc')
     .execute()
-}
-
-export interface SurgeryFilter {
-  search?: string
-  ward?: string
-  start_date?: Date
-  end_date?: Date
-  patient_id?: number
-
-  pageSize?: number
-  page?: number
 }
 
 export const listSurgeries = async (filter: SurgeryFilter) => {

@@ -1,7 +1,7 @@
 import { Color } from '@tiptap/extension-color'
 import ListItem from '@tiptap/extension-list-item'
 import { TextStyle } from '@tiptap/extension-text-style'
-import { EditorContent, useEditor } from '@tiptap/react'
+import { Editor, EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { Button, ButtonProps } from '../ui/button'
 import { cn } from '@renderer/lib/utils'
@@ -45,7 +45,7 @@ const ToolbarButton = ({ isActive, children, onClick, ...rest }: ToolbarButtonPr
   )
 }
 
-const MenuBar = ({ editor }: any) => {
+const MenuBar = ({ editor }: { editor: Editor | null }) => {
   if (!editor) {
     return null
   }
@@ -192,7 +192,7 @@ export const RichTextEditor = ({ initialContent, onUpdate }: RichTextEditorProps
 
   useEffect(() => {
     if (!editor) return
-    let { from, to } = editor.state.selection
+    const { from, to } = editor.state.selection
     editor.commands.setContent(initialContent || '', false, {
       preserveWhitespace: 'full'
     })

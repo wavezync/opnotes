@@ -81,8 +81,10 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {leftIcon && !isLoading && <div className="mr-2">{leftIcon}</div>}
 
         <Slottable>
-          {!isLoading && props.children}
-          {isLoading && <span>{loadingText || 'Loading...'}</span>}
+          <>
+            {!isLoading && props.children}
+            {isLoading && <span>{loadingText || 'Loading...'}</span>}
+          </>
         </Slottable>
 
         {rightIcon && !isLoading && <div className="ml-2">{rightIcon}</div>}

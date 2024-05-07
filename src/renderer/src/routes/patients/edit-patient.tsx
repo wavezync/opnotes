@@ -1,13 +1,12 @@
-import { Breadcrumbs } from '@renderer/components/common/Breadcrumbs'
-import { SectionTitle } from '@renderer/components/common/SectionHeader'
 import { NewPatientForm } from '@renderer/components/patient/NewPatientForm'
 import { useBreadcrumbs } from '@renderer/contexts/BreadcrumbContext'
 import { queryOptions, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import toast from 'react-hot-toast'
 import { useParams } from 'react-router-dom'
 import { Patient } from 'src/shared/types/db'
 import { queries } from '../../lib/queries'
+import { AppLayout } from '@renderer/layouts/AppLayout'
 
 export const getPatientByIdQuery = (id: number) =>
   queryOptions({
@@ -25,22 +24,22 @@ export const EditPatient = () => {
     toast.success('Patient updated successfully')
   }
 
+  const ptName = useMemo(() => data?.name || data?.phn || 'Patient', [data?.name, data?.phn])
+
   useEffect(() => {
-    setBreadcrumbs([{ label: 'Patients', to: '/patients' }, { label: 'Edit' }])
-  }, [setBreadcrumbs])
+    setBreadcrumbs([
+      { label: 'Patients', to: '/patients' },
+      {
+        label: ptName,
+        to: `/patients/${id}`
+      },
+      { label: 'Edit' }
+    ])
+  }, [ptName, id, setBreadcrumbs])
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="text-center relative flex md:items-center md:justify-center mb-2">
-        <div className="absolute left-0 top-0">
-          <Breadcrumbs />
-        </div>
-
-        <SectionTitle title="Edit Patient" />
-      </div>
-      <div className="p-2 overflow-y-auto">
-        {!isLoading && <NewPatientForm onRecordUpdated={handleNewPatient} values={data} key={id} />}
-      </div>
-    </div>
+    <AppLayout title="Edit Patient">
+      {!isLoading && <NewPatientForm onRecordUpdated={handleNewPatient} values={data} key={id} />}
+    </AppLayout>
   )
 }

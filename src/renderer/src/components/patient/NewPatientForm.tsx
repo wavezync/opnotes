@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Select,
   SelectContent,
@@ -105,7 +106,6 @@ export const NewPatientForm = ({ onRecordUpdated, values }: CreatePatientFormPro
     }
   })
   const isUpdate = values && !!values.id
-  console.log({ isUpdate, v: form.getValues() })
 
   const watchAge = form.watch('age')
   const birthYear = useMemo(() => approximateBirthYear(watchAge), [watchAge])
@@ -128,9 +128,10 @@ export const NewPatientForm = ({ onRecordUpdated, values }: CreatePatientFormPro
       emergency_contact: '',
       emergency_phone: '',
       remarks: '',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       gender: '' as any
     })
-  }, [form])
+  }, [form, isUpdate, values])
 
   const createNewRecord = async (data: FormSchema) => {
     if (!birthYear) {

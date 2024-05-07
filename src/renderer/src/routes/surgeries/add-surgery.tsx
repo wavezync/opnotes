@@ -3,46 +3,45 @@ import { RichTextEditor } from '@renderer/components/common/RichTextEditor'
 import { Button } from '@renderer/components/ui/button'
 import { DatePicker } from '@renderer/components/ui/date-picker'
 import { Input } from '@renderer/components/ui/input'
+import { useBreadcrumbs } from '@renderer/contexts/BreadcrumbContext'
+import { AppLayout } from '@renderer/layouts/AppLayout'
 import { LucideArrowDown, Printer, Save } from 'lucide-react'
-import { useState } from 'react'
-
-const SectionHeader = ({ title }: { title: string }) => (
-  <div className="font-bold text-2xl">{title}</div>
-)
+import { useEffect, useState } from 'react'
 
 export interface FormLabelProps extends React.HTMLProps<HTMLLabelElement> {
   children: React.ReactNode
 }
 
-export const AddNew = () => {
+export const AddNewSurgery = () => {
   const [date, setDate] = useState<Date | undefined>(undefined)
   const [surgery, setSurgery] = useState<string>('')
+  const { setBreadcrumbs } = useBreadcrumbs()
+
+  useEffect(() => {
+    setBreadcrumbs([{ label: 'Surgery', to: '/surgeries' }, { label: 'Add Surgery' }])
+  }, [setBreadcrumbs])
+
+  const actions = (
+    <>
+      <Button className="" variant="default">
+        <Save /> Save
+      </Button>
+      <Button className="" variant="secondary">
+        <Printer /> Print
+      </Button>
+    </>
+  )
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="text-center relative flex md:items-center md:justify-center">
-        <h1 className="text-4xl font-bold">Add New Op Note</h1>
-
-        <div className="absolute right-1 space-x-1">
-          <Button className="" variant="default">
-            <Save /> Save
-          </Button>
-          <Button className="" variant="secondary">
-            <Printer /> Print
-          </Button>
-        </div>
-      </div>
-
+    <AppLayout actions={actions} title="Add Surgery">
       <div>
         {/* Surgery Details */}
         <section className="mt-1">
-          <SectionHeader title="Surgery Details" />
-
           <div className="flex flex-col mt-2">
             <div className="flex items-end space-x-2 w-full">
               <div className="flex flex-col w-full">
                 <label htmlFor="surgery" className="pb-1">
-                  Surgery
+                  Surgery Title
                 </label>
                 <div className="flex">
                   <Input
@@ -104,7 +103,7 @@ export const AddNew = () => {
                 <label htmlFor="assistant" className="pb-1">
                   Assisted By
                 </label>
-                <Input type="text" placeholder="Select or Add new entry..." />
+                <AutoCompleteInput multiple={true} />
               </div>
             </div>
           </div>
@@ -120,6 +119,6 @@ export const AddNew = () => {
           </div>
         </section>
       </div>
-    </div>
+    </AppLayout>
   )
 }
