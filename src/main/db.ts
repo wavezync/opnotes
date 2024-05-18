@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import SQLite from 'better-sqlite3'
 import { CompiledQuery, Kysely, Migrator, SqliteDialect } from 'kysely'
 import { Database } from '../shared/types/db'

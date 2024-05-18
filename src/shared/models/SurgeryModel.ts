@@ -9,7 +9,7 @@ export class SurgeryModel implements Surgery {
   title: string
   bht: string
   ward: string
-  date: Date
+  date: Date | null
   notes: string | null
   post_op_notes: string | null
   patient_id: number
@@ -25,7 +25,7 @@ export class SurgeryModel implements Surgery {
     this.title = data.title
     this.bht = data.bht
     this.ward = data.ward
-    this.date = new Date(data.date)
+    this.date = data.date !== null ? new Date(data.date) : null
     this.notes = data.notes
     this.post_op_notes = data.post_op_notes
     this.patient_id = data.patient_id

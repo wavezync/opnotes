@@ -21,7 +21,7 @@ export interface SurgeryTable {
   title: string
   bht: string
   ward: string
-  date: ColumnType<Date, number, number>
+  date: ColumnType<Date, number, number> | null
   notes: string | null
   post_op_notes: string | null
 
@@ -83,8 +83,8 @@ export interface Database {
   patients: PatientTable
   surgeries: SurgeryTable
   doctors: DoctorsTable
-  surgery_doctor_done_by: SurgeryDoctorsDoneByTable
-  surgery_doctor_assisted_by: SurgeryDoctorsAssistedByTable
+  surgery_doctors_done_by: SurgeryDoctorsDoneByTable
+  surgery_doctors_assisted_by: SurgeryDoctorsAssistedByTable
   surgery_follow_ups: SurgeryFollowUpTable
 
   patients_fts: PatientsFTS

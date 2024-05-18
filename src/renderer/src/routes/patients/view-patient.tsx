@@ -133,7 +133,8 @@ const columns: ColumnDef<Surgery, any>[] = [
   {
     id: 'date',
     header: 'Surgery Date',
-    cell: (cell) => cell.row.original.date.toLocaleDateString()
+    cell: (cell) =>
+      cell.row.original.date !== null ? cell.row.original.date.toLocaleDateString() : 'N/A'
   },
   {
     id: 'updatedAt',

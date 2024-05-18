@@ -8,7 +8,7 @@ import { DoctorModel } from '../../shared/models/DoctorModel'
 
 export const createNewSurgery = async (surgery: NewWithoutTimestamps<NewSurgery>) => {
   const data = addTimestamps(surgery)
-  return await db.insertInto('surgeries').values(data).returningAll().execute()
+  return await db.insertInto('surgeries').values(data).returningAll().executeTakeFirst()
 }
 
 export const updateSurgery = async (
@@ -17,14 +17,19 @@ export const updateSurgery = async (
 ) => {
   const data = addTimestamps(surgery, false)
 
-  return await db.updateTable('surgeries').set(data).where('id', '=', id).returningAll().execute()
+  return await db
+    .updateTable('surgeries')
+    .set(data)
+    .where('id', '=', id)
+    .returningAll()
+    .executeTakeFirst()
 }
 
 export const updateSurgeryDoctorsDoneBy = async (surgeryId: number, doctorIds: number[]) => {
   const t = await db.transaction().execute(async (trx) => {
-    await trx.deleteFrom('surgery_doctor_done_by').where('surgery_id', '=', surgeryId).execute()
+    await trx.deleteFrom('surgery_doctors_done_by').where('surgery_id', '=', surgeryId).execute()
     const result = await trx
-      .insertInto('surgery_doctor_done_by')
+      .insertInto('surgery_doctors_done_by')
       .values(doctorIds.map((doctorId) => ({ surgery_id: surgeryId, doctor_id: doctorId })))
       .returningAll()
       .execute()
@@ -37,10 +42,13 @@ export const updateSurgeryDoctorsDoneBy = async (surgeryId: number, doctorIds: n
 
 export const updateSurgeryDoctorsAssistedBy = async (surgeryId: number, doctorIds: number[]) => {
   const t = await db.transaction().execute(async (trx) => {
-    await trx.deleteFrom('surgery_doctor_assisted_by').where('surgery_id', '=', surgeryId).execute()
+    await trx
+      .deleteFrom('surgery_doctors_assisted_by')
+      .where('surgery_id', '=', surgeryId)
+      .execute()
 
     const result = await trx
-      .insertInto('surgery_doctor_assisted_by')
+      .insertInto('surgery_doctors_assisted_by')
       .values(doctorIds.map((doctorId) => ({ surgery_id: surgeryId, doctor_id: doctorId })))
       .returningAll()
       .execute()
@@ -63,13 +71,13 @@ export const getSurgeryById = async (id: number) => {
   }
 
   const doneBy = await db
-    .selectFrom('surgery_doctor_done_by')
+    .selectFrom('surgery_doctors_done_by')
     .where('surgery_id', '=', id)
     .select('doctor_id')
     .execute()
 
   const assistedBy = await db
-    .selectFrom('surgery_doctor_assisted_by')
+    .selectFrom('surgery_doctors_assisted_by')
     .where('surgery_id', '=', id)
     .select('doctor_id')
     .execute()
@@ -147,20 +155,24 @@ export const listSurgeries = async (filter: SurgeryFilter) => {
   let query = db.selectFrom('surgeries').selectAll('surgeries')
 
   if (search) {
+    const term = `${search}*`
     query = query
-      .leftJoin('patients_fts', 'patients_fts.patient_id', 'surgeries.patient_id')
-      .leftJoin('surgeries_fts', 'surgeries_fts.surgery_id', 'surgeries.id')
-      .where((eb) =>
-        eb.or([
-          sql<boolean>`patients_fts MATCH ${search}`,
-          sql<boolean>`surgeries_fts MATCH ${search}`
-        ])
+      .leftJoin(
+        (eb) =>
+          eb
+            .selectFrom('surgeries_fts')
+            .select(['surgeries_fts.surgery_id', sql<number>`rank`.as('rank')])
+            .where(sql<boolean>`surgeries_fts MATCH ${term}`)
+
+            .as('matching_patients'),
+        (join) => join.onRef('matching_patients.surgery_id', '=', 'surgeries.id')
       )
-      .orderBy(sql`rank`, 'desc')
+      .where('matching_patients.surgery_id', 'is not', null)
+      .orderBy('rank', 'desc')
   }
 
   if (patient_id) {
-    query = query.where('patient_id', '=', patient_id)
+    query = query.where('surgeries.patient_id', '=', patient_id)
   }
 
   if (ward) {
