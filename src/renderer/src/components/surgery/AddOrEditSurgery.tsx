@@ -162,8 +162,8 @@ export const AddOrEditSurgery = ({ surgery, onUpdated }: AddOrEditSurgeryProps) 
             </div>
           </div>
 
-          <div className="flex flex-col mt-2">
-            <div className="flex items-center">
+          <div className="flex flex-col mt-4">
+            <div className="flex items-start md:flex-row flex-col gap-2">
               <div className="flex flex-col md:w-1/2">
                 <FormField
                   control={form.control}

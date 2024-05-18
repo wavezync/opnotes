@@ -51,12 +51,12 @@ const SelectedDoctorChips = ({
               {doctor.name}
               {doctor.designation && <>({doctor.designation})</>}
               <button
-                className="hover:text-destructive transition-all"
+                className="hover:text-destructive transition-all group"
                 onClick={() => {
                   onDelete?.(doctor.id.toString())
                 }}
               >
-                <X className="w-4 h-4 fill-current" />
+                <X className="w-4 h-4 fill-current group-hover:-scale-125" />
               </button>
             </Badge>
           </div>
@@ -82,7 +82,7 @@ export const DoctorAutoComplete = ({ onSelected, selectedDoctorIds }: DoctorAuto
   }
 
   return (
-    <div className="">
+    <div className="flex flex-col justify-start items-start">
       <AutoCompleteInput
         multiple
         placeholder="Search Doctors..."
