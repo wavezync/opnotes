@@ -1,5 +1,5 @@
 import { createQueryKeyStore } from '@lukemorales/query-key-factory'
-import { PatientFilter, SurgeryFilter } from 'src/shared/types/api'
+import { DoctorFilter, PatientFilter, SurgeryFilter } from 'src/shared/types/api'
 import { unwrapResult } from './utils'
 
 export const queries = createQueryKeyStore({
@@ -21,6 +21,16 @@ export const queries = createQueryKeyStore({
     get: (id: number) => ({
       queryKey: [id],
       queryFn: () => unwrapResult(window.api.invoke('getSurgeryById', id))
+    })
+  },
+  doctors: {
+    list: (filter: DoctorFilter) => ({
+      queryKey: [filter],
+      queryFn: () => unwrapResult(window.api.invoke('listDoctors', filter))
+    }),
+    get: (id: number) => ({
+      queryKey: [id],
+      queryFn: () => unwrapResult(window.api.invoke('getDoctorById', id))
     })
   }
 })

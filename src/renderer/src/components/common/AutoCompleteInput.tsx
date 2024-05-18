@@ -15,15 +15,15 @@ import { useCallback, useState } from 'react'
 import { Progress } from '../ui/progress'
 
 export interface Item {
-  value: any
-  label: string
+  value: string
+  label: React.ReactNode
 }
 
 export interface AutoCompleteInputProps {
   items?: Item[]
-  selectedItems?: Item[]
+  selectedValues?: string[]
   onItemSelected?: (item: Item) => void
-  onSelectedItemsChange?: (items: Item[]) => void
+  onSelectedValuesChange?: (values: string[]) => void
   onAddNewItem?: () => void
   multiple?: boolean
   onSearchChange?: (value: string) => void
@@ -33,10 +33,10 @@ export interface AutoCompleteInputProps {
 
 export function AutoCompleteInput({
   items,
-  selectedItems,
+  selectedValues,
   onAddNewItem,
   onItemSelected,
-  onSelectedItemsChange,
+  onSelectedValuesChange,
   multiple,
   onSearchChange,
   placeholder = 'Search or Add New...',
@@ -45,14 +45,20 @@ export function AutoCompleteInput({
   const [open, setOpen] = useState(false)
   const [currentTypedValue, setCurrentTypedValue] = useState('')
 
-  const isSelected = (value: any) => {
-    return selectedItems?.some((item) => item.value === value)
+  const isSelected = (value: string) => {
+    return selectedValues?.includes(value) || false
   }
 
-  const handleOpenChange = useCallback((open: boolean) => {
-    setCurrentTypedValue('')
-    setOpen(open)
-  }, [])
+  const handleOpenChange = useCallback(
+    (open: boolean) => {
+      setOpen(open)
+      if (!open) {
+        setCurrentTypedValue('')
+        onSearchChange?.('')
+      }
+    },
+    [onSearchChange]
+  )
 
   const handleOnSearchChange = useCallback(
     (value: string) => {
@@ -76,7 +82,7 @@ export function AutoCompleteInput({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[300px] p-0" avoidCollisions side="bottom" align="start">
-        <Command>
+        <Command shouldFilter={false}>
           <CommandInput placeholder={placeholder} onValueChange={handleOnSearchChange} />
           {isLoading && (
             <CommandLoading>
@@ -107,11 +113,11 @@ export function AutoCompleteInput({
                     if (multiple) {
                       onItemSelected?.(item)
                       if (isSelected(item.value)) {
-                        onSelectedItemsChange?.(
-                          selectedItems?.filter((i) => i.value !== item.value) || []
+                        onSelectedValuesChange?.(
+                          (selectedValues || []).filter((v) => v !== item.value)
                         )
                       } else {
-                        onSelectedItemsChange?.([...(selectedItems || []), item])
+                        onSelectedValuesChange?.([...(selectedValues || []), item.value])
                       }
                     } else {
                       onItemSelected?.(item)

@@ -15,3 +15,10 @@ export interface SurgeryFilter {
   pageSize?: number
   page?: number
 }
+
+export interface DoctorFilter {
+  search?: string
+
+  pageSize?: number
+  page?: number
+}

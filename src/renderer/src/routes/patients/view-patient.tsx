@@ -55,15 +55,16 @@ interface PatientInfoCardProps {
 const PatientInfoCard = ({ patient }: PatientInfoCardProps) => {
   const remarksDialog = patient.remarks && (
     <Dialog>
-      <DialogTrigger>
+      <DialogTrigger asChild>
         <Button variant="outline" size="sm">
-          View Remarks
+          Remarks
         </Button>
       </DialogTrigger>
+
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Remarks</DialogTitle>
-          <DialogDescription>
+          <DialogDescription asChild>
             <div className="dark">
               <div
                 className="prose prose-slate dark:prose-invert"
@@ -78,7 +79,7 @@ const PatientInfoCard = ({ patient }: PatientInfoCardProps) => {
 
   return (
     <Card>
-      <div className="p-5 flex w-full">
+      <div className="p-5 md:flex w-full">
         <div className="h-36 w-36 flex items-center justify-center">
           <img
             src={patient.gender === 'M' ? manIcon : womenIcon}

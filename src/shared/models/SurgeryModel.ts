@@ -1,4 +1,5 @@
 import { Surgery } from '../types/db'
+import { DoctorModel } from './DoctorModel'
 import { PatientModel } from './PatientModel'
 
 export class SurgeryModel implements Surgery {
@@ -14,6 +15,8 @@ export class SurgeryModel implements Surgery {
   patient_id: number
 
   patient?: PatientModel
+  doneBy?: DoctorModel[]
+  assistedBy?: DoctorModel[]
 
   constructor(data: Surgery) {
     this.id = data.id

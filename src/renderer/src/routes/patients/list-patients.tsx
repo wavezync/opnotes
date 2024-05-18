@@ -102,7 +102,7 @@ const columns: ColumnDef<PatientModel, any>[] = [
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <Link to={`/patients/${patient.id}/surgery/add`}>Add Surgery</Link>
+              <Link to={`/patients/${patient.id}/surgeries/add`}>Add Surgery</Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

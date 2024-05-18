@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // Helper type to extract function arguments types
 type ArgumentTypes<F> = F extends (...args: infer A) => any ? A : never
 

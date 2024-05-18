@@ -3,6 +3,8 @@ import { NewSurgery, SurgeryUpdate } from '../../shared/types/db'
 import { db } from '../db'
 import { NewWithoutTimestamps, UpdateWithoutTimestamps, addTimestamps } from '../utils/sql'
 import { SurgeryFilter } from '../../shared/types/api'
+import { SurgeryModel } from '../../shared/models/SurgeryModel'
+import { DoctorModel } from '../../shared/models/DoctorModel'
 
 export const createNewSurgery = async (surgery: NewWithoutTimestamps<NewSurgery>) => {
   const data = addTimestamps(surgery)
@@ -50,7 +52,47 @@ export const updateSurgeryDoctorsAssistedBy = async (surgeryId: number, doctorId
 }
 
 export const getSurgeryById = async (id: number) => {
-  return await db.selectFrom('surgeries').where('id', '=', id).selectAll().executeTakeFirst()
+  const surgery = await db
+    .selectFrom('surgeries')
+    .where('id', '=', id)
+    .selectAll()
+    .executeTakeFirst()
+
+  if (!surgery) {
+    return null
+  }
+
+  const doneBy = await db
+    .selectFrom('surgery_doctor_done_by')
+    .where('surgery_id', '=', id)
+    .select('doctor_id')
+    .execute()
+
+  const assistedBy = await db
+    .selectFrom('surgery_doctor_assisted_by')
+    .where('surgery_id', '=', id)
+    .select('doctor_id')
+    .execute()
+
+  const doctorIds = [
+    ...new Set([...doneBy.map((row) => row.doctor_id), ...assistedBy.map((row) => row.doctor_id)])
+  ]
+
+  const doctors = await db.selectFrom('doctors').where('id', 'in', doctorIds).selectAll().execute()
+
+  const doneByDoctors = doctors.filter((doctor) =>
+    doneBy.some((row) => row.doctor_id === doctor.id)
+  )
+
+  const assistedByDoctors = doctors.filter((doctor) =>
+    assistedBy.some((row) => row.doctor_id === doctor.id)
+  )
+
+  const surgeryModel = new SurgeryModel(surgery)
+  surgeryModel.doneBy = doneByDoctors.map((doctor) => new DoctorModel(doctor))
+  surgeryModel.assistedBy = assistedByDoctors.map((doctor) => new DoctorModel(doctor))
+
+  return surgeryModel
 }
 
 export const getFollowUpsBySurgeryId = async (surgeryId: number) => {
@@ -134,7 +176,7 @@ export const listSurgeries = async (filter: SurgeryFilter) => {
   }
 
   const surgeries = await query
-    .orderBy('date', 'desc')
+    .orderBy('date', 'asc')
     .limit(pageSize)
     .offset(page * pageSize)
     .execute()
@@ -149,8 +191,9 @@ export const listSurgeries = async (filter: SurgeryFilter) => {
 
   const total = totalResult?.total ?? 0
   const pages = Math.ceil(total / pageSize)
+  const surgeryModels = surgeries.map((surgery) => new SurgeryModel(surgery))
 
-  return { data: surgeries, total, pages }
+  return { data: surgeryModels, total, pages }
 }
 
 export const getWards = async () => {

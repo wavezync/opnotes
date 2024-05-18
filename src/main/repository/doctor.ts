@@ -1,6 +1,7 @@
 import { sql } from 'kysely'
 import { NewDoctor, DoctorUpdate } from '../../shared/types/db'
 import { db } from '../db'
+import { DoctorFilter } from '../../shared/types/api'
 
 export const createNewDoctor = async (doctor: NewDoctor) => {
   return await db.insertInto('doctors').values(doctor).returningAll().execute()
@@ -14,13 +15,6 @@ export const updateDoctorById = async (id: number, doctor: DoctorUpdate) => {
   return await db.updateTable('doctors').set(doctor).where('id', '=', id).execute()
 }
 
-export interface DoctorFilter {
-  search?: string
-
-  pageSize?: number
-  page?: number
-}
-
 export const listDoctors = async (filter: DoctorFilter) => {
   const { search, pageSize = 25, page = 0 } = filter
 
@@ -29,7 +23,7 @@ export const listDoctors = async (filter: DoctorFilter) => {
   if (search) {
     const term = `${search}*`
     query = query
-      .leftJoin('doctors_fts', 'doctors_fts.doctor_id', 'doctors.id')
+      .innerJoin('doctors_fts', 'doctors_fts.doctor_id', 'doctors.id')
       .where(sql<boolean>`doctors_fts MATCH ${term}`)
       .orderBy(sql`rank`, 'desc')
   }
