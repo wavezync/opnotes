@@ -6,6 +6,15 @@ import icon from '../../resources/icon.png?asset'
 import { db, migrateToLatest } from './db'
 import { registerApi } from './api'
 
+import electronUpdater, { type AppUpdater } from 'electron-updater'
+
+export function getAutoUpdater(): AppUpdater {
+  // Using destructuring to access autoUpdater due to the CommonJS module of 'electron-updater'.
+  // It is a workaround for ESM compatibility issues, see https://github.com/electron-userland/electron-builder/issues/7976.
+  const { autoUpdater } = electronUpdater
+  return autoUpdater
+}
+
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -46,6 +55,8 @@ function createWindow(): void {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
+  getAutoUpdater().checkForUpdatesAndNotify()
+
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.wavezync.opnotes')
 
