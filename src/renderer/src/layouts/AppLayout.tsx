@@ -10,14 +10,20 @@ export interface AppLayoutProps {
 export const AppLayout = ({ children, actions, title }: AppLayoutProps) => {
   return (
     <div className="w-full h-full flex flex-col">
-      <div className="text-center relative flex md:items-center md:justify-center mb-2">
-        <div className="absolute left-0">
+      <div className="text-center  flex flex-col md:items-center md:justify-center mb-2">
+        <div className="flex flex-row justify-start items-start w-full">
           <Breadcrumbs />
         </div>
 
-        <SectionTitle title={title} />
+        <div className="flex md:flex-row justify-center items-center  flex-col-reverse">
+          <SectionTitle title={title} />
 
-        {actions && <div className="absolute right-1 space-x-1">{actions}</div>}
+          {actions && (
+            <div className="md:absolute right-1 space-x-1 justify-end items-end flex w-full">
+              {actions}
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="mt-2 p-2 overflow-y-auto">{children}</div>

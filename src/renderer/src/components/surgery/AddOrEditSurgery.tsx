@@ -18,6 +18,7 @@ import { forwardRef, useEffect, useImperativeHandle } from 'react'
 import { DoctorAutoComplete } from '../doctor/DoctorAutoComplete'
 import toast from 'react-hot-toast'
 import { SurgeryModel } from '../../../../shared/models/SurgeryModel'
+import { unwrapResult } from '@renderer/lib/utils'
 const KBD = ({ children }: { children: React.ReactNode }) => (
   <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
     {children}
@@ -81,10 +82,14 @@ export const AddOrEditSurgery = forwardRef<AddOrEditSurgeryRef, AddOrEditSurgery
 
         if (!result) throw new Error('Failed to create surgery')
 
-        await window.api.invoke('updateSurgeryDoctorsAssistedBy', result.id, assistedBy)
-        await window.api.invoke('updateSurgeryDoctorsDoneBy', result.id, doneBy)
+        await unwrapResult(
+          window.api.invoke('updateSurgeryDoctorsAssistedBy', result.id, assistedBy)
+        )
+        await unwrapResult(window.api.invoke('updateSurgeryDoctorsDoneBy', result.id, doneBy))
 
-        toast.success('Surgery created successfully')
+        toast.success('Surgery created successfully', {
+          position: 'bottom-center'
+        })
 
         if (onUpdated) {
           onUpdated(new SurgeryModel(result))
@@ -110,15 +115,20 @@ export const AddOrEditSurgery = forwardRef<AddOrEditSurgeryRef, AddOrEditSurgery
 
         if (!result) throw new Error('Failed to update surgery')
 
-        await window.api.invoke('updateSurgeryDoctorsAssistedBy', surgery.id, assistedBy)
-        await window.api.invoke('updateSurgeryDoctorsDoneBy', surgery.id, doneBy)
+        await unwrapResult(
+          window.api.invoke('updateSurgeryDoctorsAssistedBy', surgery.id, assistedBy)
+        )
+        await unwrapResult(window.api.invoke('updateSurgeryDoctorsDoneBy', surgery.id, doneBy))
 
-        toast.success('Surgery updated successfully')
+        toast.success('Surgery updated successfully', {
+          position: 'bottom-center'
+        })
 
         if (onUpdated) {
           onUpdated(new SurgeryModel(result))
         }
       } catch (error) {
+        console.error(error)
         toast.error('Failed to update surgery')
       }
     }
@@ -258,7 +268,6 @@ export const AddOrEditSurgery = forwardRef<AddOrEditSurgeryRef, AddOrEditSurgery
                         <FormControl>
                           <DoctorAutoComplete
                             onSelected={(ids) => {
-                              console.log(ids)
                               field.onChange(ids.map((id) => +id))
                             }}
                             selectedDoctorIds={field.value.map((v) => v.toString())}

@@ -3,36 +3,31 @@ import ListItem from '@tiptap/extension-list-item'
 import { TextStyle } from '@tiptap/extension-text-style'
 import { Editor, EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
-import { Button, ButtonProps } from '../ui/button'
+
 import { cn } from '@renderer/lib/utils'
 import {
   BoldIcon,
-  Heading1Icon,
-  Heading2Icon,
-  Heading3Icon,
-  Heading4Icon,
-  Heading5Icon,
-  Heading6Icon,
   ItalicIcon,
   ListIcon,
   ListOrderedIcon,
-  PilcrowIcon,
   RedoIcon,
   StrikethroughIcon,
   UndoIcon
 } from 'lucide-react'
 import { useEffect } from 'react'
 import Placeholder from '@tiptap/extension-placeholder'
+import { Toggle } from '../ui/toggle'
+import { ToggleProps } from '@radix-ui/react-toggle'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
 
-interface ToolbarButtonProps extends ButtonProps {
+interface ToolbarButtonProps extends ToggleProps {
   isActive?: boolean
 }
 
 const ToolbarButton = ({ isActive, children, onClick, ...rest }: ToolbarButtonProps) => {
   return (
-    <Button
+    <Toggle
       className={cn(isActive && `bg-accent`)}
-      size={'icon'}
       variant={'outline'}
       onClick={(e) => {
         onClick?.(e)
@@ -41,7 +36,7 @@ const ToolbarButton = ({ isActive, children, onClick, ...rest }: ToolbarButtonPr
       {...rest}
     >
       {children}
-    </Button>
+    </Toggle>
   )
 }
 
@@ -51,7 +46,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
   }
 
   return (
-    <div className="w-full flex">
+    <div className="w-full flex flex-wrap">
       <div className="p-1 border-r border-border w-fit flex space-x-1">
         <ToolbarButton
           onClick={() => editor.chain().focus().toggleBold().run()}
@@ -77,48 +72,33 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
       </div>
 
       <div className="p-1 border-r border-border w-fit flex space-x-1">
-        <ToolbarButton
-          onClick={() => editor.chain().focus().setParagraph().run()}
-          isActive={editor.isActive('paragraph')}
+        <Select
+          onValueChange={(value) => {
+            if (value === 'heading') {
+              editor.chain().focus().toggleHeading({ level: 2 }).run()
+            } else if (value === 'subheading') {
+              editor.chain().focus().toggleHeading({ level: 3 }).run()
+            } else if (value === 'paragraph') {
+              editor.chain().focus().setParagraph().run()
+            }
+          }}
+          value={
+            editor.isActive('heading', { level: 2 })
+              ? 'heading'
+              : editor.isActive('heading', { level: 3 })
+                ? 'subheading'
+                : 'paragraph'
+          }
         >
-          <PilcrowIcon className="h-4 w-4" />
-        </ToolbarButton>
-        <ToolbarButton
-          onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-          isActive={editor.isActive('heading', { level: 1 })}
-        >
-          <Heading1Icon className="h-4 w-4" />
-        </ToolbarButton>
-        <ToolbarButton
-          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-          isActive={editor.isActive('heading', { level: 2 })}
-        >
-          <Heading2Icon className="h-4 w-4" />
-        </ToolbarButton>
-        <ToolbarButton
-          onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-          isActive={editor.isActive('heading', { level: 3 })}
-        >
-          <Heading3Icon className="h-4 w-4" />
-        </ToolbarButton>
-        <ToolbarButton
-          onClick={() => editor.chain().focus().toggleHeading({ level: 4 }).run()}
-          isActive={editor.isActive('heading', { level: 4 })}
-        >
-          <Heading4Icon className="h-4 w-4" />
-        </ToolbarButton>
-        <ToolbarButton
-          onClick={() => editor.chain().focus().toggleHeading({ level: 5 }).run()}
-          isActive={editor.isActive('heading', { level: 5 })}
-        >
-          <Heading5Icon className="h-4 w-4" />
-        </ToolbarButton>
-        <ToolbarButton
-          onClick={() => editor.chain().focus().toggleHeading({ level: 6 }).run()}
-          isActive={editor.isActive('heading', { level: 6 })}
-        >
-          <Heading6Icon className="h-4 w-4" />
-        </ToolbarButton>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Text Style" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="heading">Heading</SelectItem>
+            <SelectItem value="subheading">Subheading</SelectItem>
+            <SelectItem value="paragraph">Paragraph</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="p-1 border-r border-border w-fit flex space-x-1">
@@ -181,7 +161,8 @@ export const RichTextEditor = ({ initialContent, onUpdate }: RichTextEditorProps
     extensions,
     editorProps: {
       attributes: {
-        class: 'prose dark:prose-invert prose-sm sm:prose-base m-2 focus:outline-none max-w-none'
+        class:
+          'prose prose-lead:normal prose-p:m-0 prose-li:m-0 [overflow-wrap:anywhere] dark:prose-invert prose-sm sm:prose-base m-2 focus:outline-none max-w-none'
       }
     },
     onUpdate({ editor }) {

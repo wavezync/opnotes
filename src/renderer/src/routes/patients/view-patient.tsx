@@ -115,7 +115,10 @@ const columns: ColumnDef<Surgery, any>[] = [
     id: 'bht',
     header: 'BHT',
     cell: (cell) => (
-      <Link to={`/surgeries/${cell.row.original.id}`} className="hover:underline">
+      <Link
+        to={`/patients/${cell.row.original.patient_id}/surgeries/${cell.row.original.id}`}
+        className="hover:underline"
+      >
         {cell.row.original.bht}
       </Link>
     )
@@ -123,7 +126,14 @@ const columns: ColumnDef<Surgery, any>[] = [
   {
     id: 'title',
     header: 'Title',
-    cell: (cell) => cell.row.original.title
+    cell: (cell) => (
+      <Link
+        to={`/patients/${cell.row.original.patient_id}/surgeries/${cell.row.original.id}`}
+        className="hover:underline"
+      >
+        {cell.row.original.title}
+      </Link>
+    )
   },
   {
     id: 'ward',
@@ -147,7 +157,7 @@ const columns: ColumnDef<Surgery, any>[] = [
       const record = cell.row.original
 
       return (
-        <DropdownMenu>
+        <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
               <span className="sr-only">Open menu</span>
@@ -159,20 +169,20 @@ const columns: ColumnDef<Surgery, any>[] = [
             <DropdownMenuItem
               onClick={() => {
                 navigator.clipboard.writeText(record.bht)
-                toast.success('PHN copied to clipboard')
+                toast.success('BHT copied to clipboard')
               }}
             >
               Copy BHT
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <Link to={`/surgeries/${record.id}`}>View Surgery</Link>
+              <Link to={`/patients/${record.patient_id}/surgeries/${record.id}`}>View Surgery</Link>
             </DropdownMenuItem>
             <DropdownMenuItem>
-              <Link to={`/surgeries/${record.id}/edit`}>Edit Surgery</Link>
+              <Link to={`/patients/${record.patient_id}/surgeries/${record.id}/edit`}>
+                Edit Surgery
+              </Link>
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Add Followup</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )

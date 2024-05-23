@@ -4,7 +4,7 @@ import { AppLayout } from '@renderer/layouts/AppLayout'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { Printer, Save } from 'lucide-react'
 import { useEffect, useMemo, useRef } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { getPatientByIdQuery } from '../patients/edit-patient'
 import {
   AddOrEditSurgery,
@@ -12,30 +12,40 @@ import {
 } from '@renderer/components/surgery/AddOrEditSurgery'
 import { queries } from '@renderer/lib/queries'
 
-export const AddNewSurgery = () => {
-  const navigate = useNavigate()
+const getSurgeryByIdQuery = (id: number) => queries.surgeries.get(id)
+
+export const EditSurgery = () => {
   const queryClient = useQueryClient()
   const formRef = useRef<AddOrEditSurgeryRef>(null)
-  const { patientId } = useParams()
+  const { patientId, surgeryId } = useParams()
   const { setBreadcrumbs } = useBreadcrumbs()
   const { data: patient } = useQuery({
     ...getPatientByIdQuery(parseInt(patientId!)),
     enabled: !!patientId
   })
+
+  const { data: surgery } = useQuery({
+    ...getSurgeryByIdQuery(parseInt(surgeryId!)),
+    enabled: !!surgeryId
+  })
+
   const ptName = useMemo(
     () => patient?.name || patient?.phn || 'Patient',
     [patient?.name, patient?.phn]
   )
+
+  const surgeryName = useMemo(() => surgery?.bht || 'Surgery', [surgery?.bht])
 
   useEffect(() => {
     if (patient) {
       setBreadcrumbs([
         { label: 'Patients', to: '/patients' },
         { label: ptName, to: `/patients/${patient.id}` },
-        { label: 'Add Surgery' }
+        { label: surgeryName, to: `/patients/${patient.id}/surgeries/${surgeryId}` },
+        { label: 'Edit' }
       ])
     }
-  }, [setBreadcrumbs, patient, ptName])
+  }, [setBreadcrumbs, patient, ptName, surgeryName, surgeryId])
 
   const actions = (
     <>
@@ -44,9 +54,6 @@ export const AddNewSurgery = () => {
         variant="default"
         onClick={async () => {
           formRef.current?.submit()
-          await queryClient.invalidateQueries(
-            queries.surgeries.list({ patient_id: parseInt(patientId!) })
-          )
         }}
       >
         <Save /> Save
@@ -58,13 +65,17 @@ export const AddNewSurgery = () => {
   )
 
   return (
-    <AppLayout actions={actions} title="Add Surgery">
-      {patient && (
+    <AppLayout actions={actions} title={`Edit ${surgery?.bht}`}>
+      {patient && surgery && (
         <AddOrEditSurgery
           ref={formRef}
           patientId={patient.id}
-          onUpdated={(surgery) => {
-            navigate(`/patients/${patient.id}/surgeries/${surgery.id}`)
+          surgery={surgery}
+          onUpdated={async (_surgery) => {
+            await queryClient.invalidateQueries(
+              queries.surgeries.list({ patient_id: parseInt(patientId!) })
+            )
+            await queryClient.invalidateQueries(queries.surgeries.get(parseInt(surgeryId!)))
           }}
         />
       )}

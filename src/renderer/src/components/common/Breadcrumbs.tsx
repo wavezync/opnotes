@@ -10,6 +10,7 @@ import {
 } from '../ui/breadcrumb'
 import { useBreadcrumbs } from '@renderer/contexts/BreadcrumbContext'
 import React from 'react'
+import { trim } from '@renderer/lib/utils'
 
 export const Breadcrumbs = () => {
   const { breadcrumbs } = useBreadcrumbs()
@@ -30,10 +31,10 @@ export const Breadcrumbs = () => {
           <React.Fragment key={index}>
             <BreadcrumbItem>
               {index === breadcrumbs.length - 1 ? (
-                <BreadcrumbPage>{breadcrumb.label}</BreadcrumbPage>
+                <BreadcrumbPage>{trim(breadcrumb.label)}</BreadcrumbPage>
               ) : (
                 <BreadcrumbLink asChild>
-                  <Link to={breadcrumb.to || '#'}>{breadcrumb.label}</Link>
+                  <Link to={breadcrumb.to || '#'}>{trim(breadcrumb.label)}</Link>
                 </BreadcrumbLink>
               )}
             </BreadcrumbItem>

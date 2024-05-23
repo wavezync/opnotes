@@ -14,6 +14,8 @@ import { AddNewPatient } from './routes/patients/add-new-patient'
 import { ViewPatient, loader as patientLoader } from './routes/patients/view-patient'
 import { BreadcrumbProvider } from './contexts/BreadcrumbContext'
 import { EditPatient } from './routes/patients/edit-patient'
+import { EditSurgery } from './routes/surgeries/edit-surgery'
+import { ViewSurgery } from './routes/surgeries/view-surgery'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -53,6 +55,14 @@ const router = createBrowserRouter([
       {
         path: '/patients/:patientId/surgeries/add',
         element: <AddNewSurgery />
+      },
+      {
+        path: '/patients/:patientId/surgeries/:surgeryId',
+        element: <ViewSurgery />
+      },
+      {
+        path: '/patients/:patientId/surgeries/:surgeryId/edit',
+        element: <EditSurgery />
       },
       {
         path: '*',

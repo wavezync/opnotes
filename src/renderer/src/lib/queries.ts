@@ -21,6 +21,10 @@ export const queries = createQueryKeyStore({
     get: (id: number) => ({
       queryKey: [id],
       queryFn: () => unwrapResult(window.api.invoke('getSurgeryById', id))
+    }),
+    getFollowups: (id: number) => ({
+      queryKey: [id],
+      queryFn: () => unwrapResult(window.api.invoke('getFollowUpsBySurgeryId', id))
     })
   },
   doctors: {

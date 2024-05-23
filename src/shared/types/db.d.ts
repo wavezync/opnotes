@@ -85,7 +85,7 @@ export interface Database {
   doctors: DoctorsTable
   surgery_doctors_done_by: SurgeryDoctorsDoneByTable
   surgery_doctors_assisted_by: SurgeryDoctorsAssistedByTable
-  surgery_follow_ups: SurgeryFollowUpTable
+  surgery_followups: SurgeryFollowUpTable
 
   patients_fts: PatientsFTS
   surgeries_fts: SurgeriesFTS
@@ -103,3 +103,7 @@ export type SurgeryUpdate = Updateable<SurgeryTable>
 export type Doctor = Selectable<DoctorsTable>
 export type NewDoctor = Insertable<DoctorsTable>
 export type DoctorUpdate = Updateable<DoctorsTable>
+
+export type Followup = Selectable<SurgeryFollowUpTable>
+export type NewFollowup = Insertable<SurgeryFollowUpTable>
+export type FollowupUpdate = Updateable<SurgeryFollowUpTable>

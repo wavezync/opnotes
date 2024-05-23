@@ -10,7 +10,7 @@ import {
   CommandItem
 } from '@/components/ui/command'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { CommandList, CommandLoading, CommandSeparator } from 'cmdk'
+import { CommandList, CommandLoading } from 'cmdk'
 import { useCallback, useState } from 'react'
 import { Progress } from '../ui/progress'
 
@@ -77,7 +77,7 @@ export function AutoCompleteInput({
           aria-expanded={open}
           className="w-[200px] justify-between"
         >
-          Search or Add New...
+          Search...
           <PlusIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -134,14 +134,6 @@ export function AutoCompleteInput({
                   {item.label}
                 </CommandItem>
               ))}
-            </CommandGroup>
-
-            <CommandSeparator />
-            <CommandGroup heading="Actions">
-              <CommandItem onSelect={() => onAddNewItem?.()} key={'add-new'}>
-                <PlusIcon className="mr-2 h-4 w-4" />
-                Add New Entry
-              </CommandItem>
             </CommandGroup>
           </CommandList>
         </Command>

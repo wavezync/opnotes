@@ -5,6 +5,7 @@ import { NewWithoutTimestamps, UpdateWithoutTimestamps, addTimestamps } from '..
 import { SurgeryFilter } from '../../shared/types/api'
 import { SurgeryModel } from '../../shared/models/SurgeryModel'
 import { DoctorModel } from '../../shared/models/DoctorModel'
+import { FollowupModel } from '../../shared/models/FollowupModel'
 
 export const createNewSurgery = async (surgery: NewWithoutTimestamps<NewSurgery>) => {
   const data = addTimestamps(surgery)
@@ -28,6 +29,11 @@ export const updateSurgery = async (
 export const updateSurgeryDoctorsDoneBy = async (surgeryId: number, doctorIds: number[]) => {
   const t = await db.transaction().execute(async (trx) => {
     await trx.deleteFrom('surgery_doctors_done_by').where('surgery_id', '=', surgeryId).execute()
+
+    if (doctorIds.length === 0) {
+      return
+    }
+
     const result = await trx
       .insertInto('surgery_doctors_done_by')
       .values(doctorIds.map((doctorId) => ({ surgery_id: surgeryId, doctor_id: doctorId })))
@@ -46,6 +52,10 @@ export const updateSurgeryDoctorsAssistedBy = async (surgeryId: number, doctorId
       .deleteFrom('surgery_doctors_assisted_by')
       .where('surgery_id', '=', surgeryId)
       .execute()
+
+    if (doctorIds.length === 0) {
+      return
+    }
 
     const result = await trx
       .insertInto('surgery_doctors_assisted_by')
@@ -104,29 +114,61 @@ export const getSurgeryById = async (id: number) => {
 }
 
 export const getFollowUpsBySurgeryId = async (surgeryId: number) => {
-  return await db
-    .selectFrom('surgery_follow_ups')
+  const results = await db
+    .selectFrom('surgery_followups')
     .where('surgery_id', '=', surgeryId)
-    .orderBy('created_at', 'desc')
+    .orderBy('created_at', 'asc')
     .selectAll()
     .execute()
+
+  return results.map((result) => new FollowupModel(result))
 }
 
 export const createNewFollowUp = async (surgeryId: number, notes: string) => {
   const data = addTimestamps({ notes, surgery_id: surgeryId })
 
-  return await db.insertInto('surgery_follow_ups').values(data).returningAll().execute()
+  const result = await db
+    .insertInto('surgery_followups')
+    .values(data)
+    .returningAll()
+    .executeTakeFirst()
+
+  if (!result) {
+    return null
+  }
+
+  return new FollowupModel(result)
 }
 
 export const updateFollowUp = async (id: number, notes: string) => {
   const data = addTimestamps({ notes }, false)
 
-  return await db
-    .updateTable('surgery_follow_ups')
+  const result = await db
+    .updateTable('surgery_followups')
     .set(data)
     .where('id', '=', id)
     .returningAll()
-    .execute()
+    .executeTakeFirst()
+
+  if (!result) {
+    return null
+  }
+
+  return new FollowupModel(result)
+}
+
+export const deleteFollowUp = async (id: number) => {
+  const result = await db
+    .deleteFrom('surgery_followups')
+    .where('id', '=', id)
+    .returningAll()
+    .executeTakeFirst()
+
+  if (!result) {
+    return null
+  }
+
+  return new FollowupModel(result)
 }
 
 export const lookupSurgery = async (search: string) => {

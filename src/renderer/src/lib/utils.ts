@@ -17,3 +17,5 @@ export async function unwrapResult<T>(promise: Promise<{ result: T; error: any }
 
   return result
 }
+
+export const trim = (str: string, len = 20) => (str.length > len ? str.slice(0, len) + '...' : str)

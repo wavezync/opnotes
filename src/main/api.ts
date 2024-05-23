@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   createNewPatient,
   getPatientById,
@@ -11,6 +12,7 @@ import { createNewDoctor, getDoctorById, listDoctors, updateDoctorById } from '.
 import {
   createNewFollowUp,
   createNewSurgery,
+  deleteFollowUp,
   getFollowUpsBySurgeryId,
   getSurgeryById,
   listSurgeries,
@@ -41,8 +43,11 @@ export const api = {
   getSurgeryById,
   lookupSurgery,
   listSurgeries,
+
   createNewFollowUp,
   updateFollowUp,
+  deleteFollowUp,
+
   updateSurgery,
   updateSurgeryDoctorsAssistedBy,
   updateSurgeryDoctorsDoneBy

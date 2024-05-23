@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Kysely, sql } from 'kysely'
 
 export async function up(db: Kysely<any>): Promise<void> {
@@ -56,7 +57,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .execute()
 
   await db.schema
-    .createTable('surgery_follow_up')
+    .createTable('surgery_followups')
     .addColumn('id', 'integer', (col) => col.autoIncrement().primaryKey())
     .addColumn('notes', 'text')
     .addColumn('surgery_id', 'integer', (col) => col.references('surgeries.id'))
@@ -153,7 +154,7 @@ export async function down(db: Kysely<any>): Promise<void> {
   await db.schema.dropTable('surgeries').execute()
   await db.schema.dropTable('surgery_doctors_done_by').execute()
   await db.schema.dropTable('surgery_doctors_assisted_by').execute()
-  await db.schema.dropTable('surgery_follow_up').execute()
+  await db.schema.dropTable('surgery_followups').execute()
 
   await db.schema.dropIndex('patients_phn_index').on('patients').execute()
 }
