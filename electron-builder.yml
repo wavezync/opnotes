@@ -39,4 +39,5 @@ appImage:
   artifactName: ${name}-${version}.${ext}
 npmRebuild: false
 publish:
-  provider: github
+  provider: generic
+  url: https://example.com/auto-updates
