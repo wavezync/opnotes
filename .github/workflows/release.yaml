@@ -5,6 +5,9 @@ on:
     tags:
       - v*.*.*
 
+env:
+  GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
 jobs:
   release:
     runs-on: ${{ matrix.os }}
