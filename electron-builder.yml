@@ -1,5 +1,5 @@
 appId: com.wavezync.opnotes
-productName: op-notes
+productName: Op Notes
 directories:
   buildResources: build
 files:
