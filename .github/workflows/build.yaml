@@ -11,7 +11,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest]
 
     steps:
       - name: Check out Git repository
@@ -33,14 +33,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: build-linux
-        if: matrix.os == 'ubuntu-latest'
-        run: npm run build:linux
+      - name: Lint
+        run: pnpm lint
 
-      - name: build-mac
-        if: matrix.os == 'macos-latest'
-        run: npm run build:mac
+      - name: Typecheck
+        run: pnpm typecheck
 
-      - name: build-win
-        if: matrix.os == 'windows-latest'
-        run: npm run build:win
+      - name: Build
+        run: pnpm build
