@@ -4,7 +4,8 @@ import {
   getPatientById,
   listPatients,
   updatePatientById,
-  findPatientByPHN
+  findPatientByPHN,
+  deletePatientById
 } from './repository/patient'
 
 import {
@@ -19,6 +20,7 @@ import {
   createNewFollowUp,
   createNewSurgery,
   deleteFollowUp,
+  deleteSurgeryById,
   getFollowUpsBySurgeryId,
   getSurgeryById,
   listSurgeries,
@@ -38,6 +40,7 @@ export const api = {
   updatePatientById,
   listPatients,
   findPatientByPHN,
+  deletePatientById,
 
   createNewDoctor,
   getDoctorById,
@@ -46,18 +49,18 @@ export const api = {
   deleteDoctorById,
 
   createNewSurgery,
-  getFollowUpsBySurgeryId,
   getSurgeryById,
   lookupSurgery,
   listSurgeries,
+  updateSurgery,
+  updateSurgeryDoctorsAssistedBy,
+  updateSurgeryDoctorsDoneBy,
+  deleteSurgeryById,
 
   createNewFollowUp,
   updateFollowUp,
   deleteFollowUp,
-
-  updateSurgery,
-  updateSurgeryDoctorsAssistedBy,
-  updateSurgeryDoctorsDoneBy
+  getFollowUpsBySurgeryId
 }
 
 export type ApiType = typeof api

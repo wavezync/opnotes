@@ -118,3 +118,7 @@ export const countAllPatients = async () => {
     .select((eb) => eb.fn.countAll<number>().as('total'))
     .executeTakeFirst()
 }
+
+export const deletePatientById = async (id: number) => {
+  return await db.deleteFrom('patients').where('id', '=', id).execute()
+}

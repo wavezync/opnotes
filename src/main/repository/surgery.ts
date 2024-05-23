@@ -264,3 +264,14 @@ export const getWards = async () => {
     (row) => row.ward
   )
 }
+
+export const deleteSurgeryById = async (id: number) => {
+  const trx = await db.transaction().execute(async (trx) => {
+    await trx.deleteFrom('surgery_followups').where('surgery_id', '=', id).execute()
+    await trx.deleteFrom('surgery_doctors_done_by').where('surgery_id', '=', id).execute()
+    await trx.deleteFrom('surgery_doctors_assisted_by').where('surgery_id', '=', id).execute()
+    return await trx.deleteFrom('surgeries').where('id', '=', id).execute()
+  })
+
+  return trx
+}

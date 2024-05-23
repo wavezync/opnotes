@@ -17,7 +17,7 @@ import { ColumnDef, PaginationState } from '@tanstack/react-table'
 import { MoreHorizontal, PlusSquare } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
-import { Link, LoaderFunctionArgs, useNavigate } from 'react-router-dom'
+import { Link, LoaderFunctionArgs, useNavigate, useSearchParams } from 'react-router-dom'
 import { PatientModel } from 'src/shared/models/PatientModel'
 import { PatientFilter } from 'src/shared/types/api'
 
@@ -111,6 +111,7 @@ const columns: ColumnDef<PatientModel, any>[] = [
 ]
 
 export const PatientsIndex = () => {
+  const [searchParams] = useSearchParams()
   const { setBreadcrumbs } = useBreadcrumbs()
   const navigate = useNavigate()
 
@@ -118,7 +119,7 @@ export const PatientsIndex = () => {
     pageIndex: 0,
     pageSize: 10
   })
-  const [search, setSearch] = useState('')
+  const [search, setSearch] = useState(searchParams.get('q') || '')
   const { data, isLoading } = useQuery(
     patientListQuery({
       search,

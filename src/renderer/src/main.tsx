@@ -19,6 +19,7 @@ import { ViewSurgery } from './routes/surgeries/view-surgery'
 import { DoctorsIndex } from './routes/doctors/list-doctors'
 import { AddNewDoctor } from './routes/doctors/add-doctor'
 import { EditDoctor } from './routes/doctors/edit-doctor'
+import { SurgierisIndex } from './routes/surgeries/list-surgeries'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -79,6 +80,11 @@ const router = createBrowserRouter([
       {
         path: '/doctors/:id/edit',
         element: <EditDoctor />
+      },
+
+      {
+        path: '/surgeries',
+        element: <SurgierisIndex />
       },
 
       {

@@ -1,6 +1,9 @@
 import { Button } from '@renderer/components/ui/button'
 import { Input } from '@renderer/components/ui/input'
-import hero from '../assets/hero.svg'
+import hero from '../assets/hero.svg?asset'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Plus } from 'lucide-react'
 
 const SearchIcon = () => (
   <svg
@@ -20,14 +23,45 @@ const SearchIcon = () => (
 )
 
 export default function Home() {
+  const navigate = useNavigate()
+  const [search, setSearch] = useState('')
+
+  const handleSearch = () => {
+    navigate(`/patients?q=${search}`)
+  }
+
   return (
     <div className="flex flex-col justify-center items-center h-full">
       <h1 className="flex text-5xl font-extrabold items-center justify-center">OpNotes</h1>
       <img src={hero} alt="hero" className="w-96 h-96" />
       <div className="pt-5 w-full max-w-md flex justify-center items-center">
-        <Input type="text" placeholder="Search Patients By PHN, BHT, Name..." />
-        <Button className="ml-2" variant="default" leftIcon={<SearchIcon />}>
+        <Input
+          type="text"
+          placeholder="Search Patients By PHN, BHT, Name..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <Button className="ml-2" variant="default" leftIcon={<SearchIcon />} onClick={handleSearch}>
           Search
+        </Button>
+      </div>
+      <div className="flex flex-row w-full justify-center items-center space-x-2">
+        <Button
+          className="mt-2"
+          variant="secondary"
+          size={'sm'}
+          onClick={() => navigate('/patients/add')}
+        >
+          <Plus className="h-4 w-4" />
+          Add New Patient
+        </Button>
+        <Button
+          className="mt-2"
+          variant="secondary"
+          size={'sm'}
+          onClick={() => navigate('/surgeries')}
+        >
+          View All Surgeries
         </Button>
       </div>
     </div>

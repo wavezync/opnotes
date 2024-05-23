@@ -1,14 +1,21 @@
-import { Link, Outlet } from 'react-router-dom'
+import { NavLink, Outlet } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
+import { cn } from '@renderer/lib/utils'
 
 const NavLinkComponent = ({ to, children }) => {
   return (
-    <Link
+    <NavLink
       to={to}
-      className="text-secondary-foreground text-sm underline-offset-4 hover:underline cursor-pointer hover:bg-primary/10 p-2 rounded-lg"
+      className={({ isActive, isPending }) =>
+        cn(
+          'text-secondary-foreground text-sm underline-offset-4 hover:underline cursor-pointer hover:bg-primary/10 p-2 rounded-lg',
+          isActive && 'bg-primary/10',
+          isPending && 'bg-primary/20'
+        )
+      }
     >
       {children}
-    </Link>
+    </NavLink>
   )
 }
 

@@ -1,6 +1,7 @@
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -113,7 +114,7 @@ export const AddOrEditDoctor = forwardRef<AddOrEditDoctorRef, AddOrEditDoctorPro
             name="name"
             render={({ field }) => (
               <FormItem className="w-full">
-                <FormLabel>Title</FormLabel>
+                <FormLabel>Name</FormLabel>
                 <FormControl>
                   <Input placeholder="Name..." {...field} />
                 </FormControl>
@@ -134,6 +135,10 @@ export const AddOrEditDoctor = forwardRef<AddOrEditDoctorRef, AddOrEditDoctorPro
                     <Input placeholder="Designation" {...field} />
                   </FormControl>
                   <FormMessage />
+                  <FormDescription>
+                    Designation of the doctor(use short form). This will be used when printing the
+                    report
+                  </FormDescription>
                 </FormItem>
               )}
             />
@@ -145,9 +150,9 @@ export const AddOrEditDoctor = forwardRef<AddOrEditDoctorRef, AddOrEditDoctorPro
               control={form.control}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>SLMC No</FormLabel>
+                  <FormLabel>SLMC Registration</FormLabel>
                   <FormControl>
-                    <Input placeholder="SLMC No" {...field} />
+                    <Input placeholder="SLMC Registration" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
