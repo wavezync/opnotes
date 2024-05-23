@@ -5,6 +5,10 @@
   "main": "./out/main/index.js",
   "author": "Kasun Vithanage",
   "homepage": "https://wavezync.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wavezync/opnotes.git"
+  },
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
