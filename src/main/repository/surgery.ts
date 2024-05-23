@@ -16,7 +16,10 @@ export const updateSurgery = async (
   id: number,
   surgery: UpdateWithoutTimestamps<SurgeryUpdate>
 ) => {
-  const data = addTimestamps(surgery, false)
+  const data = addTimestamps(surgery, {
+    createdAt: false,
+    updatedAt: true
+  })
 
   return await db
     .updateTable('surgeries')
@@ -141,7 +144,13 @@ export const createNewFollowUp = async (surgeryId: number, notes: string) => {
 }
 
 export const updateFollowUp = async (id: number, notes: string) => {
-  const data = addTimestamps({ notes }, false)
+  const data = addTimestamps(
+    { notes },
+    {
+      createdAt: false,
+      updatedAt: true
+    }
+  )
 
   const result = await db
     .updateTable('surgery_followups')

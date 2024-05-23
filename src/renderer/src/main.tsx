@@ -16,6 +16,9 @@ import { BreadcrumbProvider } from './contexts/BreadcrumbContext'
 import { EditPatient } from './routes/patients/edit-patient'
 import { EditSurgery } from './routes/surgeries/edit-surgery'
 import { ViewSurgery } from './routes/surgeries/view-surgery'
+import { DoctorsIndex } from './routes/doctors/list-doctors'
+import { AddNewDoctor } from './routes/doctors/add-doctor'
+import { EditDoctor } from './routes/doctors/edit-doctor'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -64,6 +67,20 @@ const router = createBrowserRouter([
         path: '/patients/:patientId/surgeries/:surgeryId/edit',
         element: <EditSurgery />
       },
+
+      {
+        path: '/doctors',
+        element: <DoctorsIndex />
+      },
+      {
+        path: '/doctors/add',
+        element: <AddNewDoctor />
+      },
+      {
+        path: '/doctors/:id/edit',
+        element: <EditDoctor />
+      },
+
       {
         path: '*',
         element: <ErrorPage />

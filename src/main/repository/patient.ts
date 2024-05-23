@@ -15,11 +15,25 @@ export const getPatientById = async (id: number) => {
 
   const result = await db.selectFrom('patients').where('id', '=', id).selectAll().executeTakeFirst()
 
-  if (result) {
-    return new PatientModel(result)
+  if (!result) {
+    return null
   }
 
-  return undefined
+  const patient = new PatientModel(result)
+
+  // find the ward from last surgery
+  const lastSurgery = await db
+    .selectFrom('surgeries')
+    .where('patient_id', '=', id)
+    .orderBy('date', 'desc')
+    .select('ward')
+    .executeTakeFirst()
+
+  if (lastSurgery) {
+    patient.ward = lastSurgery.ward
+  }
+
+  return patient
 }
 
 export const updatePatientById = async (id: number, patient: PatientUpdate) => {

@@ -7,7 +7,13 @@ import {
   findPatientByPHN
 } from './repository/patient'
 
-import { createNewDoctor, getDoctorById, listDoctors, updateDoctorById } from './repository/doctor'
+import {
+  createNewDoctor,
+  deleteDoctorById,
+  getDoctorById,
+  listDoctors,
+  updateDoctorById
+} from './repository/doctor'
 
 import {
   createNewFollowUp,
@@ -37,6 +43,7 @@ export const api = {
   getDoctorById,
   updateDoctorById,
   listDoctors,
+  deleteDoctorById,
 
   createNewSurgery,
   getFollowUpsBySurgeryId,

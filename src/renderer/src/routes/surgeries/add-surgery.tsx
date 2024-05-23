@@ -44,9 +44,9 @@ export const AddNewSurgery = () => {
         variant="default"
         onClick={async () => {
           formRef.current?.submit()
-          await queryClient.invalidateQueries(
-            queries.surgeries.list({ patient_id: parseInt(patientId!) })
-          )
+          await queryClient.invalidateQueries({
+            queryKey: queries.surgeries.list({ patient_id: parseInt(patientId!) }).queryKey
+          })
         }}
       >
         <Save /> Save

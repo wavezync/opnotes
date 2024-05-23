@@ -1,5 +1,3 @@
-import { Breadcrumbs } from '@renderer/components/common/Breadcrumbs'
-import { SectionTitle } from '@renderer/components/common/SectionHeader'
 import { Button } from '@renderer/components/ui/button'
 import { DataTable } from '@renderer/components/ui/data-table/data-table'
 import {
@@ -12,6 +10,7 @@ import {
 } from '@renderer/components/ui/dropdown-menu'
 import { Input } from '@renderer/components/ui/input'
 import { useBreadcrumbs } from '@renderer/contexts/BreadcrumbContext'
+import { AppLayout } from '@renderer/layouts/AppLayout'
 import { queries } from '@renderer/lib/queries'
 import { QueryClient, keepPreviousData, queryOptions, useQuery } from '@tanstack/react-query'
 import { ColumnDef, PaginationState } from '@tanstack/react-table'
@@ -128,31 +127,25 @@ export const PatientsIndex = () => {
     })
   )
 
+  const actions = (
+    <div className="absolute right-1 space-x-1">
+      <Button
+        variant="default"
+        leftIcon={<PlusSquare />}
+        size={'sm'}
+        onClick={() => navigate('/patients/add')}
+      >
+        Add New
+      </Button>
+    </div>
+  )
+
   useEffect(() => {
     setBreadcrumbs([{ label: 'Patients', to: '/patients' }])
   }, [setBreadcrumbs])
 
   return (
-    <div className="w-full h-full flex flex-col">
-      <div className="text-center relative flex md:items-center md:justify-center mb-2">
-        <div className="absolute left-0">
-          <Breadcrumbs />
-        </div>
-
-        <SectionTitle title="Patients" />
-
-        <div className="absolute right-1 space-x-1">
-          <Button
-            variant="default"
-            leftIcon={<PlusSquare />}
-            size={'sm'}
-            onClick={() => navigate('/patients/add')}
-          >
-            Add New
-          </Button>
-        </div>
-      </div>
-
+    <AppLayout title="Patients" actions={actions}>
       <div className="mt-2 p-2 overflow-y-auto">
         <div className="flex pb-2">
           <Input
@@ -172,6 +165,6 @@ export const PatientsIndex = () => {
           isLoading={isLoading}
         />
       </div>
-    </div>
+    </AppLayout>
   )
 }

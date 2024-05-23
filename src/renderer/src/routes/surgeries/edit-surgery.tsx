@@ -72,10 +72,12 @@ export const EditSurgery = () => {
           patientId={patient.id}
           surgery={surgery}
           onUpdated={async (_surgery) => {
-            await queryClient.invalidateQueries(
-              queries.surgeries.list({ patient_id: parseInt(patientId!) })
-            )
-            await queryClient.invalidateQueries(queries.surgeries.get(parseInt(surgeryId!)))
+            await queryClient.invalidateQueries({
+              queryKey: queries.surgeries.list({ patient_id: parseInt(patientId!) }).queryKey
+            })
+            await queryClient.invalidateQueries({
+              queryKey: queries.surgeries.get(parseInt(surgeryId!)).queryKey
+            })
           }}
         />
       )}

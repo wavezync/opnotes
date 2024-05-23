@@ -13,6 +13,7 @@ export default defineConfig({
     resolve: {
       alias: {
         '@renderer': resolve('src/renderer/src'),
+        '@shared': resolve('src/shared'),
         '@': resolve(__dirname, 'src/renderer/src')
       }
     },

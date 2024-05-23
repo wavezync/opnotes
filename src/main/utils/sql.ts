@@ -2,10 +2,14 @@ export const toSqlDate = (date: Date) => {
   return +date
 }
 
+type AddTimestampsOptions = {
+  createdAt?: boolean
+  updatedAt?: boolean
+}
+
 export const addTimestamps = <T>(
   data: T,
-  createdAt = true,
-  updatedAt = true
+  { createdAt = true, updatedAt = true }: AddTimestampsOptions = {}
 ): T & { created_at: number; updated_at: number } => {
   const now = +new Date()
 

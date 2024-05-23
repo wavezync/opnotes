@@ -39,7 +39,9 @@ export const EditPatient = () => {
 
   return (
     <AppLayout title="Edit Patient">
-      {!isLoading && <NewPatientForm onRecordUpdated={handleNewPatient} values={data} key={id} />}
+      {!isLoading && data && (
+        <NewPatientForm onRecordUpdated={handleNewPatient} values={data} key={id} />
+      )}
     </AppLayout>
   )
 }

@@ -2,17 +2,51 @@ import { sql } from 'kysely'
 import { NewDoctor, DoctorUpdate } from '../../shared/types/db'
 import { db } from '../db'
 import { DoctorFilter } from '../../shared/types/api'
+import { DoctorModel } from '../../shared/models/DoctorModel'
+import { NewWithoutTimestamps, addTimestamps } from '../utils/sql'
 
-export const createNewDoctor = async (doctor: NewDoctor) => {
-  return await db.insertInto('doctors').values(doctor).returningAll().execute()
+export const createNewDoctor = async (doctor: NewWithoutTimestamps<NewDoctor>) => {
+  const data = addTimestamps(doctor)
+  const result = await db.insertInto('doctors').values(data).returningAll().executeTakeFirst()
+
+  if (result) {
+    return new DoctorModel(result)
+  }
+
+  throw new Error('Failed to create doctor')
 }
 
 export const getDoctorById = async (id: number) => {
-  return await db.selectFrom('doctors').where('id', '=', id).selectAll().executeTakeFirst()
+  const result = await db.selectFrom('doctors').where('id', '=', id).selectAll().executeTakeFirst()
+
+  if (result) {
+    return new DoctorModel(result)
+  }
+
+  return null
 }
 
 export const updateDoctorById = async (id: number, doctor: DoctorUpdate) => {
-  return await db.updateTable('doctors').set(doctor).where('id', '=', id).execute()
+  const data = addTimestamps(doctor, {
+    createdAt: false,
+    updatedAt: true
+  })
+  const updated = await db
+    .updateTable('doctors')
+    .set(data)
+    .where('id', '=', id)
+    .returningAll()
+    .executeTakeFirst()
+
+  if (updated) {
+    return new DoctorModel(updated)
+  }
+
+  return null
+}
+
+export const deleteDoctorById = async (id: number) => {
+  return await db.deleteFrom('doctors').where('id', '=', id).execute()
 }
 
 export const listDoctors = async (filter: DoctorFilter) => {
@@ -28,8 +62,8 @@ export const listDoctors = async (filter: DoctorFilter) => {
       .orderBy(sql`rank`, 'desc')
   }
 
-  const doctors = await query
-    .orderBy('created_at desc')
+  const doctorResult = await query
+    .orderBy('updated_at desc')
     .limit(pageSize)
     .offset(page * pageSize)
     .execute()
@@ -44,6 +78,7 @@ export const listDoctors = async (filter: DoctorFilter) => {
 
   const total = totalResult?.total ?? 0
   const pages = Math.ceil(total / pageSize)
+  const doctors = doctorResult.map((doctor) => new DoctorModel(doctor))
 
   return { data: doctors, total, pages }
 }
