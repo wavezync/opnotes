@@ -9,8 +9,7 @@ import {
 import { Patient } from 'src/shared/types/db'
 import { Input } from '../ui/input'
 import { useForm } from 'react-hook-form'
-import { Button } from '../ui/button'
-import { useCallback, useMemo } from 'react'
+import { forwardRef, useCallback, useImperativeHandle, useMemo } from 'react'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
@@ -22,7 +21,6 @@ import {
   FormLabel,
   FormMessage
 } from '../ui/form'
-import { SaveIcon } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { RichTextEditor } from '../common/RichTextEditor'
 
@@ -90,244 +88,240 @@ const patientSchema = z.object({
 
 type FormSchema = z.infer<typeof patientSchema>
 
-export const NewPatientForm = ({ onRecordUpdated, values }: CreatePatientFormProps) => {
-  const form = useForm<FormSchema>({
-    resolver: zodResolver(patientSchema),
-    defaultValues: {
-      name: values?.name || '',
-      phn: values?.phn || '',
-      address: values?.address || '',
-      phone: values?.phone || '',
-      remarks: values?.remarks || '',
-      emergency_contact: values?.emergency_contact || '',
-      emergency_phone: values?.emergency_phone || '',
-      gender: values?.gender || ('' as any),
-      age: values && values.birth_year ? `${birthYearFromAge(values.birth_year)}y` : ''
-    }
-  })
-  const isUpdate = values && !!values.id
+export type NewPatientFormRef = {
+  submit: () => void
+  reset: () => void
+}
 
-  const watchAge = form.watch('age')
-  const birthYear = useMemo(() => approximateBirthYear(watchAge), [watchAge])
-  const resetForm = useCallback(() => {
-    if (isUpdate) {
-      form.reset({
-        ...values,
+export const NewPatientForm = forwardRef<NewPatientFormRef, CreatePatientFormProps>(
+  ({ onRecordUpdated, values }, ref) => {
+    const form = useForm<FormSchema>({
+      resolver: zodResolver(patientSchema),
+      defaultValues: {
+        name: values?.name || '',
+        phn: values?.phn || '',
+        address: values?.address || '',
+        phone: values?.phone || '',
+        remarks: values?.remarks || '',
+        emergency_contact: values?.emergency_contact || '',
+        emergency_phone: values?.emergency_phone || '',
+        gender: values?.gender || ('' as any),
         age: values && values.birth_year ? `${birthYearFromAge(values.birth_year)}y` : ''
+      }
+    })
+    const isUpdate = values && !!values.id
+
+    const watchAge = form.watch('age')
+    const birthYear = useMemo(() => approximateBirthYear(watchAge), [watchAge])
+    const resetForm = useCallback(() => {
+      if (isUpdate) {
+        form.reset({
+          ...values,
+          age: values && values.birth_year ? `${birthYearFromAge(values.birth_year)}y` : ''
+        })
+
+        return
+      }
+
+      form.reset({
+        phn: '',
+        name: '',
+        age: '',
+        address: '',
+        phone: '',
+        emergency_contact: '',
+        emergency_phone: '',
+        remarks: '',
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        gender: '' as any
+      })
+    }, [form, isUpdate, values])
+
+    const createNewRecord = async (data: FormSchema) => {
+      if (!birthYear) {
+        return
+      }
+      const { result, error } = await window.api.invoke('createNewPatient', {
+        phn: data.phn,
+        name: data.name,
+        birth_year: birthYear,
+        gender: data.gender,
+        address: data.address,
+        phone: data.phone,
+        emergency_contact: data.emergency_contact,
+        emergency_phone: data.emergency_phone,
+        remarks: data.remarks
       })
 
-      return
+      if (error) {
+        if (error.extra && error.extra['code'] === 'SQLITE_CONSTRAINT_UNIQUE') {
+          toast.error('Patient with the same PHN already exists')
+          return
+        }
+      }
+
+      if (result) {
+        onRecordUpdated?.(result)
+
+        resetForm()
+      }
+
+      return result
     }
 
-    form.reset({
-      phn: '',
-      name: '',
-      age: '',
-      address: '',
-      phone: '',
-      emergency_contact: '',
-      emergency_phone: '',
-      remarks: '',
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      gender: '' as any
-    })
-  }, [form, isUpdate, values])
-
-  const createNewRecord = async (data: FormSchema) => {
-    if (!birthYear) {
-      return
-    }
-    const { result, error } = await window.api.invoke('createNewPatient', {
-      phn: data.phn,
-      name: data.name,
-      birth_year: birthYear,
-      gender: data.gender,
-      address: data.address,
-      phone: data.phone,
-      emergency_contact: data.emergency_contact,
-      emergency_phone: data.emergency_phone,
-      remarks: data.remarks
-    })
-
-    if (error) {
-      if (error.extra && error.extra['code'] === 'SQLITE_CONSTRAINT_UNIQUE') {
-        toast.error('Patient with the same PHN already exists')
+    const updateRecord = async (data: FormSchema) => {
+      if (!birthYear) {
         return
       }
-    }
-
-    if (result) {
-      onRecordUpdated?.(result)
-
-      resetForm()
-    }
-
-    return result
-  }
-
-  const updateRecord = async (data: FormSchema) => {
-    if (!birthYear) {
-      return
-    }
-    if (!values?.id) {
-      return
-    }
-
-    const { result, error } = await window.api.invoke('updatePatientById', values.id, {
-      phn: data.phn,
-      name: data.name,
-      birth_year: birthYear,
-      gender: data.gender,
-      address: data.address,
-      phone: data.phone,
-      emergency_contact: data.emergency_contact,
-      emergency_phone: data.emergency_phone,
-      remarks: data.remarks
-    })
-
-    if (error) {
-      if (error.extra && error.extra['code'] === 'SQLITE_CONSTRAINT_UNIQUE') {
-        toast.error('Patient with the same PHN already exists')
-        return
-      }
-    }
-
-    if (result) {
-      onRecordUpdated?.(result)
-    }
-
-    return result
-  }
-
-  const onSubmit = async (data: FormSchema) => {
-    try {
-      if (!isUpdate) {
-        await createNewRecord(data)
+      if (!values?.id) {
         return
       }
 
-      await updateRecord(data)
-    } catch (error) {
-      console.log(error)
-      toast.error(`Failed to update patient: ${(error as any).message}`)
+      const { result, error } = await window.api.invoke('updatePatientById', values.id, {
+        phn: data.phn,
+        name: data.name,
+        birth_year: birthYear,
+        gender: data.gender,
+        address: data.address,
+        phone: data.phone,
+        emergency_contact: data.emergency_contact,
+        emergency_phone: data.emergency_phone,
+        remarks: data.remarks
+      })
+
+      if (error) {
+        if (error.extra && error.extra['code'] === 'SQLITE_CONSTRAINT_UNIQUE') {
+          toast.error('Patient with the same PHN already exists')
+          return
+        }
+      }
+
+      if (result) {
+        onRecordUpdated?.(result)
+      }
+
+      return result
     }
-  }
 
-  const submitForm = form.handleSubmit(onSubmit)
+    const onSubmit = async (data: FormSchema) => {
+      try {
+        if (!isUpdate) {
+          await createNewRecord(data)
+          return
+        }
 
-  return (
-    <Form {...form}>
-      <form className="flex flex-col space-y-2">
-        <div className="flex w-full space-x-1">
-          <FormField
-            control={form.control}
-            name="phn"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel>PHN</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter PHN..." {...field} />
-                </FormControl>
-                <FormDescription>
-                  PHN of patient is a unique field usually comes with the admission
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        await updateRecord(data)
+      } catch (error) {
+        console.log(error)
+        toast.error(`Failed to update patient: ${(error as any).message}`)
+      }
+    }
 
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel>Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter the name of patient" {...field} />
-                </FormControl>
-                <FormDescription>Name can be used to lookup patient in future</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
+    const submitForm = form.handleSubmit(onSubmit)
 
-        <div className="flex space-x-1 w-full">
-          <FormField
-            control={form.control}
-            name="age"
-            render={({ field }) => (
-              <FormItem className="w-1/2">
-                <FormLabel>Age</FormLabel>
-                <FormControl>
-                  <Input placeholder="Eg: 20y, 45y 8m, 10m" {...field} />
-                </FormControl>
-                <FormDescription>
-                  {birthYear ? (
-                    <span>
-                      Birth year is approximately <strong className="bold">{birthYear}</strong>
-                    </span>
-                  ) : (
-                    <span>
-                      Enter the age we will calculate the birth year of the patient.
-                      <br /> If the user is
-                      <i> 20years old</i> enter <strong>20y</strong>. If the patient is{' '}
-                      <i>1 year 6 months</i> old enter <strong>1y 6m</strong>
-                    </span>
-                  )}
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+    useImperativeHandle(ref, () => ({
+      submit: () => submitForm(),
+      reset: () => resetForm()
+    }))
 
-          <FormField
-            control={form.control}
-            name="gender"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Gender</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
+    return (
+      <Form {...form}>
+        <form className="flex flex-col space-y-2">
+          <div className="flex w-full space-x-1">
+            <FormField
+              control={form.control}
+              name="phn"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>PHN</FormLabel>
                   <FormControl>
-                    <SelectTrigger className="w-[180px]">
-                      <SelectValue placeholder="Select Gender..." />
-                    </SelectTrigger>
+                    <Input placeholder="Enter PHN..." {...field} />
                   </FormControl>
-                  <SelectContent>
-                    <SelectItem value="M">Male</SelectItem>
-                    <SelectItem value="F">Female</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
+                  <FormDescription>
+                    PHN of patient is a unique field usually comes with the admission
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-        <FormField
-          control={form.control}
-          name="address"
-          render={({ field: { value, ...field } }) => (
-            <FormItem>
-              <FormLabel>Address</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter the address of patient" value={value || ''} {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter the name of patient" {...field} />
+                  </FormControl>
+                  <FormDescription>Name can be used to lookup patient in future</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
 
-        <div className="flex grow space-x-1 w-full">
+          <div className="flex space-x-1 w-full">
+            <FormField
+              control={form.control}
+              name="age"
+              render={({ field }) => (
+                <FormItem className="w-1/2">
+                  <FormLabel>Age</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Eg: 20y, 45y 8m, 10m" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    {birthYear ? (
+                      <span>
+                        Birth year is approximately <strong className="bold">{birthYear}</strong>
+                      </span>
+                    ) : (
+                      <span>
+                        Enter the age we will calculate the birth year of the patient.
+                        <br /> If the user is
+                        <i> 20years old</i> enter <strong>20y</strong>. If the patient is{' '}
+                        <i>1 year 6 months</i> old enter <strong>1y 6m</strong>
+                      </span>
+                    )}
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="gender"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Gender</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger className="w-[180px]">
+                        <SelectValue placeholder="Select Gender..." />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="M">Male</SelectItem>
+                      <SelectItem value="F">Female</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
           <FormField
             control={form.control}
-            name="phone"
+            name="address"
             render={({ field: { value, ...field } }) => (
-              <FormItem className="w-full">
-                <FormLabel>Phone</FormLabel>
+              <FormItem>
+                <FormLabel>Address</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Enter the phone number of patient"
+                    placeholder="Enter the address of patient"
                     value={value || ''}
                     {...field}
                   />
@@ -337,70 +331,81 @@ export const NewPatientForm = ({ onRecordUpdated, values }: CreatePatientFormPro
             )}
           />
 
+          <div className="flex grow space-x-1 w-full">
+            <FormField
+              control={form.control}
+              name="phone"
+              render={({ field: { value, ...field } }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Phone</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Enter the phone number of patient"
+                      value={value || ''}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="emergency_contact"
+              render={({ field: { value, ...field } }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Emergency Contact</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Enter the emergency contact"
+                      value={value || ''}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="emergency_phone"
+              render={({ field: { value, ...field } }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Emergency Phone</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Enter the emergency phone number"
+                      value={value || ''}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
           <FormField
             control={form.control}
-            name="emergency_contact"
+            name="remarks"
             render={({ field: { value, ...field } }) => (
-              <FormItem className="w-full">
-                <FormLabel>Emergency Contact</FormLabel>
+              <FormItem>
+                <FormLabel>Remarks</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter the emergency contact" value={value || ''} {...field} />
+                  <RichTextEditor initialContent={value || undefined} onUpdate={field.onChange} />
                 </FormControl>
+                <FormDescription className="mx-1">
+                  Any additional remarks about the patient
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
+        </form>
+      </Form>
+    )
+  }
+)
 
-          <FormField
-            control={form.control}
-            name="emergency_phone"
-            render={({ field: { value, ...field } }) => (
-              <FormItem className="w-full">
-                <FormLabel>Emergency Phone</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Enter the emergency phone number"
-                    value={value || ''}
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <FormField
-          control={form.control}
-          name="remarks"
-          render={({ field: { value, ...field } }) => (
-            <FormItem>
-              <FormLabel>Remarks</FormLabel>
-              <FormControl>
-                <RichTextEditor initialContent={value || undefined} onUpdate={field.onChange} />
-              </FormControl>
-              <FormDescription className="mx-1">
-                Any additional remarks about the patient
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <div className="flex space-x-2 justify-end">
-          <Button
-            type="submit"
-            onClick={submitForm}
-            loadingText={'Saving...'}
-            leftIcon={<SaveIcon className="w-5 h-5" />}
-          >
-            Save
-          </Button>
-
-          <Button type="reset" variant="secondary" onClick={() => resetForm()}>
-            Reset
-          </Button>
-        </div>
-      </form>
-    </Form>
-  )
-}
+NewPatientForm.displayName = 'NewPatientForm'
