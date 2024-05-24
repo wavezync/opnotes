@@ -1,7 +1,6 @@
 import { NavLink, Outlet } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import { cn } from '@renderer/lib/utils'
-import { useEffect } from 'react'
 
 const NavLinkComponent = ({ to, children }) => {
   return (
