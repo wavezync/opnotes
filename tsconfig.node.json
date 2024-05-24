@@ -10,6 +10,8 @@
     "composite": true,
     "types": [
       "electron-vite/node"
-    ]
+    ],
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
   }
 }

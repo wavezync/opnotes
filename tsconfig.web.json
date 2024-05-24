@@ -8,6 +8,8 @@
     "src/shared/**/*",
   ],
   "compilerOptions": {
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
     "composite": true,
     "jsx": "react-jsx",
     "baseUrl": ".",
