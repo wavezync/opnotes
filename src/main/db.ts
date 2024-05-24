@@ -5,13 +5,14 @@ import { Database } from '../shared/types/db'
 import { join } from 'path'
 import { MemoryMigrationProvider } from './db/memory-migration-provider'
 import { app } from 'electron'
+import log from 'electron-log'
 
 const DB_PATH = join(app.getPath('userData'), 'data.db')
-console.log('DB_PATH:', DB_PATH)
+log.info('DB_PATH:', DB_PATH)
 
 const dialect = new SqliteDialect({
   database: new SQLite(DB_PATH, {
-    verbose: console.log
+    verbose: log.info.bind(log)
   }),
   onCreateConnection: async (connection) => {
     await connection.executeQuery(CompiledQuery.raw('PRAGMA journal_mode=WAL'))
@@ -24,7 +25,12 @@ const dialect = new SqliteDialect({
 // to communicate with your database.
 export const db = new Kysely<Database>({
   dialect,
-  log: ['query', 'error']
+  log(event): void {
+    if (event.level === 'query') {
+      log.info(event.query.sql)
+      log.info(event.query.parameters)
+    }
+  }
 })
 
 export const migrateToLatest = async (db: Kysely<any>) => {
@@ -33,20 +39,20 @@ export const migrateToLatest = async (db: Kysely<any>) => {
     provider: new MemoryMigrationProvider()
   })
 
-  console.log('running db migrations')
+  log.info('running db migrations')
 
   const { error, results } = await migrator.migrateToLatest()
 
   results?.forEach((it) => {
     if (it.status === 'Success') {
-      console.log(`migration "${it.migrationName}" was executed successfully`)
+      log.info(`migration "${it.migrationName}" was executed successfully`)
     } else if (it.status === 'Error') {
-      console.error(`failed to execute migration "${it.migrationName}"`)
+      log.error(`failed to execute migration "${it.migrationName}"`)
     }
   })
 
   if (error) {
-    console.error('failed to migrate')
-    console.error(error)
+    log.error('failed to migrate')
+    log.error(error)
   }
 }

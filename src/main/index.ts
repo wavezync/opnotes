@@ -15,6 +15,7 @@ export function getAutoUpdater(): AppUpdater {
   const log = require('electron-log')
   log.transports.file.level = 'debug'
   autoUpdater.logger = log
+  console.log('autoupdater feed:', autoUpdater.getFeedURL())
   return autoUpdater
 }
 
