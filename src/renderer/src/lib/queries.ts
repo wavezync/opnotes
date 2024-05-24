@@ -36,5 +36,11 @@ export const queries = createQueryKeyStore({
       queryKey: [id],
       queryFn: () => unwrapResult(window.api.invoke('getDoctorById', id))
     })
+  },
+  app: {
+    version: {
+      queryKey: null,
+      queryFn: () => window.electronApi.getAppVersion()
+    }
   }
 })

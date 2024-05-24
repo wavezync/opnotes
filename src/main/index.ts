@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow } from 'electron'
+import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -18,7 +18,7 @@ export function getAutoUpdater(): AppUpdater {
   return autoUpdater
 }
 
-function createWindow(): void {
+function createWindow() {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 900,
@@ -49,9 +49,15 @@ function createWindow(): void {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'), { hash: '/' })
   }
 
+  mainWindow.webContents.on('did-finish-load', () => {
+    mainWindow.webContents.send('appVersion', app.getVersion())
+  })
+
   if (is.dev) {
     mainWindow.webContents.openDevTools()
   }
+
+  return mainWindow
 }
 
 // This method will be called when Electron has finished
@@ -82,6 +88,10 @@ app.whenReady().then(() => {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
+  })
+
+  ipcMain.handle('appVersion', () => {
+    return app.getVersion()
   })
 })
 

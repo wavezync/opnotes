@@ -9,18 +9,31 @@ const invoke = async (method, ...args) => {
   return await ipcRenderer.invoke('invokeApiCall', method, ...args)
 }
 
+const api = {
+  invoke
+}
+
+const getAppVersion = async () => {
+  return await ipcRenderer.invoke('appVersion')
+}
+
+const electronApi = {
+  ...electronAPI,
+  getAppVersion
+}
+
 if (process.contextIsolated) {
   try {
-    contextBridge.exposeInMainWorld('electron', electronAPI)
-    contextBridge.exposeInMainWorld('api', {
-      invoke
-    })
+    contextBridge.exposeInMainWorld('electronApi', electronApi)
+    contextBridge.exposeInMainWorld('api', api)
+
+    contextBridge.exposeInMainWorld('getAppVersion', getAppVersion)
   } catch (error) {
     console.error(error)
   }
 } else {
   // @ts-ignore (define in dts)
-  window.electron = electronAPI
+  window.electronApi = electronApi
   // @ts-ignore (define in dts)
   window.api = api
 }

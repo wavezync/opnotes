@@ -1,9 +1,13 @@
 import { ElectronAPI } from '@electron-toolkit/preload'
 import type { ApiType } from '../main/api'
 
+type ElectronApi = ElectronAPI & {
+  getAppVersion: () => Promise<string>
+}
+
 declare global {
   interface Window {
-    electron: ElectronAPI
+    electronApi: ElectronApi
     api: {
       invoke: <K extends keyof ApiType>(
         method: K,
