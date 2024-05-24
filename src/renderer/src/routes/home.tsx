@@ -3,7 +3,7 @@ import { Input } from '@renderer/components/ui/input'
 import hero from '../assets/hero.svg?asset'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Plus } from 'lucide-react'
+import { Hospital, Plus } from 'lucide-react'
 
 const SearchIcon = () => (
   <svg
@@ -61,6 +61,7 @@ export default function Home() {
           size={'sm'}
           onClick={() => navigate('/surgeries')}
         >
+          <Hospital className="h-4 w-4" />
           View All Surgeries
         </Button>
       </div>
