@@ -1,6 +1,6 @@
 {
   "name": "op-notes",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Op Notes",
   "main": "./out/main/index.js",
   "author": "Kasun Vithanage",
@@ -20,9 +20,9 @@
     "build": "pnpm typecheck && electron-vite build",
     "postinstall": "electron-builder install-app-deps && pnpm electron-rebuild",
     "build:unpack": "pnpm build && electron-builder --dir",
-    "build:win": "pnpm build && electron-builder --win",
-    "build:mac": "electron-vite build && electron-builder --mac",
-    "build:linux": "electron-vite build && electron-builder --linux",
+    "build:win": "pnpm build && electron-builder --win --publish=never",
+    "build:mac": "electron-vite build && electron-builder --mac --publish=never",
+    "build:linux": "electron-vite build && electron-builder --linux --publish=never",
     "electron-rebuild": "electron-rebuild -f -w better-sqlite3"
   },
   "dependencies": {
