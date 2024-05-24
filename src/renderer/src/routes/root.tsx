@@ -19,16 +19,6 @@ const NavLinkComponent = ({ to, children }) => {
   )
 }
 
-const LoaderShimmer = () => {
-  return (
-    <div className="animate-pulse flex flex-col space-y-4 w-full h-screen justify-center items-center">
-      <div className="h-4 bg-primary/20 rounded-lg w-52"></div>
-      <div className="h-4 bg-primary/20 rounded-lg w-52"></div>
-      <div className="h-4 bg-primary/20 rounded-lg w-52"></div>
-    </div>
-  )
-}
-
 export default function Root() {
   return (
     <>
@@ -42,7 +32,6 @@ export default function Root() {
         <div className="grow m-1 p-3 overflow-y-auto">
           <Outlet />
         </div>
-        {/* <LoaderShimmer /> */}
       </main>
       <Toaster position="bottom-right" />
     </>

@@ -2,7 +2,7 @@ import { Button } from '@renderer/components/ui/button'
 import { useBreadcrumbs } from '@renderer/contexts/BreadcrumbContext'
 import { AppLayout } from '@renderer/layouts/AppLayout'
 import { QueryClient, queryOptions, useQuery, useSuspenseQuery } from '@tanstack/react-query'
-import { ChevronUp, EditIcon, MoreHorizontal, PlusSquare } from 'lucide-react'
+import { ChevronDown, ChevronUp, EditIcon, MoreHorizontal, PlusSquare } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { Link, LoaderFunctionArgs, useLoaderData, useNavigate } from 'react-router-dom'
 import { PatientModel } from 'src/shared/models/PatientModel'
@@ -77,10 +77,10 @@ const PatientInfoCard = ({ patient }: PatientInfoCardProps) => {
             </div>
           </div>
           {patient.remarks && (
-            <div className="flex justify-center items-center flex-col w-full">
+            <div className="flex justify-center items-center flex-col w-full mt-2">
               <div className="justify-center flex flex-col">
                 <Toggle onPressedChange={() => setShowRemarks(!showRemarks)} variant={'outline'}>
-                  <ChevronUp
+                  <ChevronDown
                     className={cn('h-4 w-4 transition-all', {
                       'transform rotate-180': showRemarks
                     })}
