@@ -23,7 +23,9 @@ export const EditPatient = () => {
   const { data, isLoading } = useQuery({ ...getPatientByIdQuery(parseInt(id!)), enabled: !!id })
 
   const handleNewPatient = (patient: Patient) => {
-    queryClient.setQueryData(queries.patients.get(parseInt(id!)).queryKey, patient)
+    queryClient.invalidateQueries({
+      queryKey: queries.patients.get(patient.id).queryKey
+    })
     toast.success('Patient updated successfully')
   }
 
