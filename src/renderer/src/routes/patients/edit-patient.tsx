@@ -22,7 +22,7 @@ export const EditPatient = () => {
   const { setBreadcrumbs } = useBreadcrumbs()
   const { data, isLoading } = useQuery({ ...getPatientByIdQuery(parseInt(id!)), enabled: !!id })
 
-  const handleNewPatient = (patient: Patient) => {
+  const handleUpdate = (patient: Patient) => {
     queryClient.invalidateQueries({
       queryKey: queries.patients.get(patient.id).queryKey
     })
@@ -60,7 +60,7 @@ export const EditPatient = () => {
   return (
     <AppLayout title="Edit Patient" actions={actions}>
       {!isLoading && data && (
-        <NewPatientForm onRecordUpdated={handleNewPatient} values={data} key={id} ref={ref} />
+        <NewPatientForm onRecordUpdated={handleUpdate} values={data} key={id} ref={ref} />
       )}
     </AppLayout>
   )
