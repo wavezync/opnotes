@@ -241,7 +241,7 @@ export const AddOrEditSurgery = forwardRef<AddOrEditSurgeryRef, AddOrEditSurgery
                   control={form.control}
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Date</FormLabel>
+                      <FormLabel>Surgery Date</FormLabel>
                       <FormControl>
                         <DatePicker onSelect={field.onChange} selected={field.value || undefined} />
                       </FormControl>
