@@ -1,4 +1,4 @@
-name: Rrelease Electron app
+name: Release Electron app
 
 on:
   push:
@@ -7,6 +7,10 @@ on:
 
 env:
   GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   release:
