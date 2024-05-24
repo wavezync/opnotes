@@ -95,6 +95,9 @@ dependencies:
   dayjs:
     specifier: ^1.11.11
     version: 1.11.11
+  electron-log:
+    specifier: ^5.1.4
+    version: 5.1.4
   electron-updater:
     specifier: ^6.1.8
     version: 6.1.8
@@ -3781,6 +3784,11 @@ packages:
       - electron-builder-squirrel-windows
       - supports-color
     dev: true
+
+  /electron-log@5.1.4:
+    resolution: {integrity: sha512-P0RSXnwT3z+e89Z5uAcZDeN85/QjIgv764a93kqCi+wh2Jm22CCbc3AGDt4S8rsxAHWHB4Q0PGsQl3fw1AN0kQ==}
+    engines: {node: '>= 14'}
+    dev: false
 
   /electron-publish@24.13.1:
     resolution: {integrity: sha512-2ZgdEqJ8e9D17Hwp5LEq5mLQPjqU3lv/IALvgp+4W8VeNhryfGhYEQC/PgDPMrnWUp+l60Ou5SJLsu+k4mhQ8A==}
