@@ -48,5 +48,6 @@ export const migrateToLatest = async (db: Kysely<any>) => {
   if (error) {
     log.error('failed to migrate')
     log.error(error)
+    throw error
   }
 }

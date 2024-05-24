@@ -1,6 +1,7 @@
 import { NavLink, Outlet } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import { cn } from '@renderer/lib/utils'
+import { useEffect } from 'react'
 
 const NavLinkComponent = ({ to, children }) => {
   return (
@@ -19,19 +20,32 @@ const NavLinkComponent = ({ to, children }) => {
   )
 }
 
+const LoaderShimmer = () => {
+  return (
+    <div className="animate-pulse flex flex-col space-y-4 w-full h-screen justify-center items-center">
+      <div className="h-4 bg-primary/20 rounded-lg w-52"></div>
+      <div className="h-4 bg-primary/20 rounded-lg w-52"></div>
+      <div className="h-4 bg-primary/20 rounded-lg w-52"></div>
+    </div>
+  )
+}
+
 export default function Root() {
   return (
-    <main className="h-screen w-full flex flex-col antialiased bg-background overflow-hidden">
-      <nav className="flex w-full space-x-2 text-2xl justify-start items-start p-1 text-left m-1 border-b-2">
-        <NavLinkComponent to="/">Home</NavLinkComponent>
-        <NavLinkComponent to="/patients">Patients</NavLinkComponent>
-        <NavLinkComponent to="/surgeries">Surgeries</NavLinkComponent>
-        <NavLinkComponent to="/doctors">Doctors</NavLinkComponent>
-      </nav>
-      <div className="grow m-1 p-3 overflow-y-auto">
-        <Outlet />
-        <Toaster position="bottom-right" />
-      </div>
-    </main>
+    <>
+      <main className="h-screen w-full flex flex-col antialiased bg-background overflow-hidden">
+        <nav className="flex w-full space-x-2 text-2xl justify-start items-start p-1 text-left m-1 border-b-2">
+          <NavLinkComponent to="/">Home</NavLinkComponent>
+          <NavLinkComponent to="/patients">Patients</NavLinkComponent>
+          <NavLinkComponent to="/surgeries">Surgeries</NavLinkComponent>
+          <NavLinkComponent to="/doctors">Doctors</NavLinkComponent>
+        </nav>
+        <div className="grow m-1 p-3 overflow-y-auto">
+          <Outlet />
+        </div>
+        {/* <LoaderShimmer /> */}
+      </main>
+      <Toaster position="bottom-right" />
+    </>
   )
 }
