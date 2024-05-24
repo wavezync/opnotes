@@ -24,13 +24,7 @@ const dialect = new SqliteDialect({
 // Dialect is passed to Kysely's constructor, and from now on, Kysely knows how
 // to communicate with your database.
 export const db = new Kysely<Database>({
-  dialect,
-  log(event): void {
-    if (event.level === 'query') {
-      log.info(event.query.sql)
-      log.info(event.query.parameters)
-    }
-  }
+  dialect
 })
 
 export const migrateToLatest = async (db: Kysely<any>) => {

@@ -78,6 +78,9 @@ export const EditSurgery = () => {
             await queryClient.invalidateQueries({
               queryKey: queries.surgeries.get(parseInt(surgeryId!)).queryKey
             })
+            await queryClient.invalidateQueries({
+              queryKey: queries.patients.get(patient.id).queryKey
+            })
           }}
         />
       )}

@@ -32,6 +32,7 @@ import {
 } from './repository/surgery'
 import { ipcMain } from 'electron'
 import { encodeError } from './utils/errors'
+import log from 'electron-log'
 
 // Custom APIs for renderer
 export const api = {
@@ -68,7 +69,7 @@ export type ApiType = typeof api
 export const registerApi = () => {
   ipcMain.handle('invokeApiCall', async (_event, method: keyof ApiType, ...args: any[]) => {
     try {
-      console.log('invoking api:', method, args)
+      log.info('invoking api:', { method, args })
       const fn = api[method] as any
       if (!fn) {
         throw new Error(`Method ${method} not found in api`)
@@ -78,7 +79,7 @@ export const registerApi = () => {
       const result = await fn(...args)
       return { result }
     } catch (error) {
-      console.error('Error invoking api:', method, error)
+      log.error('Error invoking api:', method, error)
 
       return { error: encodeError(error) }
     }

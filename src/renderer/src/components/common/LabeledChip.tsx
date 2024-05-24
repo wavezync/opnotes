@@ -7,7 +7,7 @@ export const LabeledChip = ({
 }) => (
   <div className="flex items-center justify-center">
     <span className="font-semibold">{label}:</span>
-    <span className="text-accent-foreground bg-secondary rounded-sm py-0.5 px-2 ml-2 hover:bg-secondary/80 transition-colors">
+    <span className="text-accent-foreground bg-primary/70 rounded-sm py-0.5 px-2 ml-2 hover:bg-primary/50 transition-colors">
       {value}
     </span>
   </div>

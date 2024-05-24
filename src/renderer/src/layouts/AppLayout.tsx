@@ -19,7 +19,7 @@ export const AppLayout = ({ children, actions, title }: AppLayoutProps) => {
           <SectionTitle title={title} />
 
           {actions && (
-            <div className="md:absolute right-4 space-x-1 justify-end items-end flex w-full">
+            <div className="md:absolute right-4 space-x-1 justify-end items-end flex w-full m-2">
               {actions}
             </div>
           )}

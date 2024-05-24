@@ -2,12 +2,11 @@ import { Button } from '@renderer/components/ui/button'
 import { useBreadcrumbs } from '@renderer/contexts/BreadcrumbContext'
 import { AppLayout } from '@renderer/layouts/AppLayout'
 import { QueryClient, queryOptions, useQuery, useSuspenseQuery } from '@tanstack/react-query'
-import { EditIcon, MoreHorizontal, PlusSquare } from 'lucide-react'
+import { ChevronDown, ChevronUp, EditIcon, MoreHorizontal, PlusSquare } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { Link, LoaderFunctionArgs, useLoaderData, useNavigate } from 'react-router-dom'
 import { PatientModel } from 'src/shared/models/PatientModel'
 import { getPatientByIdQuery } from './edit-patient'
-import { Card } from '@renderer/components/ui/card'
 import { queries } from '@renderer/lib/queries'
 import { Surgery } from '../../../../shared/types/db'
 import { DataTable } from '@renderer/components/ui/data-table/data-table'
@@ -35,6 +34,8 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@renderer/components/ui/dialog'
+import { SectionHeader } from '@renderer/components/common/SectionHeader'
+import { Toggle } from '@renderer/components/ui/toggle'
 
 export const loader =
   (queryClient: QueryClient) =>
@@ -53,59 +54,74 @@ interface PatientInfoCardProps {
 }
 
 const PatientInfoCard = ({ patient }: PatientInfoCardProps) => {
+  const [showRemarks, setShowRemarks] = useState(false)
   const remarksDialog = patient.remarks && (
     <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="outline" size="sm">
-          Remarks
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger asChild></DialogTrigger>
 
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Remarks</DialogTitle>
-          <DialogDescription asChild>
-            <div className="dark">
-              <div
-                className="prose prose-slate dark:prose-invert"
-                dangerouslySetInnerHTML={{ __html: patient.remarks }}
-              />
-            </div>
-          </DialogDescription>
+          <DialogDescription asChild></DialogDescription>
         </DialogHeader>
       </DialogContent>
     </Dialog>
   )
 
   return (
-    <Card>
-      <div className="p-5 md:flex w-full">
-        <div className="h-36 w-36 flex items-center justify-center">
-          <img
-            src={patient.gender === 'M' ? manIcon : womenIcon}
-            alt="Patient"
-            className="w-24 h-24 shadow-sm rounded-full"
-          />
+    <div>
+      <div className="p-1 flex flex-col w-full">
+        <div className="flex justify-center">
+          <div className="h-36 w-36 flex items-center justify-center">
+            <img
+              src={patient.gender === 'M' ? manIcon : womenIcon}
+              alt="Patient"
+              className="w-24 h-24 shadow-sm rounded-full"
+            />
+          </div>
         </div>
-        <div className="flex flex-col w-full items-start ml-10">
-          <div className="flex w-1/2 justify-between items-start">
-            <div className="flex flex-col items-start gap-2">
+
+        <div className="flex flex-col w-full items-start">
+          <div className="flex flex-col md:flex-row w-full  items-center justify-center md:justify-evenly md:items-center">
+            <div className="flex flex-col items-center justify-center md:items-start gap-2">
               <LabeledChip label="PHN" value={patient.phn} />
               <LabeledChip label="Name" value={patient.name || 'N/A'} />
               <LabeledChip label="Age" value={<>{patient.age > 1 ? patient.age : '<1'} yrs</>} />
-              <LabeledChip label="Gender" value={patient.gender} />
+              <LabeledChip label="Gender" value={patient.gender === 'M' ? 'Male' : 'Female'} />
             </div>
-            <div className="ml-10 flex flex-col items-start gap-2">
+            <div className="flex flex-col md:items-start gap-2">
               <LabeledChip label="Ward" value={patient.ward || 'N/A'} />
               <LabeledChip label="Phone" value={patient.phone || 'N/A'} />
               <LabeledChip label="Emergency Contact" value={patient.emergency_contact || 'N/A'} />
               <LabeledChip label="Emergency Phone" value={patient.emergency_phone || 'N/A'} />
             </div>
           </div>
-          <div className="flex my-2 ml-0">{remarksDialog}</div>
+          {patient.remarks && (
+            <div className="flex justify-center items-center flex-col w-full">
+              <div className="justify-center flex flex-col">
+                <Toggle onPressedChange={() => setShowRemarks(!showRemarks)} variant={'outline'}>
+                  <ChevronUp
+                    className={cn('h-4 w-4 transition-all', {
+                      'transform rotate-180': showRemarks
+                    })}
+                  />
+
+                  <span className="ml-2">Show Remarks</span>
+                </Toggle>
+              </div>
+              {showRemarks && (
+                <div className="dark w-1/2 border border-secondary p-2 rounded-lg mt-2 hover:bg-primary-foreground/20">
+                  <div
+                    className="prose prose-slate dark:prose-invert max-w-none"
+                    dangerouslySetInnerHTML={{ __html: patient.remarks }}
+                  />
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
-    </Card>
+    </div>
   )
 }
 
@@ -211,6 +227,7 @@ const PatientSurgeryList = ({ patientId, className }: PatientSurgeryListProps) =
 
   return (
     <div className={cn('flex flex-col', className)}>
+      <SectionHeader title="Surgeries" />
       <div className="py-2">
         <Input placeholder="Search by BHT, Title..." onChange={(e) => setSearch(e.target.value)} />
       </div>
