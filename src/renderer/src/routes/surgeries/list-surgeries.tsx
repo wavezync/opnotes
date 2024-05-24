@@ -16,7 +16,7 @@ import { Input } from '@renderer/components/ui/input'
 import { useBreadcrumbs } from '@renderer/contexts/BreadcrumbContext'
 import { AppLayout } from '@renderer/layouts/AppLayout'
 import { queries } from '@renderer/lib/queries'
-import { cn, unwrapResult } from '@renderer/lib/utils'
+import { cn, formatDate, formatDateTime, unwrapResult } from '@renderer/lib/utils'
 import { SurgeryModel } from '@shared/models/SurgeryModel'
 import { SurgeryFilter } from '@shared/types/api'
 
@@ -118,12 +118,12 @@ const columns: ColumnDef<SurgeryModel, any>[] = [
   {
     id: 'surgeryDate',
     header: 'Surgery Date',
-    cell: (cell) => (cell.row.original.date ? cell.row.original.date.toLocaleDateString() : 'N/A')
+    cell: (cell) => (cell.row.original.date ? formatDate(cell.row.original.date) : 'N/A')
   },
   {
     id: 'updatedAt',
     header: 'Updated At',
-    cell: (cell) => cell.row.original.updated_at.toLocaleDateString()
+    cell: (cell) => formatDateTime(cell.row.original.updated_at)
   },
   {
     id: 'patient',

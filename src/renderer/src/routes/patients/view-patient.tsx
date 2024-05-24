@@ -23,7 +23,7 @@ import { ColumnDef, PaginationState } from '@tanstack/react-table'
 import toast from 'react-hot-toast'
 import { SurgeryFilter } from 'src/shared/types/api'
 import { Input } from '@renderer/components/ui/input'
-import { cn } from '@renderer/lib/utils'
+import { cn, formatDate, formatDateTime } from '@renderer/lib/utils'
 import womenIcon from '../../../../../resources/woman.png?asset'
 import manIcon from '../../../../../resources/man.png?asset'
 import { LabeledChip } from '@renderer/components/common/LabeledChip'
@@ -143,13 +143,12 @@ const columns: ColumnDef<Surgery, any>[] = [
   {
     id: 'date',
     header: 'Surgery Date',
-    cell: (cell) =>
-      cell.row.original.date !== null ? cell.row.original.date.toLocaleDateString() : 'N/A'
+    cell: (cell) => (cell.row.original.date !== null ? formatDate(cell.row.original.date) : 'N/A')
   },
   {
     id: 'updatedAt',
     header: 'Updated At',
-    cell: (cell) => cell.row.original.updated_at.toLocaleDateString()
+    cell: (cell) => formatDateTime(cell.row.original.updated_at)
   },
   {
     id: 'actions',

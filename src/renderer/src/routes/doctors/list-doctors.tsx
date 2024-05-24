@@ -16,7 +16,7 @@ import { Input } from '@renderer/components/ui/input'
 import { useBreadcrumbs } from '@renderer/contexts/BreadcrumbContext'
 import { AppLayout } from '@renderer/layouts/AppLayout'
 import { queries } from '@renderer/lib/queries'
-import { unwrapResult } from '@renderer/lib/utils'
+import { formatDate, unwrapResult } from '@renderer/lib/utils'
 import {
   keepPreviousData,
   queryOptions,
@@ -108,7 +108,7 @@ const columns: ColumnDef<DoctorModel, any>[] = [
   {
     id: 'updatedAt',
     header: 'Updated At',
-    cell: (cell) => cell.row.original.updated_at.toLocaleDateString()
+    cell: (cell) => formatDate(cell.row.original.updated_at)
   },
   {
     id: 'actions',

@@ -12,7 +12,7 @@ import { PatientModel } from 'src/shared/models/PatientModel'
 import { Badge } from '@renderer/components/ui/badge'
 import { AddOrEditFollowup } from '@renderer/components/surgery/AddOrEditFollowup'
 import { Card, CardContent, CardHeader } from '@renderer/components/ui/card'
-import { cn, unwrapResult } from '@renderer/lib/utils'
+import { cn, formatDate, formatDateTime, unwrapResult } from '@renderer/lib/utils'
 import { Skeleton } from '@renderer/components/ui/skeleton'
 import { FollowupModel } from 'src/shared/models/FollowupModel'
 import {
@@ -65,7 +65,7 @@ const FollowupCard = ({ followup }: FollowupCardProps) => {
   return (
     <Card className="mb-2 border rounded-lg mt-1 hover:bg-secondary/10">
       <CardHeader className="flex justify-end items-center flex-row w-full space-x-1">
-        <span>{followup.created_at.toLocaleString()}</span>
+        <span>{formatDateTime(followup.created_at)}</span>
 
         <AddOrEditFollowup
           trigger={
@@ -157,7 +157,7 @@ export const SurgeryCard = ({ surgery, patient }: SurgeryCardProps) => {
 
         <div className="md:ml-4">
           <span className="font-semibold">Date:</span>{' '}
-          <Badge variant={'secondary'}>{surgery.date?.toLocaleDateString()}</Badge>
+          <Badge variant={'secondary'}>{surgery.date ? formatDate(surgery.date) : 'N/A'}</Badge>
         </div>
       </div>
 

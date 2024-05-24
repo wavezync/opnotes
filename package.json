@@ -1,6 +1,6 @@
 {
   "name": "op-notes",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Op Notes",
   "main": "./out/main/index.js",
   "author": "Kasun Vithanage",
@@ -55,6 +55,7 @@
     "clsx": "^2.1.0",
     "cmdk": "^1.0.0",
     "date-fns": "^3.6.0",
+    "dayjs": "^1.11.11",
     "electron-updater": "^6.1.8",
     "kysely": "^0.27.3",
     "lucide-react": "^0.368.0",
