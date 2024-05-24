@@ -79,6 +79,13 @@ export interface DoctorsFTS {
   slmc_reg_no: string
 }
 
+export interface AppSettingsTable {
+  id: Generated<number>
+  key: string
+  value: string | null
+  display_name: string
+}
+
 export interface Database {
   patients: PatientTable
   surgeries: SurgeryTable
@@ -90,6 +97,8 @@ export interface Database {
   patients_fts: PatientsFTS
   surgeries_fts: SurgeriesFTS
   doctors_fts: DoctorsFTS
+
+  app_settings: AppSettingsTable
 }
 
 export type Patient = Selectable<PatientTable>
@@ -107,3 +116,7 @@ export type DoctorUpdate = Updateable<DoctorsTable>
 export type Followup = Selectable<SurgeryFollowUpTable>
 export type NewFollowup = Insertable<SurgeryFollowUpTable>
 export type FollowupUpdate = Updateable<SurgeryFollowUpTable>
+
+export type AppSettings = Selectable<AppSettingsTable>
+export type NewAppSettings = Insertable<AppSettingsTable>
+export type AppSettingsUpdate = Updateable<AppSettingsTable>

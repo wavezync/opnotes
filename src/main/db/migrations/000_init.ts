@@ -148,13 +148,6 @@ export async function up(db: Kysely<any>): Promise<void> {
   `.execute(db)
 }
 
-export async function down(db: Kysely<any>): Promise<void> {
-  await db.schema.dropTable('patients').execute()
-  await db.schema.dropTable('doctors').execute()
-  await db.schema.dropTable('surgeries').execute()
-  await db.schema.dropTable('surgery_doctors_done_by').execute()
-  await db.schema.dropTable('surgery_doctors_assisted_by').execute()
-  await db.schema.dropTable('surgery_followups').execute()
-
-  await db.schema.dropIndex('patients_phn_index').on('patients').execute()
+export async function down(_db: Kysely<any>): Promise<void> {
+  // down
 }

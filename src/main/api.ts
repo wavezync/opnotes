@@ -33,6 +33,7 @@ import {
 import { ipcMain } from 'electron'
 import { encodeError } from './utils/errors'
 import log from 'electron-log'
+import { getAllSettings, updateSetting } from './repository/app-settings'
 
 // Custom APIs for renderer
 export const api = {
@@ -61,7 +62,10 @@ export const api = {
   createNewFollowUp,
   updateFollowUp,
   deleteFollowUp,
-  getFollowUpsBySurgeryId
+  getFollowUpsBySurgeryId,
+
+  getAllSettings,
+  updateSetting
 }
 
 export type ApiType = typeof api
