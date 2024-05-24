@@ -243,11 +243,7 @@ export const AddOrEditSurgery = forwardRef<AddOrEditSurgeryRef, AddOrEditSurgery
                     <FormItem>
                       <FormLabel>Date</FormLabel>
                       <FormControl>
-                        <DatePicker
-                          {...field}
-                          onSelect={field.onChange}
-                          selected={field.value || undefined}
-                        />
+                        <DatePicker onSelect={field.onChange} selected={field.value || undefined} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

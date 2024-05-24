@@ -2,7 +2,7 @@ import { Button } from '@renderer/components/ui/button'
 import { useBreadcrumbs } from '@renderer/contexts/BreadcrumbContext'
 import { AppLayout } from '@renderer/layouts/AppLayout'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { Printer, Save } from 'lucide-react'
+import { Save } from 'lucide-react'
 import { useEffect, useMemo, useRef } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { getPatientByIdQuery } from '../patients/edit-patient'
@@ -44,15 +44,9 @@ export const AddNewSurgery = () => {
         variant="default"
         onClick={async () => {
           formRef.current?.submit()
-          await queryClient.invalidateQueries({
-            queryKey: queries.surgeries.list({ patient_id: parseInt(patientId!) }).queryKey
-          })
         }}
       >
         <Save /> Save
-      </Button>
-      <Button className="" variant="secondary">
-        <Printer /> Print
       </Button>
     </>
   )
@@ -63,7 +57,10 @@ export const AddNewSurgery = () => {
         <AddOrEditSurgery
           ref={formRef}
           patientId={patient.id}
-          onUpdated={(surgery) => {
+          onUpdated={async (surgery) => {
+            await queryClient.invalidateQueries({
+              queryKey: queries.surgeries.list({ patient_id: parseInt(patientId!) }).queryKey
+            })
             navigate(`/patients/${patient.id}/surgeries/${surgery.id}`)
           }}
         />
