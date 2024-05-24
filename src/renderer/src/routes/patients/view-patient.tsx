@@ -2,7 +2,7 @@ import { Button } from '@renderer/components/ui/button'
 import { useBreadcrumbs } from '@renderer/contexts/BreadcrumbContext'
 import { AppLayout } from '@renderer/layouts/AppLayout'
 import { QueryClient, queryOptions, useQuery, useSuspenseQuery } from '@tanstack/react-query'
-import { ChevronDown, ChevronUp, EditIcon, MoreHorizontal, PlusSquare } from 'lucide-react'
+import { ChevronUp, EditIcon, MoreHorizontal, PlusSquare } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { Link, LoaderFunctionArgs, useLoaderData, useNavigate } from 'react-router-dom'
 import { PatientModel } from 'src/shared/models/PatientModel'
@@ -26,14 +26,6 @@ import { cn, formatDate, formatDateTime } from '@renderer/lib/utils'
 import womenIcon from '../../../../../resources/woman.png?asset'
 import manIcon from '../../../../../resources/man.png?asset'
 import { LabeledChip } from '@renderer/components/common/LabeledChip'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger
-} from '@renderer/components/ui/dialog'
 import { SectionHeader } from '@renderer/components/common/SectionHeader'
 import { Toggle } from '@renderer/components/ui/toggle'
 
@@ -55,18 +47,6 @@ interface PatientInfoCardProps {
 
 const PatientInfoCard = ({ patient }: PatientInfoCardProps) => {
   const [showRemarks, setShowRemarks] = useState(false)
-  const remarksDialog = patient.remarks && (
-    <Dialog>
-      <DialogTrigger asChild></DialogTrigger>
-
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Remarks</DialogTitle>
-          <DialogDescription asChild></DialogDescription>
-        </DialogHeader>
-      </DialogContent>
-    </Dialog>
-  )
 
   return (
     <div>
@@ -106,11 +86,11 @@ const PatientInfoCard = ({ patient }: PatientInfoCardProps) => {
                     })}
                   />
 
-                  <span className="ml-2">Show Remarks</span>
+                  <span className="ml-2">{showRemarks ? 'Hide' : 'Show'} Remarks</span>
                 </Toggle>
               </div>
               {showRemarks && (
-                <div className="dark w-1/2 border border-secondary p-2 rounded-lg mt-2 hover:bg-primary-foreground/20">
+                <div className="dark w-1/2 border border-secondary p-3 rounded-lg mt-2 hover:bg-primary-foreground/20">
                   <div
                     className="prose prose-slate dark:prose-invert max-w-none"
                     dangerouslySetInnerHTML={{ __html: patient.remarks }}
