@@ -14,3 +14,9 @@ export const updateSetting = async (key: string, value: string | null) => {
     .returningAll()
     .executeTakeFirst()
 }
+
+export const updateSettings = async (settings: { key: string; value: string | null }[]) => {
+  for (const setting of settings) {
+    await updateSetting(setting.key, setting.value)
+  }
+}

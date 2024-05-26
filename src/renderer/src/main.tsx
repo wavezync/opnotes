@@ -20,6 +20,7 @@ import { DoctorsIndex } from './routes/doctors/list-doctors'
 import { AddNewDoctor } from './routes/doctors/add-doctor'
 import { EditDoctor } from './routes/doctors/edit-doctor'
 import { SurgierisIndex } from './routes/surgeries/list-surgeries'
+import { SettingsIndex } from './routes/settings/settings-index'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -89,7 +90,7 @@ const router = createHashRouter([
 
       {
         path: '/settings',
-        element: <div className="">Settings</div>
+        element: <SettingsIndex />
       },
 
       {

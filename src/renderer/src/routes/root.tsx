@@ -24,9 +24,8 @@ const NavLinkComponent = ({
       to={to}
       className={({ isActive, isPending }) =>
         cn(
-          'text-secondary-foreground text-sm underline-offset-4 hover:underline cursor-pointer hover:bg-primary/10 p-2 rounded-lg',
-          isActive && 'bg-primary/10',
-          isPending && 'bg-primary/20',
+          'text-secondary-foreground text-sm underline-offset-4 hover:underline cursor-pointer hover:bg-accent/80 p-2 rounded-lg',
+          (isActive || isPending) && 'bg-accent',
           className
         )
       }
