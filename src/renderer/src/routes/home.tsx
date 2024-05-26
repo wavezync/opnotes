@@ -59,8 +59,8 @@ export default function Home() {
           variant="secondary"
           size={'sm'}
           onClick={() => navigate('/patients/add')}
+          leftIcon={<Plus />}
         >
-          <Plus className="h-4 w-4" />
           Add New Patient
         </Button>
         <Button
@@ -68,8 +68,8 @@ export default function Home() {
           variant="secondary"
           size={'sm'}
           onClick={() => navigate('/surgeries')}
+          leftIcon={<Hospital />}
         >
-          <Hospital className="h-4 w-4" />
           View All Surgeries
         </Button>
       </div>

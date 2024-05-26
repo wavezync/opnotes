@@ -88,6 +88,11 @@ const router = createHashRouter([
       },
 
       {
+        path: '/settings',
+        element: <div className="">Settings</div>
+      },
+
+      {
         path: '*',
         element: <ErrorPage />
       }

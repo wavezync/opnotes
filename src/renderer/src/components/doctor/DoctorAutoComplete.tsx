@@ -3,9 +3,20 @@ import { AutoCompleteInput } from '../common/AutoCompleteInput'
 import { DoctorFilter } from 'src/shared/types/api'
 import { queryOptions, useQueries, useQuery } from '@tanstack/react-query'
 import { queries } from '../../lib/queries'
-import { useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { Badge } from '../ui/badge'
 import { X } from 'lucide-react'
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader
+} from '../ui/sheet'
+import { Button } from '../ui/button'
+import { AddOrEditDoctor, AddOrEditDoctorRef } from './AddOrEditDoctor'
+import { DoctorModel } from '@shared/models/DoctorModel'
 
 const doctorsQuery = (doctorFilter: DoctorFilter) =>
   queryOptions({
@@ -69,35 +80,75 @@ const SelectedDoctorChips = ({
 export const DoctorAutoComplete = ({ onSelected, selectedDoctorIds }: DoctorAutoCompleteProps) => {
   const [search, setSearch] = useState('')
   const [selected, setSelected] = useState([...(selectedDoctorIds || [])])
-  const { data, isLoading } = useQuery(doctorsQuery({ pageSize: 100, search }))
+  const { data, isLoading, refetch } = useQuery(doctorsQuery({ pageSize: 100, search }))
   const doctors = data?.data || []
   const doctorItems = doctors.map((doctor) => ({
     value: `${doctor.id.toString()}`,
     label: <DoctorLabel doctor={doctor} />
   }))
+  const addDoctorFormRef = useRef<AddOrEditDoctorRef>(null)
+  const [addNewSheetOpen, setAddNewSheetOpen] = useState(false)
 
-  const handleDelete = (id: string) => {
-    setSelected(selected.filter((s) => s !== id))
-    onSelected?.(selected.filter((s) => s !== id))
-  }
+  const handleDelete = useCallback(
+    (id: string) => {
+      setSelected(selected.filter((s) => s !== id))
+      onSelected?.(selected.filter((s) => s !== id))
+    },
+    [onSelected, selected]
+  )
+
+  const handleNewDoctor = useCallback(
+    (doctor: DoctorModel) => {
+      setSelected([...selected, doctor.id.toString()])
+      onSelected?.([...selected, doctor.id.toString()])
+      setAddNewSheetOpen(false)
+      refetch()
+    },
+    [onSelected, refetch, selected]
+  )
 
   return (
-    <div className="flex flex-col justify-start items-start">
-      <AutoCompleteInput
-        multiple
-        placeholder="Search Doctors..."
-        onSelectedValuesChange={(values) => {
-          setSelected(values)
-          onSelected?.(values)
-        }}
-        selectedValues={selected}
-        onSearchChange={setSearch}
-        items={doctorItems}
-        isLoading={isLoading}
-      />
-      <div className="flex">
-        <SelectedDoctorChips selectedDoctorIds={selected} onDelete={handleDelete} />
+    <>
+      <div className="flex flex-col justify-start items-start">
+        <AutoCompleteInput
+          multiple
+          placeholder="Search Doctors..."
+          onSelectedValuesChange={(values) => {
+            setSelected(values)
+            onSelected?.(values)
+          }}
+          selectedValues={selected}
+          onSearchChange={setSearch}
+          items={doctorItems}
+          isLoading={isLoading}
+          onAddNewItem={() => setAddNewSheetOpen(true)}
+        />
+        <div className="flex">
+          <SelectedDoctorChips selectedDoctorIds={selected} onDelete={handleDelete} />
+        </div>
       </div>
-    </div>
+      <Sheet open={addNewSheetOpen} onOpenChange={() => setAddNewSheetOpen(false)}>
+        <SheetContent>
+          <SheetHeader>Add New Doctor</SheetHeader>
+          <SheetDescription> Add a new doctor to the system</SheetDescription>
+
+          <div className="my-2">
+            <AddOrEditDoctor ref={addDoctorFormRef} onUpdated={handleNewDoctor} />
+          </div>
+
+          <SheetFooter>
+            <SheetClose asChild>
+              <Button
+                onClick={() => {
+                  addDoctorFormRef.current?.submit()
+                }}
+              >
+                Save
+              </Button>
+            </SheetClose>
+          </SheetFooter>
+        </SheetContent>
+      </Sheet>
+    </>
   )
 }

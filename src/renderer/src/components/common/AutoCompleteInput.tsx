@@ -1,4 +1,4 @@
-import { Check, PlusIcon } from 'lucide-react'
+import { Check, Plus, PlusIcon } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -7,7 +7,8 @@ import {
   CommandEmpty,
   CommandGroup,
   CommandInput,
-  CommandItem
+  CommandItem,
+  CommandSeparator
 } from '@/components/ui/command'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { CommandList, CommandLoading } from 'cmdk'
@@ -134,6 +135,20 @@ export function AutoCompleteInput({
                   {item.label}
                 </CommandItem>
               ))}
+            </CommandGroup>
+            <CommandSeparator />
+            <CommandGroup heading="Actions">
+              <CommandItem
+                key={'add-new'}
+                onSelect={() => {
+                  setOpen(false)
+                  onAddNewItem?.()
+                }}
+                className="cursor-pointer"
+              >
+                <PlusIcon className="mr-2 h-4 w-4" />
+                Add New Entry
+              </CommandItem>
             </CommandGroup>
           </CommandList>
         </Command>
