@@ -17,17 +17,20 @@ const getAppVersion = async () => {
   return await ipcRenderer.invoke('appVersion')
 }
 
+const boot = async () => {
+  return await ipcRenderer.invoke('boot')
+}
+
 const electronApi = {
   ...electronAPI,
-  getAppVersion
+  getAppVersion,
+  boot
 }
 
 if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld('electronApi', electronApi)
     contextBridge.exposeInMainWorld('api', api)
-
-    contextBridge.exposeInMainWorld('getAppVersion', getAppVersion)
   } catch (error) {
     console.error(error)
   }

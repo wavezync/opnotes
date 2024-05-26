@@ -41,6 +41,10 @@ export const queries = createQueryKeyStore({
     version: {
       queryKey: null,
       queryFn: () => window.electronApi.getAppVersion()
+    },
+    settings: {
+      queryKey: null,
+      queryFn: () => unwrapResult(window.api.invoke('getAllSettings'))
     }
   }
 })

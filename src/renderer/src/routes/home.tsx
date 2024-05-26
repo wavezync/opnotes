@@ -4,6 +4,7 @@ import hero from '../assets/hero.svg?asset'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Hospital, Plus } from 'lucide-react'
+import { useSettings } from '@renderer/contexts/SettingsContext'
 
 const SearchIcon = () => (
   <svg
@@ -25,6 +26,7 @@ const SearchIcon = () => (
 export default function Home() {
   const navigate = useNavigate()
   const [search, setSearch] = useState('')
+  const { settings } = useSettings()
 
   const handleSearch = () => {
     navigate(`/patients?q=${search}`)
@@ -32,9 +34,15 @@ export default function Home() {
 
   return (
     <div className="flex flex-col justify-center items-center h-full">
-      <h1 className="flex text-5xl font-extrabold items-center justify-center">OpNotes</h1>
+      <h1 className="flex text-8xl font-extrabold items-center justify-center">OpNotes</h1>
+      {settings && (
+        <div className="mt-4 flex flex-col justify-center items-center">
+          <div className="text-xl text-secondary-foreground/80">{settings['hospital']}</div>
+          <div className="text-lg text-secondary-foreground/60">{settings['unit']}</div>
+        </div>
+      )}
       <img src={hero} alt="hero" className="w-96 h-96" />
-      <div className="pt-5 w-full max-w-md flex justify-center items-center">
+      <div className="pt-5 w-full max-w-md flex flex-col md:flex-row gap-1 md:gap-0 justify-center items-center">
         <Input
           type="text"
           placeholder="Search Patients By PHN, BHT, Name..."
@@ -45,7 +53,7 @@ export default function Home() {
           Search
         </Button>
       </div>
-      <div className="flex flex-row w-full justify-center items-center space-x-2">
+      <div className="flex flex-col md:flex-row w-full justify-center items-center md:space-x-2">
         <Button
           className="mt-2"
           variant="secondary"

@@ -3,6 +3,7 @@ import type { ApiType } from '../main/api'
 
 type ElectronApi = ElectronAPI & {
   getAppVersion: () => Promise<string>
+  boot: () => Promise<boolean>
 }
 
 declare global {

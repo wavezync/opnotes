@@ -117,6 +117,6 @@ export type Followup = Selectable<SurgeryFollowUpTable>
 export type NewFollowup = Insertable<SurgeryFollowUpTable>
 export type FollowupUpdate = Updateable<SurgeryFollowUpTable>
 
-export type AppSettings = Selectable<AppSettingsTable>
-export type NewAppSettings = Insertable<AppSettingsTable>
-export type AppSettingsUpdate = Updateable<AppSettingsTable>
+export type AppSetting = Selectable<AppSettingsTable>
+export type NewAppSetting = Insertable<AppSettingsTable>
+export type AppSettingUpdate = Updateable<AppSettingsTable>

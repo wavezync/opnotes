@@ -92,6 +92,10 @@ const router = createHashRouter([
         element: <ErrorPage />
       }
     ]
+  },
+  {
+    path: '/print',
+    element: <div className="">Printing</div>
   }
 ])
 
