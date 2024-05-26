@@ -195,7 +195,7 @@ export const AddOrEditSurgery = forwardRef<AddOrEditSurgeryRef, AddOrEditSurgery
                     <KBD>
                       <span className="text-xs">↓</span>
                     </KBD>{' '}
-                    to insert a ↓ to title
+                    to add an ↓
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
