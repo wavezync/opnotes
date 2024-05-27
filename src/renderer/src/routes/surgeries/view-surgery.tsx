@@ -26,6 +26,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from '@renderer/components/ui/alert-dialog'
+import { DoctorModel } from '@shared/models/DoctorModel'
 
 const getSurgeryByIdQuery = (id: number) => queries.surgeries.get(id)
 const getSurgeryFollowupsQuery = (surgeryId: number) => queries.surgeries.getFollowups(surgeryId)
@@ -130,6 +131,17 @@ const NoContentCard = ({
   </Card>
 )
 
+interface DoctorListItemProps {
+  doctor: DoctorModel
+}
+
+const DoctorListItem = ({ doctor }: DoctorListItemProps) => (
+  <li key={doctor.id} className="">
+    Dr. {doctor.name}
+    {doctor.designation && <>({doctor.designation})</>}
+  </li>
+)
+
 export const SurgeryCard = ({ surgery, patient }: SurgeryCardProps) => {
   const { data: followups, isLoading: isFollowupLoading } = useQuery({
     ...getSurgeryFollowupsQuery(surgery.id)
@@ -166,12 +178,7 @@ export const SurgeryCard = ({ surgery, patient }: SurgeryCardProps) => {
           <span className="font-semibold">Done By:</span>
           {surgery.doneBy && surgery.doneBy.length > 0 ? (
             <ul className="list-disc pl-5">
-              {surgery.doneBy?.map((doctor) => (
-                <li key={doctor.id} className="">
-                  {doctor.name}
-                  {doctor.designation && <>({doctor.designation})</>}
-                </li>
-              ))}
+              {surgery.doneBy?.map((doctor) => <DoctorListItem key={doctor.id} doctor={doctor} />)}
             </ul>
           ) : (
             <span>N/A</span>
@@ -183,10 +190,7 @@ export const SurgeryCard = ({ surgery, patient }: SurgeryCardProps) => {
           {surgery.assistedBy && surgery.assistedBy.length > 0 ? (
             <ul className="list-disc pl-5">
               {surgery.assistedBy?.map((doctor) => (
-                <li key={doctor.id} className="">
-                  {doctor.name}
-                  {doctor.designation && <>({doctor.designation})</>}
-                </li>
+                <DoctorListItem key={doctor.id} doctor={doctor} />
               ))}
             </ul>
           ) : (

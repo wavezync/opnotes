@@ -35,7 +35,7 @@ export interface DoctorAutoCompleteProps {
 
 const DoctorLabel = ({ doctor }: { doctor: Doctor }) => (
   <div className="flex flex-col">
-    <span className="font-bold">{doctor.name}</span>
+    <span className="font-bold">Dr. {doctor.name}</span>
     <span className="italic">{doctor.designation}</span>
   </div>
 )
@@ -59,7 +59,7 @@ const SelectedDoctorChips = ({
         return (
           <div key={doctor.id} className="m-1">
             <Badge variant={'secondary'}>
-              {doctor.name}
+              Dr. {doctor.name}
               {doctor.designation && <>({doctor.designation})</>}
               <button
                 className="hover:text-destructive transition-all group"
