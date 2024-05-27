@@ -34,8 +34,8 @@ export const SettingsIndex = () => {
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      hospital: settings['hospital'] || '',
-      unit: settings['unit'] || ''
+      hospital: '',
+      unit: ''
     }
   })
   const { setBreadcrumbs } = useBreadcrumbs()
@@ -43,6 +43,15 @@ export const SettingsIndex = () => {
   useEffect(() => {
     setBreadcrumbs([{ label: 'Settings', to: '/settings' }])
   }, [setBreadcrumbs])
+
+  useEffect(() => {
+    if (settings) {
+      form.reset({
+        hospital: settings['hospital'] || '',
+        unit: settings['unit'] || ''
+      })
+    }
+  }, [form, settings])
 
   const updateSettingsMutation = useMutation({
     mutationFn: async (data: FormSchema) => {
