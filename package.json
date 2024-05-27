@@ -24,7 +24,8 @@
     "build:mac": "electron-vite build && electron-builder --mac --publish=never",
     "build:linux": "electron-vite build && electron-builder --linux --publish=never",
     "electron-rebuild": "electron-rebuild -f -w better-sqlite3",
-    "prepare": "husky"
+    "prepare": "husky",
+    "commitlint": "commitlint --edit"
   },
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.0",
