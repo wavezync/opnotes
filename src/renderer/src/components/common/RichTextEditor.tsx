@@ -3,15 +3,22 @@ import ListItem from '@tiptap/extension-list-item'
 import { TextStyle } from '@tiptap/extension-text-style'
 import { Editor, EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
+import Underline from '@tiptap/extension-underline'
+import TextAlign from '@tiptap/extension-text-align'
 
 import { cn } from '@renderer/lib/utils'
 import {
+  AlignCenterIcon,
+  AlignJustifyIcon,
+  AlignLeftIcon,
+  AlignRightIcon,
   BoldIcon,
   ItalicIcon,
   ListIcon,
   ListOrderedIcon,
   RedoIcon,
   StrikethroughIcon,
+  UnderlineIcon,
   UndoIcon
 } from 'lucide-react'
 import { useEffect } from 'react'
@@ -63,11 +70,48 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
           <ItalicIcon className="h-4 w-4" />
         </ToolbarButton>
         <ToolbarButton
+          onClick={() => editor.chain().focus().toggleUnderline().run()}
+          disabled={!editor.can().chain().focus().toggleUnderline().run()}
+          isActive={editor.isActive('underline')}
+        >
+          <UnderlineIcon className="h-4 w-4" />
+        </ToolbarButton>
+        <ToolbarButton
           onClick={() => editor.chain().focus().toggleStrike().run()}
           disabled={!editor.can().chain().focus().toggleStrike().run()}
           isActive={editor.isActive('strike')}
         >
           <StrikethroughIcon className="h-4 w-4" />
+        </ToolbarButton>
+      </div>
+
+      <div className="p-1 border-r border-border w-fit flex space-x-1">
+        <ToolbarButton
+          onClick={() => editor.chain().focus().setTextAlign('left').run()}
+          isActive={editor.isActive({ textAlign: 'left' })}
+        >
+          <AlignLeftIcon className="h-4 w-4" />
+        </ToolbarButton>
+
+        <ToolbarButton
+          onClick={() => editor.chain().focus().setTextAlign('center').run()}
+          isActive={editor.isActive({ textAlign: 'center' })}
+        >
+          <AlignCenterIcon className="h-4 w-4" />
+        </ToolbarButton>
+
+        <ToolbarButton
+          onClick={() => editor.chain().focus().setTextAlign('right').run()}
+          isActive={editor.isActive({ textAlign: 'right' })}
+        >
+          <AlignRightIcon className="h-4 w-4" />
+        </ToolbarButton>
+
+        <ToolbarButton
+          onClick={() => editor.chain().focus().setTextAlign('justify').run()}
+          isActive={editor.isActive({ textAlign: 'justify' })}
+        >
+          <AlignJustifyIcon className="h-4 w-4" />
         </ToolbarButton>
       </div>
 
@@ -148,6 +192,10 @@ const extensions = [
   }),
   Placeholder.configure({
     emptyEditorClass: 'is-editor-empty'
+  }),
+  Underline.configure(),
+  TextAlign.configure({
+    types: ['heading', 'paragraph']
   })
 ]
 
