@@ -78,7 +78,7 @@ export const SettingsIndex = () => {
   return (
     <AppLayout title="Settings">
       <div className="">
-        <h2 className="text-2xl font-bold">General Settings</h2>
+        <h2 className="text-xl font-bold">General</h2>
         <Form {...form}>
           <FormField
             name="hospital"
