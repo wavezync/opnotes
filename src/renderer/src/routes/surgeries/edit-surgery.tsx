@@ -2,7 +2,7 @@ import { Button } from '@renderer/components/ui/button'
 import { useBreadcrumbs } from '@renderer/contexts/BreadcrumbContext'
 import { AppLayout } from '@renderer/layouts/AppLayout'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { Printer, Save } from 'lucide-react'
+import { Save } from 'lucide-react'
 import { useEffect, useMemo, useRef } from 'react'
 import { useParams } from 'react-router-dom'
 import { getPatientByIdQuery } from '../patients/edit-patient'
@@ -57,9 +57,6 @@ export const EditSurgery = () => {
         }}
       >
         <Save /> Save
-      </Button>
-      <Button className="" variant="secondary">
-        <Printer /> Print
       </Button>
     </>
   )

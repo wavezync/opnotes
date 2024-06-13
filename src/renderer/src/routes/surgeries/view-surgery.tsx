@@ -12,7 +12,7 @@ import { PatientModel } from 'src/shared/models/PatientModel'
 import { Badge } from '@renderer/components/ui/badge'
 import { AddOrEditFollowup } from '@renderer/components/surgery/AddOrEditFollowup'
 import { Card, CardContent, CardHeader } from '@renderer/components/ui/card'
-import { cn, formatDate, formatDateTime, unwrapResult } from '@renderer/lib/utils'
+import { cn, formatDate, formatDateTime, isEmptyHtml, unwrapResult } from '@renderer/lib/utils'
 import { Skeleton } from '@renderer/components/ui/skeleton'
 import { FollowupModel } from 'src/shared/models/FollowupModel'
 import {
@@ -27,6 +27,8 @@ import {
   AlertDialogTrigger
 } from '@renderer/components/ui/alert-dialog'
 import { DoctorModel } from '@shared/models/DoctorModel'
+import { useSettings } from '@renderer/contexts/SettingsContext'
+import { surgeryPrintData } from '@renderer/lib/print'
 
 const getSurgeryByIdQuery = (id: number) => queries.surgeries.get(id)
 const getSurgeryFollowupsQuery = (surgeryId: number) => queries.surgeries.getFollowups(surgeryId)
@@ -202,9 +204,9 @@ export const SurgeryCard = ({ surgery, patient }: SurgeryCardProps) => {
       <div className="flex flex-col mt-2">
         <span className="font-semibold text-2xl">Notes</span>
 
-        {surgery.notes ? (
+        {!isEmptyHtml(surgery.notes) ? (
           <RichTextContent
-            content={surgery.notes}
+            content={surgery.notes!}
             className="p-2 border rounded-lg mt-1 hover:bg-secondary/10"
           />
         ) : (
@@ -217,9 +219,9 @@ export const SurgeryCard = ({ surgery, patient }: SurgeryCardProps) => {
       <div className="flex flex-col mt-2">
         <span className="font-semibold text-2xl">Post Op Notes</span>
 
-        {surgery.post_op_notes ? (
+        {!isEmptyHtml(surgery.post_op_notes) ? (
           <RichTextContent
-            content={surgery.post_op_notes}
+            content={surgery.post_op_notes!}
             className="p-2 border rounded-lg mt-1 hover:bg-secondary/10"
           />
         ) : (
@@ -262,6 +264,7 @@ export const ViewSurgery = () => {
   const navigate = useNavigate()
   const { patientId, surgeryId } = useParams()
   const { setBreadcrumbs } = useBreadcrumbs()
+  const { settings } = useSettings()
   const { data: patient } = useQuery({
     ...getPatientByIdQuery(parseInt(patientId!)),
     enabled: !!patientId
@@ -292,10 +295,19 @@ export const ViewSurgery = () => {
     }
   }, [setBreadcrumbs, patient, ptName, surgeryName, surgeryId, surgery?.bht])
 
+  const handlePrint = async () => {
+    if (!patient || !surgery) return
+
+    const printData = surgeryPrintData(patient, surgery, settings)
+    await window.electronApi.openPrintDialog({
+      title: `${ptName} - ${surgeryName}`,
+      data: printData
+    })
+  }
+
   const actions = (
     <>
       <Button
-        className=""
         variant="default"
         onClick={() => {
           navigate(`/patients/${patientId}/surgeries/${surgeryId}/edit`)
@@ -303,7 +315,7 @@ export const ViewSurgery = () => {
       >
         <Edit /> Edit
       </Button>
-      <Button className="" variant="secondary">
+      <Button className="" variant="secondary" onClick={handlePrint}>
         <Printer /> Print
       </Button>
     </>

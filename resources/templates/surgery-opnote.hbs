@@ -1,0 +1,98 @@
+<h1 class='text-2xl text-center bold'>
+  {{settings.hospital}}
+</h1>
+<h2 class='text-lg pt-1 text-center'>
+  {{settings.unit}}
+</h2>
+
+<div class='grid grid-cols-3 gap-2 mt-3 p-3'>
+  <p>
+    <span class='bold'>
+      Name:
+    </span>
+    {{patient.name}}
+  </p>
+  <p>
+    <span class='bold'>
+      Age:
+    </span>
+    {{patient.age}}
+  </p>
+  <p>
+    <span class='bold'>
+      BHT:
+    </span>
+    {{surgery.bht}}
+  </p>
+  <p>
+    <span class='bold'>
+      Ward:
+    </span>
+    {{surgery.ward}}
+  </p>
+  <p>
+    <span class='bold'>
+      Date:
+    </span>
+    {{surgery.date}}
+  </p>
+</div>
+
+<hr />
+
+<h2 class='text-xl mt-3 text-center p-3'>
+  {{surgery.title}}
+</h2>
+
+<div class='flex justify-end items-end flex-col'>
+  <div>
+    {{#if surgery.doneBy.length}}
+      <div class='p-1'>
+        <div class='bold m-1'>
+          Done By:
+        </div>
+        <ul class='disc'>
+          {{#each surgery.doneBy as |doctor|}}
+            <li>
+              {{doctor}}
+            </li>
+          {{/each}}
+        </ul>
+      </div>
+    {{/if}}
+    {{#if surgery.assistedBy.length}}
+      <div class='p-1'>
+        <div class='bold m-1'>
+          Assisted By:
+        </div>
+        <ul class='disc'>
+          {{#each surgery.assistedBy as |doctor|}}
+            <li>
+              {{doctor}}
+            </li>
+          {{/each}}
+        </ul>
+      </div>
+    {{/if}}
+  </div>
+</div>
+
+{{#if surgery.notes}}
+  <div class='p-1'>
+    <div class='prose'>
+      {{{surgery.notes}}}
+    </div>
+  </div>
+{{/if}}
+
+{{#if surgery.post_op_notes}}
+  <hr />
+  <div class='p-1'>
+    <h2 class='text-lg mt-3 text-center p-3'>
+      Post-Op Notes
+    </h2>
+    <div class='prose'>
+      {{{surgery.post_op_notes}}}
+    </div>
+  </div>
+{{/if}}

@@ -7,6 +7,7 @@ import { db, migrateToLatest } from './db'
 import { registerApi } from './api'
 
 import electronUpdater, { type AppUpdater } from 'electron-updater'
+import { PrintDialogArgs } from '../preload/interfaces'
 
 export function getAutoUpdater(): AppUpdater {
   // Using destructuring to access autoUpdater due to the CommonJS module of 'electron-updater'.
@@ -105,10 +106,8 @@ function createPrinterWindow() {
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     workerWindow.loadURL(`${process.env['ELECTRON_RENDERER_URL']}/print.html`)
   } else {
-    workerWindow.loadFile(join(__dirname, '../renderer/print.html'), { hash: '/print' })
+    workerWindow.loadFile(join(__dirname, '../renderer/print.html'))
   }
-
-  workerWindow.hide()
 
   return workerWindow
 }
@@ -146,6 +145,22 @@ app.whenReady().then(() => {
     await migrateToLatest(db)
 
     return true
+  })
+
+  ipcMain.handle('printDialog', async (event, options: PrintDialogArgs) => {
+    const workerWindow = createPrinterWindow()
+    workerWindow.once('ready-to-show', () => {
+      const windowTitle = options.title || 'Print Preview'
+      workerWindow.setTitle(windowTitle)
+
+      workerWindow.webContents.send('printData', options)
+      workerWindow.show()
+      // open devtools
+
+      if (is.dev) {
+        workerWindow.webContents.openDevTools()
+      }
+    })
   })
 })
 

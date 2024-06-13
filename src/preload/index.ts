@@ -1,5 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
+import { PrintDialogArgs } from './interfaces'
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise
@@ -21,10 +22,19 @@ const boot = async () => {
   return await ipcRenderer.invoke('boot')
 }
 
+const openPrintDialog = async (options: PrintDialogArgs) => {
+  return await ipcRenderer.invoke('printDialog', options)
+}
+
+const onPrintData = (callback: (options: PrintDialogArgs) => void) =>
+  ipcRenderer.on('printData', (_, options) => callback(options))
+
 const electronApi = {
   ...electronAPI,
   getAppVersion,
-  boot
+  boot,
+  openPrintDialog,
+  onPrintData
 }
 
 if (process.contextIsolated) {
