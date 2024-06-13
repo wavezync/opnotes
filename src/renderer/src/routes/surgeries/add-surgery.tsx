@@ -11,6 +11,7 @@ import {
   AddOrEditSurgeryRef
 } from '@renderer/components/surgery/AddOrEditSurgery'
 import { queries } from '@renderer/lib/queries'
+import { useKeyboardEvent } from '@renderer/hooks/useKeyboardEvent'
 
 export const AddNewSurgery = () => {
   const navigate = useNavigate()
@@ -22,6 +23,15 @@ export const AddNewSurgery = () => {
     ...getPatientByIdQuery(parseInt(patientId!)),
     enabled: !!patientId
   })
+
+  useKeyboardEvent({
+    key: 's',
+    ctrlKey: true,
+    onKeyDown: () => {
+      formRef.current?.submit()
+    }
+  })
+
   const ptName = useMemo(
     () => patient?.name || patient?.phn || 'Patient',
     [patient?.name, patient?.phn]

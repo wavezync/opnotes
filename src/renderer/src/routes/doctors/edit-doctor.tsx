@@ -1,6 +1,7 @@
 import { AddOrEditDoctor, AddOrEditDoctorRef } from '@renderer/components/doctor/AddOrEditDoctor'
 import { Button } from '@renderer/components/ui/button'
 import { useBreadcrumbs } from '@renderer/contexts/BreadcrumbContext'
+import { useKeyboardEvent } from '@renderer/hooks/useKeyboardEvent'
 import { AppLayout } from '@renderer/layouts/AppLayout'
 import { queries } from '@renderer/lib/queries'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
@@ -21,6 +22,14 @@ export const EditDoctor = () => {
   const handleNewPatient = (_doctor: DoctorModel) => {
     navigate(`/doctors`)
   }
+
+  useKeyboardEvent({
+    key: 's',
+    ctrlKey: true,
+    onKeyDown: () => {
+      formRef.current?.submit()
+    }
+  })
 
   const actions = (
     <>

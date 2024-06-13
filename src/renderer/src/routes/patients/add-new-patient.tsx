@@ -8,6 +8,7 @@ import { Patient } from 'src/shared/types/db'
 import { NewPatientFormRef } from '../../components/patient/NewPatientForm'
 import { Button } from '@renderer/components/ui/button'
 import { SaveIcon } from 'lucide-react'
+import { useKeyboardEvent } from '@renderer/hooks/useKeyboardEvent'
 
 export const AddNewPatient = () => {
   const navigate = useNavigate()
@@ -17,6 +18,14 @@ export const AddNewPatient = () => {
     toast.success('Patient added successfully')
     navigate(`/patients/${patient.id}`)
   }
+
+  useKeyboardEvent({
+    key: 's',
+    ctrlKey: true,
+    onKeyDown: () => {
+      ref.current?.submit()
+    }
+  })
 
   const actions = (
     <>

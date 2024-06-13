@@ -29,6 +29,7 @@ import {
 import { DoctorModel } from '@shared/models/DoctorModel'
 import { useSettings } from '@renderer/contexts/SettingsContext'
 import { surgeryPrintData } from '@renderer/lib/print'
+import { useKeyboardEvent } from '@renderer/hooks/useKeyboardEvent'
 
 const getSurgeryByIdQuery = (id: number) => queries.surgeries.get(id)
 const getSurgeryFollowupsQuery = (surgeryId: number) => queries.surgeries.getFollowups(surgeryId)
@@ -304,6 +305,12 @@ export const ViewSurgery = () => {
       data: printData
     })
   }
+
+  useKeyboardEvent({
+    key: 'p',
+    ctrlKey: true,
+    onKeyDown: handlePrint
+  })
 
   const actions = (
     <>

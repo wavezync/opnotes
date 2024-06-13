@@ -9,6 +9,7 @@ import { queries } from '../../lib/queries'
 import { AppLayout } from '@renderer/layouts/AppLayout'
 import { Button } from '@renderer/components/ui/button'
 import { SaveIcon } from 'lucide-react'
+import { useKeyboardEvent } from '@renderer/hooks/useKeyboardEvent'
 
 export const getPatientByIdQuery = (id: number) =>
   queryOptions({
@@ -28,6 +29,14 @@ export const EditPatient = () => {
     })
     toast.success('Patient updated successfully')
   }
+
+  useKeyboardEvent({
+    key: 's',
+    ctrlKey: true,
+    onKeyDown: () => {
+      ref.current?.submit()
+    }
+  })
 
   const actions = (
     <>
