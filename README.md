@@ -1,6 +1,6 @@
-# op-notes
+# Op Notes
 
-An Electron application with React and TypeScript
+Surgery notes management system for hospitals.
 
 ## Recommended IDE Setup
 
