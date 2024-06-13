@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
+import './styles/reset.css'
+import './styles/screen.css'
+import './styles/print.css'
 import React, { useEffect, useMemo } from 'react'
 import ReactDOM from 'react-dom/client'
 import handlebars from 'handlebars'
