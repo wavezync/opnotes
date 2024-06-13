@@ -2,16 +2,6 @@
 
 All notable changes to this project will be documented in this file.
 
-## [unreleased]
-
-### 📚 Documentation
-
-- Update CHANGELOG.md for v0.0.10 [skip ci]
-
-### ⚙️ Miscellaneous Tasks
-
-- Changelog update
-
 ## [0.0.10] - 2024-06-13
 
 ### 🚀 Features
@@ -21,10 +11,13 @@ All notable changes to this project will be documented in this file.
 ### 🐛 Bug Fixes
 
 - Pipeline
+- Print styles
 
 ### 📚 Documentation
 
 - Update CHANGELOG.md for v0.0.10 [skip ci]
+- Update CHANGELOG.md for v0.0.10 [skip ci]
+- Changelog
 
 ### ⚙️ Miscellaneous Tasks
 
@@ -34,6 +27,7 @@ All notable changes to this project will be documented in this file.
 - Added changelog
 - Ci update
 - Commit changelog
+- Changelog update
 
 ## [0.0.9] - 2024-06-13
 
