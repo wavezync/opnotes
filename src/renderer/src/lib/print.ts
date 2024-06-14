@@ -16,9 +16,15 @@ export const surgeryPrintData = (
     doneBy: surgery?.doneBy
       ? surgery?.doneBy.map((doctor) => `Dr. ${doctor.name} (${doctor.designation})`)
       : [],
+    doneByAsString: surgery?.doneBy
+      ?.map((doctor) => `Dr. ${doctor.name} (${doctor.designation})`)
+      .join(', '),
     assistedBy: surgery?.assistedBy
       ? surgery?.assistedBy.map((doctor) => `Dr. ${doctor.name} (${doctor.designation})`)
       : [],
+    assistedByAsString: surgery?.assistedBy
+      ?.map((doctor) => `Dr. ${doctor.name} (${doctor.designation})`)
+      .join(', '),
     date: surgery?.date ? formatDate(surgery?.date) : null,
     notes: isEmptyHtml(surgery?.notes) ? null : surgery?.notes,
     post_op_notes: isEmptyHtml(surgery?.post_op_notes) ? null : surgery?.post_op_notes
