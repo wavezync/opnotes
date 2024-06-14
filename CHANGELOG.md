@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.11] - 2024-06-14
+
+### 🐛 Bug Fixes
+
+- Layout update for printing
+
+### 📚 Documentation
+
+- Update readme
+
+### ⚙️ Miscellaneous Tasks
+
+- Update CHANGELOG.md for v0.0.10 [skip ci]
+- Update stefanzweifel/git-auto-commit-action to v5 [skip ci]
+- Run workflow on branches
+- Version bump 0.0.11
+
 ## [0.0.10] - 2024-06-13
 
 ### 🚀 Features
