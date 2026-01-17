@@ -22,6 +22,8 @@ export interface SurgeryTable {
   bht: string
   ward: string
   date: ColumnType<Date, number, number> | null
+  doa: ColumnType<Date, number, number> | null
+  dod: ColumnType<Date, number, number> | null
   notes: string | null
   post_op_notes: string | null
 

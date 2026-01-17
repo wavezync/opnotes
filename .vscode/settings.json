@@ -10,5 +10,8 @@
   },
   "tailwindCSS.experimental.classRegex": [
     "class:\\s*?[\"'`]([^\"'`]*).*?,"
-  ]
+  ],
+  "css.lint.unknownAtRules": "ignore",
+  "css.validate": false,
+  "scss.validate": false
 }

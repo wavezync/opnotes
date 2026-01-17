@@ -26,6 +26,8 @@ export const surgeryPrintData = (
       ?.map((doctor) => `Dr. ${doctor.name} (${doctor.designation})`)
       .join(', '),
     date: surgery?.date ? formatDate(surgery?.date) : null,
+    doa: surgery?.doa ? formatDate(surgery?.doa) : null,
+    dod: surgery?.dod ? formatDate(surgery?.dod) : null,
     notes: isEmptyHtml(surgery?.notes) ? null : surgery?.notes,
     post_op_notes: isEmptyHtml(surgery?.post_op_notes) ? null : surgery?.post_op_notes
   },

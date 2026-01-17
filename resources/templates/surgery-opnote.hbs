@@ -32,6 +32,26 @@
       <td class='label'>Ward:</td>
       <td>{{surgery.ward}}</td>
     </tr>
+    {{#if surgery.doa}}{{#if surgery.dod}}
+    <tr>
+      <td class='label'>DoA:</td>
+      <td>{{surgery.doa}}</td>
+      <td class='label'>DoD:</td>
+      <td>{{surgery.dod}}</td>
+    </tr>
+    {{/if}}{{/if}}
+    {{#if surgery.doa}}{{#unless surgery.dod}}
+    <tr>
+      <td class='label'>DoA:</td>
+      <td colspan='3'>{{surgery.doa}}</td>
+    </tr>
+    {{/unless}}{{/if}}
+    {{#unless surgery.doa}}{{#if surgery.dod}}
+    <tr>
+      <td class='label'>DoD:</td>
+      <td colspan='3'>{{surgery.dod}}</td>
+    </tr>
+    {{/if}}{{/unless}}
   </table>
 
   <!-- Surgery Title -->

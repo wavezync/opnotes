@@ -19,6 +19,11 @@ import { DoctorAutoComplete } from '../doctor/DoctorAutoComplete'
 import toast from 'react-hot-toast'
 import { SurgeryModel } from '../../../../shared/models/SurgeryModel'
 import { unwrapResult } from '@renderer/lib/utils'
+
+const toValidDate = (date?: Date | null): Date | null => {
+  if (!date) return null
+  return !isNaN(date.getTime()) ? date : null
+}
 const KBD = ({ children }: { children: React.ReactNode }) => (
   <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
     {children}
@@ -30,6 +35,8 @@ const surgerySchema = z.object({
   bht: z.string().min(1, { message: 'BHT is required' }),
   ward: z.string().min(1, { message: 'Ward is required' }),
   date: z.date().nullable(),
+  doa: z.date().nullable(),
+  dod: z.date().nullable(),
   doneBy: z.array(z.number()),
   assistedBy: z.array(z.number()),
   notes: z.string().optional(),
@@ -56,7 +63,9 @@ export const AddOrEditSurgery = forwardRef<AddOrEditSurgeryRef, AddOrEditSurgery
         bht: surgery?.bht || '',
         title: surgery?.title || '',
         ward: surgery?.ward || '',
-        date: surgery?.date || null,
+        date: toValidDate(surgery?.date),
+        doa: toValidDate(surgery?.doa),
+        dod: toValidDate(surgery?.dod),
         assistedBy: surgery?.assistedBy?.map((ab) => ab.id) || [],
         doneBy: surgery?.doneBy?.map((db) => db.id) || [],
         notes: surgery?.notes || '',
@@ -70,12 +79,14 @@ export const AddOrEditSurgery = forwardRef<AddOrEditSurgeryRef, AddOrEditSurgery
       try {
         console.log(data)
         if (!patientId) throw new Error('Patient ID is required')
-        const { doneBy, assistedBy, date, ...rest } = data
+        const { doneBy, assistedBy, date, doa, dod, ...rest } = data
 
         const { result, error } = await window.api.invoke('createNewSurgery', {
           ...rest,
           patient_id: patientId,
-          date: date ? +date : null
+          date: date ? +date : null,
+          doa: doa ? +doa : null,
+          dod: dod ? +dod : null
         })
 
         if (error) throw error
@@ -104,11 +115,13 @@ export const AddOrEditSurgery = forwardRef<AddOrEditSurgeryRef, AddOrEditSurgery
       try {
         if (!surgery) throw new Error('Surgery is required')
 
-        const { doneBy, assistedBy, date, ...rest } = data
+        const { doneBy, assistedBy, date, doa, dod, ...rest } = data
 
         const { result, error } = await window.api.invoke('updateSurgery', surgery.id, {
           ...rest,
-          date: date ? +date : null
+          date: date ? +date : null,
+          doa: doa ? +doa : null,
+          dod: dod ? +dod : null
         })
 
         if (error) throw error
@@ -202,7 +215,7 @@ export const AddOrEditSurgery = forwardRef<AddOrEditSurgeryRef, AddOrEditSurgery
               )}
             />
 
-            <div className="flex flex-col md:flex-row md:items-end md:space-x-2 w-full mt-1">
+            <div className="flex flex-col md:flex-row md:items-end gap-2 w-full mt-1">
               <div className="flex flex-col w-full md:w-1/2">
                 <FormField
                   name="bht"
@@ -234,22 +247,48 @@ export const AddOrEditSurgery = forwardRef<AddOrEditSurgeryRef, AddOrEditSurgery
                   )}
                 />
               </div>
+            </div>
 
-              <div className="flex flex-col">
-                <FormField
-                  name="date"
-                  control={form.control}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Surgery Date</FormLabel>
-                      <FormControl>
-                        <DatePicker onSelect={field.onChange} selected={field.value || undefined} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full mt-2">
+              <FormField
+                name="date"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Surgery Date</FormLabel>
+                    <FormControl>
+                      <DatePicker onSelect={field.onChange} selected={field.value || undefined} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                name="doa"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Date of Admission</FormLabel>
+                    <FormControl>
+                      <DatePicker onSelect={field.onChange} selected={field.value || undefined} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                name="dod"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Date of Discharge</FormLabel>
+                    <FormControl>
+                      <DatePicker onSelect={field.onChange} selected={field.value || undefined} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
 
             <div className="flex flex-col mt-4">

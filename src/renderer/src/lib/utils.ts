@@ -21,9 +21,15 @@ export async function unwrapResult<T>(promise: Promise<{ result: T; error: any }
 
 export const trim = (str: string, len = 20) => (str.length > len ? str.slice(0, len) + '...' : str)
 
-export const formatDate = (date?: Date) => dayjs(date).format('DD/MM/YYYY')
+export const formatDate = (date?: Date) => {
+  const d = dayjs(date)
+  return d.isValid() ? d.format('DD/MM/YYYY') : ''
+}
 
-export const formatDateTime = (date?: Date) => dayjs(date).format('DD/MM/YYYY HH:mm')
+export const formatDateTime = (date?: Date) => {
+  const d = dayjs(date)
+  return d.isValid() ? d.format('DD/MM/YYYY HH:mm') : ''
+}
 
 export const formatTime = (date?: Date) => dayjs(date).format('HH:mm')
 
