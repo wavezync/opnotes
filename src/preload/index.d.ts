@@ -1,12 +1,16 @@
 import { ElectronAPI } from '@electron-toolkit/preload'
 import type { ApiType } from '../main/api'
-import { PrintDialogArgs } from './interfaces'
+import { PrintDialogArgs, UpdateStatusPayload } from './interfaces'
 
 type ElectronApi = ElectronAPI & {
   getAppVersion: () => Promise<string>
   boot: () => Promise<boolean>
   openPrintDialog: (options: PrintDialogArgs) => Promise<void>
   onPrintData: (callback: (options: PrintDialogArgs) => void) => void
+  checkForUpdates: () => Promise<unknown>
+  downloadUpdate: () => Promise<void>
+  quitAndInstall: () => Promise<void>
+  onUpdateStatus: (callback: (payload: UpdateStatusPayload) => void) => () => void
 }
 
 declare global {
