@@ -4,6 +4,11 @@
 <h2 class='text-lg pt-1 text-center'>
   {{settings.unit}}
 </h2>
+{{#if settings.telephone}}
+  <p class='text-sm text-center pt-1'>
+    Tel: {{settings.telephone}}
+  </p>
+{{/if}}
 
 <div class='grid grid-cols-3 gap-2 mt-3 p-3'>
   <p>

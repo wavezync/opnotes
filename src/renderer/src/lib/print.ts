@@ -31,6 +31,7 @@ export const surgeryPrintData = (
   },
   settings: {
     hospital: settings?.hospital || '',
-    unit: settings?.unit || ''
+    unit: settings?.unit || '',
+    telephone: settings?.telephone || ''
   }
 })
