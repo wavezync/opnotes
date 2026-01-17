@@ -1,149 +1,101 @@
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage
-} from '@renderer/components/ui/form'
 import { useBreadcrumbs } from '@renderer/contexts/BreadcrumbContext'
 import { AppLayout } from '@renderer/layouts/AppLayout'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
-import { useForm } from 'react-hook-form'
-import { queries } from '../../lib/queries'
-import { Input } from '@renderer/components/ui/input'
-import { useSettings } from '@renderer/contexts/SettingsContext'
-import { Button } from '@renderer/components/ui/button'
-import { Save } from 'lucide-react'
-import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import toast from 'react-hot-toast'
+import { useSearchParams } from 'react-router-dom'
+import { Settings, FileText } from 'lucide-react'
+import { cn } from '@renderer/lib/utils'
+import { GeneralSettings } from '@renderer/components/settings/GeneralSettings'
+import { TemplatesSettings } from '@renderer/components/settings/TemplatesSettings'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@renderer/components/ui/tabs'
 
-const formSchema = z.object({
-  hospital: z.string(),
-  unit: z.string(),
-  telephone: z.string()
-})
+type SettingsSection = 'general' | 'templates'
 
-type FormSchema = z.infer<typeof formSchema>
+interface NavItemProps {
+  icon: React.ReactNode
+  label: string
+  isActive: boolean
+  onClick: () => void
+}
+
+const NavItem = ({ icon, label, isActive, onClick }: NavItemProps) => (
+  <button
+    onClick={onClick}
+    className={cn(
+      'flex items-center gap-3 w-full px-3 py-2 text-sm font-medium rounded-md transition-colors',
+      isActive
+        ? 'bg-accent text-accent-foreground'
+        : 'text-muted-foreground hover:bg-accent/50 hover:text-accent-foreground'
+    )}
+  >
+    {icon}
+    {label}
+  </button>
+)
 
 export const SettingsIndex = () => {
-  const queryClient = useQueryClient()
-  const { settings } = useSettings()
-  const form = useForm<FormSchema>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      hospital: '',
-      unit: '',
-      telephone: ''
-    }
-  })
+  const [searchParams, setSearchParams] = useSearchParams()
   const { setBreadcrumbs } = useBreadcrumbs()
+
+  const tabParam = searchParams.get('tab')
+  const activeSection: SettingsSection = tabParam === 'templates' ? 'templates' : 'general'
+
+  const setActiveSection = (section: SettingsSection) => {
+    setSearchParams(section === 'general' ? {} : { tab: section })
+  }
 
   useEffect(() => {
     setBreadcrumbs([{ label: 'Settings', to: '/settings' }])
   }, [setBreadcrumbs])
 
-  useEffect(() => {
-    if (settings) {
-      form.reset({
-        hospital: settings['hospital'] || '',
-        unit: settings['unit'] || '',
-        telephone: settings['telephone'] || ''
-      })
-    }
-  }, [form, settings])
-
-  const updateSettingsMutation = useMutation({
-    mutationFn: async (data: FormSchema) => {
-      const updatePayload = Object.entries(data).map(([key, value]) => ({
-        key,
-        value
-      }))
-      await window.api.invoke('updateSettings', updatePayload)
-    },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries(queries.app.settings)
-      toast.success('Settings updated successfully')
-    },
-    onError: (error: Error) => {
-      toast.error(error.message)
-    }
-  })
-  const onSubmit = async (data: FormSchema) => {
-    await updateSettingsMutation.mutateAsync(data)
-  }
-
-  const submitForm = form.handleSubmit(onSubmit)
-
   return (
     <AppLayout title="Settings">
-      <div className="">
-        <h2 className="text-xl font-bold">General</h2>
-        <Form {...form}>
-          <FormField
-            name="hospital"
-            control={form.control}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Hospital</FormLabel>
-                <FormControl>
-                  <Input placeholder="Hospital Name" {...field} />
-                </FormControl>
-                <FormDescription>
-                  Name of the hospital, this will be used when printing BHT
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            name="unit"
-            control={form.control}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Unit</FormLabel>
-                <FormControl>
-                  <Input placeholder="Unit Name" {...field} />
-                </FormControl>
-                <FormDescription>
-                  Name of the hospital unit, this will be used when printing BHT
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            name="telephone"
-            control={form.control}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Telephone</FormLabel>
-                <FormControl>
-                  <Input placeholder="Telephone Number" {...field} />
-                </FormControl>
-                <FormDescription>
-                  Contact telephone number, this will be used when printing BHT
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <div className="flex justify-start mt-2">
-            <Button
-              type="submit"
-              leftIcon={<Save />}
-              onClick={() => submitForm()}
-              isLoading={updateSettingsMutation.isPending}
-              loadingText="Saving..."
-            >
-              Save
-            </Button>
+      {/* Desktop layout with sidebar */}
+      <div className="hidden md:flex gap-6">
+        <nav className="w-48 flex-shrink-0">
+          <div className="space-y-1">
+            <NavItem
+              icon={<Settings className="h-4 w-4" />}
+              label="General"
+              isActive={activeSection === 'general'}
+              onClick={() => setActiveSection('general')}
+            />
+            <NavItem
+              icon={<FileText className="h-4 w-4" />}
+              label="Templates"
+              isActive={activeSection === 'templates'}
+              onClick={() => setActiveSection('templates')}
+            />
           </div>
-        </Form>
+        </nav>
+        <div className="flex-1 min-w-0">
+          {activeSection === 'general' && <GeneralSettings />}
+          {activeSection === 'templates' && <TemplatesSettings />}
+        </div>
+      </div>
+
+      {/* Mobile layout with tabs */}
+      <div className="md:hidden">
+        <Tabs
+          value={activeSection}
+          onValueChange={(value) => setActiveSection(value as SettingsSection)}
+        >
+          <TabsList className="w-full">
+            <TabsTrigger value="general" className="flex-1">
+              <Settings className="h-4 w-4 mr-2" />
+              General
+            </TabsTrigger>
+            <TabsTrigger value="templates" className="flex-1">
+              <FileText className="h-4 w-4 mr-2" />
+              Templates
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value="general">
+            <GeneralSettings />
+          </TabsContent>
+          <TabsContent value="templates">
+            <TemplatesSettings />
+          </TabsContent>
+        </Tabs>
       </div>
     </AppLayout>
   )

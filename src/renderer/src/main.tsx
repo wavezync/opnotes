@@ -21,6 +21,7 @@ import { AddNewDoctor } from './routes/doctors/add-doctor'
 import { EditDoctor } from './routes/doctors/edit-doctor'
 import { SurgierisIndex } from './routes/surgeries/list-surgeries'
 import { SettingsIndex } from './routes/settings/settings-index'
+import { AddTemplatePage, EditTemplatePage } from './routes/settings/template-form-page'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -91,6 +92,14 @@ const router = createHashRouter([
       {
         path: '/settings',
         element: <SettingsIndex />
+      },
+      {
+        path: '/settings/templates/add',
+        element: <AddTemplatePage />
+      },
+      {
+        path: '/settings/templates/:id/edit',
+        element: <EditTemplatePage />
       },
 
       {

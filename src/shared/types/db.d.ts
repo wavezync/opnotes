@@ -88,6 +88,25 @@ export interface AppSettingsTable {
   display_name: string
 }
 
+export interface SurgeryTemplateTable {
+  id: Generated<number>
+  title: string
+  content: string
+  category: string
+  tags: string | null // JSON array stored as string, e.g. '["laparoscopic", "emergency"]'
+  doctor_id: number | null
+  created_at: ColumnType<Date, number, never>
+  updated_at: ColumnType<Date, number, number>
+}
+
+export interface SurgeryTemplatesFTS {
+  template_id: number
+  title: string
+  category: string
+  tags: string
+  content: string
+}
+
 export interface Database {
   patients: PatientTable
   surgeries: SurgeryTable
@@ -95,10 +114,12 @@ export interface Database {
   surgery_doctors_done_by: SurgeryDoctorsDoneByTable
   surgery_doctors_assisted_by: SurgeryDoctorsAssistedByTable
   surgery_followups: SurgeryFollowUpTable
+  surgery_templates: SurgeryTemplateTable
 
   patients_fts: PatientsFTS
   surgeries_fts: SurgeriesFTS
   doctors_fts: DoctorsFTS
+  surgery_templates_fts: SurgeryTemplatesFTS
 
   app_settings: AppSettingsTable
 }
@@ -122,3 +143,7 @@ export type FollowupUpdate = Updateable<SurgeryFollowUpTable>
 export type AppSetting = Selectable<AppSettingsTable>
 export type NewAppSetting = Insertable<AppSettingsTable>
 export type AppSettingUpdate = Updateable<AppSettingsTable>
+
+export type SurgeryTemplate = Selectable<SurgeryTemplateTable>
+export type NewSurgeryTemplate = Insertable<SurgeryTemplateTable>
+export type SurgeryTemplateUpdate = Updateable<SurgeryTemplateTable>
