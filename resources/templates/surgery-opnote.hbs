@@ -1,99 +1,79 @@
-<h1 class='text-2xl text-center bold'>
-  {{settings.hospital}}
-</h1>
-<h2 class='text-lg pt-1 text-center'>
-  {{settings.unit}}
-</h2>
-{{#if settings.telephone}}
-  <p class='text-sm text-center pt-1'>
-    Tel: {{settings.telephone}}
-  </p>
-{{/if}}
-
-<div class='grid grid-cols-3 gap-2 mt-3 p-3'>
-  <p>
-    <span class='bold'>
-      Name:
-    </span>
-    {{patient.name}}
-  </p>
-  <p>
-    <span class='bold'>
-      Age:
-    </span>
-    {{patient.age}}
-  </p>
-  <p>
-    <span class='bold'>
-      Gender:
-    </span>
-    {{patient.gender}}
-  </p>
-  <p>
-    <span class='bold'>
-      Ward:
-    </span>
-    {{surgery.ward}}
-  </p>
-  <p>
-    <span class='bold'>
-      BHT:
-    </span>
-    {{surgery.bht}}
-  </p>
-  <p>
-    <span class='bold'>
-      Date:
-    </span>
-    {{surgery.date}}
-  </p>
-</div>
-
-<hr />
-
-<h2 class='text-lg mt-3 text-center p-3'>
-  {{surgery.title}}
-</h2>
-
-<div class='flex flex-col'>
-  {{#if surgery.doneBy.length}}
-    <div class='p-1 flex'>
-      <span class='bold mr-1'>
-        Done By:
-      </span>
-      <span>
-        {{surgery.doneByAsString}}
-      </span>
-    </div>
-  {{/if}}
-  {{#if surgery.assistedBy.length}}
-    <div class='p-1 flex'>
-      <span class='bold mr-1'>
-        Assisted By:
-      </span>
-      <span>
-        {{surgery.assistedByAsString}}
-      </span>
-    </div>
-  {{/if}}
-</div>
-
-{{#if surgery.notes}}
-  <div class='p-1'>
-    <div class='prose'>
-      {{{surgery.notes}}}
-    </div>
-  </div>
-{{/if}}
-
-{{#if surgery.post_op_notes}}
-  <hr />
-  <div class='p-1'>
-    <h2 class='text-md mt-3 text-center p-3'>
-      Post-Op Notes
+<div class='document'>
+  <!-- Header Section -->
+  <div class='header-section keep-together'>
+    <h1 class='text-2xl bold'>
+      {{settings.hospital}}
+    </h1>
+    <h2 class='text-lg pt-1'>
+      {{settings.unit}}
     </h2>
-    <div class='prose'>
-      {{{surgery.post_op_notes}}}
-    </div>
+    {{#if settings.telephone}}
+      <p class='text-sm pt-1'>
+        Tel: {{settings.telephone}}
+      </p>
+    {{/if}}
   </div>
-{{/if}}
+
+  <!-- Patient Info Table -->
+  <table class='info-table keep-together'>
+    <tr>
+      <td class='label'>Name:</td>
+      <td colspan='3'>{{patient.name}}</td>
+    </tr>
+    <tr>
+      <td class='label'>BHT:</td>
+      <td>{{surgery.bht}}</td>
+      <td class='label'>Date:</td>
+      <td>{{surgery.date}}</td>
+    </tr>
+    <tr>
+      <td class='label'>Age/Sex:</td>
+      <td>{{patient.age}} / {{patient.gender}}</td>
+      <td class='label'>Ward:</td>
+      <td>{{surgery.ward}}</td>
+    </tr>
+  </table>
+
+  <!-- Surgery Title -->
+  <div class='surgery-title keep-together'>
+    <h2 class='text-lg text-center bold'>
+      {{surgery.title}}
+    </h2>
+  </div>
+
+  <!-- Doctors Section -->
+  <div class='doctors-section keep-together'>
+    {{#if surgery.doneBy.length}}
+      <div class='doctor-row'>
+        <span class='doctor-label'>Done By:</span>
+        <span>{{surgery.doneByAsString}}</span>
+      </div>
+    {{/if}}
+    {{#if surgery.assistedBy.length}}
+      <div class='doctor-row'>
+        <span class='doctor-label'>Assisted By:</span>
+        <span>{{surgery.assistedByAsString}}</span>
+      </div>
+    {{/if}}
+  </div>
+
+  <!-- Op Notes Section -->
+  {{#if surgery.notes}}
+    <div class='notes-section'>
+      <div class='section-header keep-together'>Op Notes</div>
+      <div class='prose'>
+        {{{surgery.notes}}}
+      </div>
+    </div>
+  {{/if}}
+
+  <!-- Post-Op Notes Section -->
+  {{#if surgery.post_op_notes}}
+    <div class='notes-section'>
+      <div class='section-header keep-together'>Post-Op Notes</div>
+      <div class='prose'>
+        {{{surgery.post_op_notes}}}
+      </div>
+    </div>
+  {{/if}}
+</div>
