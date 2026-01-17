@@ -195,7 +195,9 @@ export const SurgeryCard = ({ surgery, patient }: SurgeryCardProps) => {
           <span className="font-semibold">Done By:</span>
           {surgery.doneBy && surgery.doneBy.length > 0 ? (
             <ul className="list-disc pl-5">
-              {surgery.doneBy?.map((doctor) => <DoctorListItem key={doctor.id} doctor={doctor} />)}
+              {surgery.doneBy?.map((doctor) => (
+                <DoctorListItem key={doctor.id} doctor={doctor} />
+              ))}
             </ul>
           ) : (
             <span>N/A</span>
@@ -268,7 +270,9 @@ export const SurgeryCard = ({ surgery, patient }: SurgeryCardProps) => {
             </NoContentCard>
           )}
 
-          {followups?.map((followup) => <FollowupCard key={followup.id} followup={followup} />)}
+          {followups?.map((followup) => (
+            <FollowupCard key={followup.id} followup={followup} />
+          ))}
         </div>
       </div>
     </div>

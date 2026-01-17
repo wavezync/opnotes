@@ -34,6 +34,15 @@ import { ipcMain } from 'electron'
 import { encodeError } from './utils/errors'
 import log from 'electron-log'
 import { getAllSettings, updateSetting, updateSettings } from './repository/app-settings'
+import {
+  createSurgeryTemplate,
+  getSurgeryTemplateById,
+  updateSurgeryTemplateById,
+  deleteSurgeryTemplateById,
+  listSurgeryTemplates,
+  searchTemplatesForEditor,
+  getTemplateCategories
+} from './repository/surgery-template'
 
 // Custom APIs for renderer
 export const api = {
@@ -66,7 +75,15 @@ export const api = {
 
   getAllSettings,
   updateSetting,
-  updateSettings
+  updateSettings,
+
+  createSurgeryTemplate,
+  getSurgeryTemplateById,
+  updateSurgeryTemplateById,
+  deleteSurgeryTemplateById,
+  listSurgeryTemplates,
+  searchTemplatesForEditor,
+  getTemplateCategories
 }
 
 export type ApiType = typeof api

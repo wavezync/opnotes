@@ -13,6 +13,7 @@ import {
   AlignLeftIcon,
   AlignRightIcon,
   BoldIcon,
+  FileText,
   ItalicIcon,
   ListIcon,
   ListOrderedIcon,
@@ -21,11 +22,12 @@ import {
   UnderlineIcon,
   UndoIcon
 } from 'lucide-react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import Placeholder from '@tiptap/extension-placeholder'
 import { Toggle } from '../ui/toggle'
 import { ToggleProps } from '@radix-ui/react-toggle'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
+import { TemplateSelector } from './TemplateSelector'
 
 interface ToolbarButtonProps extends ToggleProps {
   isActive?: boolean
@@ -47,7 +49,13 @@ const ToolbarButton = ({ isActive, children, onClick, ...rest }: ToolbarButtonPr
   )
 }
 
-const MenuBar = ({ editor }: { editor: Editor | null }) => {
+interface MenuBarProps {
+  editor: Editor | null
+  showTemplateButton?: boolean
+  onTemplateClick?: () => void
+}
+
+const MenuBar = ({ editor, showTemplateButton = true, onTemplateClick }: MenuBarProps) => {
   if (!editor) {
     return null
   }
@@ -160,7 +168,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
         </ToolbarButton>
       </div>
 
-      <div className="p-1 w-fit flex space-x-1">
+      <div className="p-1 border-r border-border w-fit flex space-x-1">
         <ToolbarButton
           onClick={() => editor.chain().focus().undo().run()}
           disabled={!editor.can().chain().focus().undo().run()}
@@ -174,6 +182,14 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
           <RedoIcon className="h-4 w-4" />
         </ToolbarButton>
       </div>
+
+      {showTemplateButton && (
+        <div className="p-1 w-fit flex space-x-1">
+          <ToolbarButton onClick={onTemplateClick} title="Insert template">
+            <FileText className="h-4 w-4" />
+          </ToolbarButton>
+        </div>
+      )}
     </div>
   )
 }
@@ -202,9 +218,18 @@ const extensions = [
 export interface RichTextEditorProps {
   initialContent?: string
   onUpdate?: (content: string) => void
+  showTemplateButton?: boolean
+  editorClassName?: string
 }
 
-export const RichTextEditor = ({ initialContent, onUpdate }: RichTextEditorProps) => {
+export const RichTextEditor = ({
+  initialContent,
+  onUpdate,
+  showTemplateButton = true,
+  editorClassName
+}: RichTextEditorProps) => {
+  const [templateSelectorOpen, setTemplateSelectorOpen] = useState(false)
+
   const editor = useEditor({
     extensions,
     editorProps: {
@@ -228,13 +253,30 @@ export const RichTextEditor = ({ initialContent, onUpdate }: RichTextEditorProps
     editor.commands.setTextSelection({ from, to })
   }, [editor, initialContent])
 
+  const handleTemplateSelect = (content: string) => {
+    if (editor) {
+      editor.chain().focus().insertContent(content).run()
+    }
+  }
+
   return (
     <div className="dark w-full">
-      <MenuBar editor={editor} />
+      <MenuBar
+        editor={editor}
+        showTemplateButton={showTemplateButton}
+        onTemplateClick={() => setTemplateSelectorOpen(true)}
+      />
       <EditorContent
         editor={editor}
-        className="border m-1 rounded-md overflow-y-auto max-h-64 h-64"
+        className={editorClassName ?? 'border m-1 rounded-md overflow-y-auto max-h-64 h-64'}
       />
+      {showTemplateButton && (
+        <TemplateSelector
+          open={templateSelectorOpen}
+          onOpenChange={setTemplateSelectorOpen}
+          onSelect={handleTemplateSelect}
+        />
+      )}
     </div>
   )
 }

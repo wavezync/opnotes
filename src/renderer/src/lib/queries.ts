@@ -1,5 +1,10 @@
 import { createQueryKeyStore } from '@lukemorales/query-key-factory'
-import { DoctorFilter, PatientFilter, SurgeryFilter } from 'src/shared/types/api'
+import {
+  DoctorFilter,
+  PatientFilter,
+  SurgeryFilter,
+  SurgeryTemplateFilter
+} from 'src/shared/types/api'
 import { unwrapResult } from './utils'
 
 export const queries = createQueryKeyStore({
@@ -45,6 +50,25 @@ export const queries = createQueryKeyStore({
     settings: {
       queryKey: null,
       queryFn: () => unwrapResult(window.api.invoke('getAllSettings'))
+    }
+  },
+  surgeryTemplates: {
+    list: (filter: SurgeryTemplateFilter) => ({
+      queryKey: [filter],
+      queryFn: () => unwrapResult(window.api.invoke('listSurgeryTemplates', filter))
+    }),
+    get: (id: number) => ({
+      queryKey: [id],
+      queryFn: () => unwrapResult(window.api.invoke('getSurgeryTemplateById', id))
+    }),
+    forEditor: (search?: string, doctorId?: number) => ({
+      queryKey: [search, doctorId],
+      queryFn: () =>
+        unwrapResult(window.api.invoke('searchTemplatesForEditor', { search, doctorId }))
+    }),
+    categories: {
+      queryKey: null,
+      queryFn: () => unwrapResult(window.api.invoke('getTemplateCategories'))
     }
   }
 })
