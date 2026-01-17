@@ -6,7 +6,6 @@ import React, { useEffect, useMemo } from 'react'
 import ReactDOM from 'react-dom/client'
 import handlebars from 'handlebars'
 import surgeryOpNoteTemplate from '../../../resources/templates/surgery-opnote.hbs?raw'
-import { Button } from './components/ui/button'
 
 const printTemplate = handlebars.compile(surgeryOpNoteTemplate)
 
@@ -47,8 +46,10 @@ const Print = () => {
 
   return (
     <div className="w-full">
-      <div className="flex justify-end print-hidden">
-        <Button onClick={handlePrint}>Print</Button>
+      <div className="flex justify-end print-hidden p-1" id="print-area">
+        <button className="print-btn" onClick={handlePrint}>
+          Print
+        </button>
       </div>
       {printData && <div dangerouslySetInnerHTML={{ __html: printHtml }}></div>}
     </div>

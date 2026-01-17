@@ -284,3 +284,16 @@ body {
 .prose em {
   font-style: italic;
 }
+
+.print-btn {
+  padding: 8px 16px;
+  background-color: #3996f9;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.print-btn:hover {
+  background-color: #2f7ed8;
+}
