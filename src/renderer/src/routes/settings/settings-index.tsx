@@ -23,7 +23,8 @@ import toast from 'react-hot-toast'
 
 const formSchema = z.object({
   hospital: z.string(),
-  unit: z.string()
+  unit: z.string(),
+  telephone: z.string()
 })
 
 type FormSchema = z.infer<typeof formSchema>
@@ -35,7 +36,8 @@ export const SettingsIndex = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       hospital: '',
-      unit: ''
+      unit: '',
+      telephone: ''
     }
   })
   const { setBreadcrumbs } = useBreadcrumbs()
@@ -48,7 +50,8 @@ export const SettingsIndex = () => {
     if (settings) {
       form.reset({
         hospital: settings['hospital'] || '',
-        unit: settings['unit'] || ''
+        unit: settings['unit'] || '',
+        telephone: settings['telephone'] || ''
       })
     }
   }, [form, settings])
@@ -107,6 +110,22 @@ export const SettingsIndex = () => {
                 </FormControl>
                 <FormDescription>
                   Name of the hospital unit, this will be used when printing BHT
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            name="telephone"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Telephone</FormLabel>
+                <FormControl>
+                  <Input placeholder="Telephone Number" {...field} />
+                </FormControl>
+                <FormDescription>
+                  Contact telephone number, this will be used when printing BHT
                 </FormDescription>
                 <FormMessage />
               </FormItem>
