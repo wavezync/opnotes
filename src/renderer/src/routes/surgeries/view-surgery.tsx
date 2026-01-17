@@ -174,6 +174,20 @@ export const SurgeryCard = ({ surgery, patient }: SurgeryCardProps) => {
           <span className="font-semibold">Date:</span>{' '}
           <Badge variant={'secondary'}>{surgery.date ? formatDate(surgery.date) : 'N/A'}</Badge>
         </div>
+
+        {surgery.doa && (
+          <div className="md:ml-4">
+            <span className="font-semibold">DoA:</span>{' '}
+            <Badge variant={'secondary'}>{formatDate(surgery.doa)}</Badge>
+          </div>
+        )}
+
+        {surgery.dod && (
+          <div className="md:ml-4">
+            <span className="font-semibold">DoD:</span>{' '}
+            <Badge variant={'secondary'}>{formatDate(surgery.dod)}</Badge>
+          </div>
+        )}
       </div>
 
       <div className="flex md:flex-row flex-col">
