@@ -1,6 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-import { PrintDialogArgs } from './interfaces'
+import { PrintDialogArgs, UpdateStatusPayload } from './interfaces'
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise
@@ -29,12 +29,36 @@ const openPrintDialog = async (options: PrintDialogArgs) => {
 const onPrintData = (callback: (options: PrintDialogArgs) => void) =>
   ipcRenderer.on('printData', (_, options) => callback(options))
 
+const checkForUpdates = async () => {
+  return await ipcRenderer.invoke('checkForUpdates')
+}
+
+const downloadUpdate = async () => {
+  return await ipcRenderer.invoke('downloadUpdate')
+}
+
+const quitAndInstall = () => {
+  return ipcRenderer.invoke('quitAndInstall')
+}
+
+const onUpdateStatus = (callback: (payload: UpdateStatusPayload) => void) => {
+  const handler = (_: Electron.IpcRendererEvent, payload: UpdateStatusPayload) => callback(payload)
+  ipcRenderer.on('update-status', handler)
+  return () => {
+    ipcRenderer.removeListener('update-status', handler)
+  }
+}
+
 const electronApi = {
   ...electronAPI,
   getAppVersion,
   boot,
   openPrintDialog,
-  onPrintData
+  onPrintData,
+  checkForUpdates,
+  downloadUpdate,
+  quitAndInstall,
+  onUpdateStatus
 }
 
 if (process.contextIsolated) {

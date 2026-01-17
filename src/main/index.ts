@@ -5,19 +5,9 @@ import icon from '../../resources/icon.png?asset'
 
 import { db, migrateToLatest } from './db'
 import { registerApi } from './api'
+import { setupAutoUpdater, registerUpdaterIpcHandlers } from './updater'
 
-import electronUpdater, { type AppUpdater } from 'electron-updater'
 import { PrintDialogArgs } from '../preload/interfaces'
-
-export function getAutoUpdater(): AppUpdater {
-  // Using destructuring to access autoUpdater due to the CommonJS module of 'electron-updater'.
-  // It is a workaround for ESM compatibility issues, see https://github.com/electron-userland/electron-builder/issues/7976.
-  const { autoUpdater } = electronUpdater
-  const log = require('electron-log')
-  log.transports.file.level = 'debug'
-  autoUpdater.logger = log
-  return autoUpdater
-}
 
 function createWindow() {
   // Create the browser window.
@@ -119,7 +109,16 @@ app.whenReady().then(() => {
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.wavezync.opnotes')
 
-  getAutoUpdater().checkForUpdatesAndNotify()
+  // Setup auto-updater with custom event handlers
+  const autoUpdater = setupAutoUpdater()
+  registerUpdaterIpcHandlers()
+
+  // Check for updates after a short delay to allow the window to initialize
+  setTimeout(() => {
+    autoUpdater.checkForUpdates().catch((err) => {
+      console.error('Failed to check for updates:', err)
+    })
+  }, 3000)
 
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.

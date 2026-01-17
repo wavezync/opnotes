@@ -8,6 +8,8 @@ import hero from '../assets/hero.svg?asset'
 import { Loader2Icon, Settings } from 'lucide-react'
 import { useEffect } from 'react'
 import { SettingsProvider, useSettings } from '@renderer/contexts/SettingsContext'
+import { UpdateProvider } from '@renderer/contexts/UpdateContext'
+import { UpdateIndicator } from '@renderer/components/update/UpdateIndicator'
 import { PoweredBy } from '@renderer/components/brand/PowredBy'
 
 const NavLinkComponent = ({
@@ -69,7 +71,11 @@ const SplashScreen = ({ error }: { error?: string }) => {
 }
 
 const Providers = ({ children }) => {
-  return <SettingsProvider>{children}</SettingsProvider>
+  return (
+    <SettingsProvider>
+      <UpdateProvider>{children}</UpdateProvider>
+    </SettingsProvider>
+  )
 }
 
 const MainLayout = () => {
@@ -84,6 +90,7 @@ const MainLayout = () => {
         <NavLinkComponent to="/doctors">Doctors</NavLinkComponent>
 
         <div className="flex-1"></div>
+        <UpdateIndicator />
         {appVersion && <div className="text-xs text-secondary-foreground">v{appVersion}</div>}
 
         <NavLinkComponent to="/settings" className="!mr-1">
