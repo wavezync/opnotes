@@ -44,6 +44,7 @@ import {
   getTemplateCategories,
   getTemplateTags
 } from './repository/surgery-template'
+import { createBackup, listBackups, deleteBackup, restoreBackup } from './backup'
 
 // Custom APIs for renderer
 export const api = {
@@ -85,7 +86,12 @@ export const api = {
   listSurgeryTemplates,
   searchTemplatesForEditor,
   getTemplateCategories,
-  getTemplateTags
+  getTemplateTags,
+
+  createBackup,
+  listBackups,
+  deleteBackup,
+  restoreBackup
 }
 
 export type ApiType = typeof api

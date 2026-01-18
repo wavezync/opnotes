@@ -11,6 +11,18 @@ type ElectronApi = ElectronAPI & {
   downloadUpdate: () => Promise<void>
   quitAndInstall: () => Promise<void>
   onUpdateStatus: (callback: (payload: UpdateStatusPayload) => void) => () => void
+  selectBackupFolder: () => Promise<string | null>
+  selectBackupFile: () => Promise<string | null>
+  saveBackupAs: (
+    sourcePath?: string,
+    defaultFilename?: string
+  ) => Promise<{
+    success: boolean
+    path?: string
+    canceled?: boolean
+    error?: string
+  }>
+  restartApp: () => Promise<void>
 }
 
 declare global {

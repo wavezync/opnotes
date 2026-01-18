@@ -1,5 +1,6 @@
 import { BrowserWindow, ipcMain } from 'electron'
 import electronUpdater, { type AppUpdater, type UpdateInfo } from 'electron-updater'
+import { createBackup } from './backup'
 
 export type UpdateStatus =
   | 'idle'
@@ -97,9 +98,15 @@ export function registerUpdaterIpcHandlers(): void {
     await autoUpdater.downloadUpdate()
   })
 
-  ipcMain.handle('quitAndInstall', () => {
+  ipcMain.handle('quitAndInstall', async () => {
     if (!autoUpdater) {
       throw new Error('Auto updater not initialized')
+    }
+    // Always backup before update
+    try {
+      await createBackup('pre-update')
+    } catch (e) {
+      console.error('Pre-update backup failed:', e)
     }
     autoUpdater.quitAndInstall()
   })

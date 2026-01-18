@@ -2,13 +2,14 @@ import { useBreadcrumbs } from '@renderer/contexts/BreadcrumbContext'
 import { AppLayout } from '@renderer/layouts/AppLayout'
 import { useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { Settings, FileText } from 'lucide-react'
+import { Settings, FileText, HardDrive } from 'lucide-react'
 import { cn } from '@renderer/lib/utils'
 import { GeneralSettings } from '@renderer/components/settings/GeneralSettings'
 import { TemplatesSettings } from '@renderer/components/settings/TemplatesSettings'
+import { BackupSettings } from '@renderer/components/settings/BackupSettings'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@renderer/components/ui/tabs'
 
-type SettingsSection = 'general' | 'templates'
+type SettingsSection = 'general' | 'templates' | 'backup'
 
 interface NavItemProps {
   icon: React.ReactNode
@@ -37,7 +38,8 @@ export const SettingsIndex = () => {
   const { setBreadcrumbs } = useBreadcrumbs()
 
   const tabParam = searchParams.get('tab')
-  const activeSection: SettingsSection = tabParam === 'templates' ? 'templates' : 'general'
+  const activeSection: SettingsSection =
+    tabParam === 'templates' ? 'templates' : tabParam === 'backup' ? 'backup' : 'general'
 
   const setActiveSection = (section: SettingsSection) => {
     setSearchParams(section === 'general' ? {} : { tab: section })
@@ -65,11 +67,18 @@ export const SettingsIndex = () => {
               isActive={activeSection === 'templates'}
               onClick={() => setActiveSection('templates')}
             />
+            <NavItem
+              icon={<HardDrive className="h-4 w-4" />}
+              label="Backup"
+              isActive={activeSection === 'backup'}
+              onClick={() => setActiveSection('backup')}
+            />
           </div>
         </nav>
         <div className="flex-1 min-w-0">
           {activeSection === 'general' && <GeneralSettings />}
           {activeSection === 'templates' && <TemplatesSettings />}
+          {activeSection === 'backup' && <BackupSettings />}
         </div>
       </div>
 
@@ -88,12 +97,19 @@ export const SettingsIndex = () => {
               <FileText className="h-4 w-4 mr-2" />
               Templates
             </TabsTrigger>
+            <TabsTrigger value="backup" className="flex-1">
+              <HardDrive className="h-4 w-4 mr-2" />
+              Backup
+            </TabsTrigger>
           </TabsList>
           <TabsContent value="general">
             <GeneralSettings />
           </TabsContent>
           <TabsContent value="templates">
             <TemplatesSettings />
+          </TabsContent>
+          <TabsContent value="backup">
+            <BackupSettings />
           </TabsContent>
         </Tabs>
       </div>
