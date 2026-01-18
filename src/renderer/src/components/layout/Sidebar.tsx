@@ -9,6 +9,7 @@ import {
 } from 'lucide-react'
 import opNotesLogo from '@renderer/assets/opnotes-logo.png'
 import wavezyncLogoDark from '../../../../../resources/wavezync-dark.png?asset'
+import { useSettings } from '@renderer/contexts/SettingsContext'
 
 interface NavItemProps {
   to: string
@@ -50,6 +51,8 @@ function NavItem({ to, icon, label, end, index = 0 }: NavItemProps) {
 }
 
 export function Sidebar() {
+  const { appVersion } = useSettings()
+
   const mainNavItems = [
     { to: '/', icon: <LayoutDashboard className="h-5 w-5" />, label: 'Home', end: true },
     { to: '/patients', icon: <Users className="h-5 w-5" />, label: 'Patients' },
@@ -67,6 +70,16 @@ export function Sidebar() {
           className="h-8 w-8 rounded-lg shadow-theme-sm transition-transform duration-200 hover:scale-105"
         />
         <span className="text-[10px] font-semibold text-sidebar-foreground">OpNotes</span>
+        {appVersion && (
+          <a
+            href={`https://github.com/wavezync/opnotes/releases/tag/v${appVersion}`}
+            target="_blank"
+            rel="noreferrer"
+            className="text-[9px] text-sidebar-foreground/50 hover:text-sidebar-foreground transition-colors"
+          >
+            v{appVersion}
+          </a>
+        )}
       </div>
 
       {/* Main Navigation */}

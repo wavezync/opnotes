@@ -10,7 +10,7 @@ interface HeaderProps {
 }
 
 export function Header({ onSearchClick }: HeaderProps) {
-  const { appVersion, settings } = useSettings()
+  const { settings } = useSettings()
 
   const hospitalName = settings?.['hospital'] || ''
   const unitName = settings?.['unit'] || ''
@@ -56,10 +56,6 @@ export function Header({ onSearchClick }: HeaderProps) {
 
         {/* Animated light/dark toggle */}
         <ModeToggle />
-
-        {appVersion && (
-          <span className="text-xs text-muted-foreground font-medium tabular-nums ml-1">v{appVersion}</span>
-        )}
       </div>
     </header>
   )
