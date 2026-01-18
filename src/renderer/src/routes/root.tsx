@@ -11,6 +11,7 @@ import { SettingsProvider, useSettings } from '@renderer/contexts/SettingsContex
 import { UpdateProvider } from '@renderer/contexts/UpdateContext'
 import { UpdateIndicator } from '@renderer/components/update/UpdateIndicator'
 import { PoweredBy } from '@renderer/components/brand/PowredBy'
+import { MadeWithLove } from '@renderer/components/brand/MadeWithLove'
 
 const NavLinkComponent = ({
   to,
@@ -100,6 +101,9 @@ const MainLayout = () => {
       <div className="grow m-1 p-3 overflow-y-auto">
         <Outlet />
       </div>
+      <footer className="border-t">
+        <MadeWithLove />
+      </footer>
     </>
   )
 }
