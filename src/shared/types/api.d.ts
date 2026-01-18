@@ -20,6 +20,8 @@ export interface SurgeryFilter {
 
 export interface DoctorFilter {
   search?: string
+  sortBy?: 'name' | 'designation' | 'updated_at' | 'created_at'
+  sortOrder?: 'asc' | 'desc'
 
   pageSize?: number
   page?: number
