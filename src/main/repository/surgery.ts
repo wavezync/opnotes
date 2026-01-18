@@ -293,7 +293,17 @@ export const lookupSurgery = async (search: string) => {
 }
 
 export const listSurgeries = async (filter: SurgeryFilter) => {
-  const { search, ward, start_date, end_date, patient_id, pageSize = 50, page = 0 } = filter
+  const {
+    search,
+    ward,
+    start_date,
+    end_date,
+    patient_id,
+    pageSize = 50,
+    page = 0,
+    sortBy = 'date',
+    sortOrder = 'desc'
+  } = filter
 
   let query = db.selectFrom('surgeries').selectAll('surgeries')
 
@@ -306,12 +316,10 @@ export const listSurgeries = async (filter: SurgeryFilter) => {
             .selectFrom('surgeries_fts')
             .select(['surgeries_fts.surgery_id', sql<number>`rank`.as('rank')])
             .where(sql<boolean>`surgeries_fts MATCH ${term}`)
-
             .as('matching_patients'),
         (join) => join.onRef('matching_patients.surgery_id', '=', 'surgeries.id')
       )
       .where('matching_patients.surgery_id', 'is not', null)
-      .orderBy('rank', 'desc')
   }
 
   if (patient_id) {
@@ -330,11 +338,31 @@ export const listSurgeries = async (filter: SurgeryFilter) => {
     query = query.where('surgeries.date', '<=', end_date)
   }
 
-  const surgeries = await query
-    .orderBy('date', 'asc')
-    .limit(pageSize)
-    .offset(page * pageSize)
-    .execute()
+  // Apply sorting
+  let sortedQuery = query
+  switch (sortBy) {
+    case 'title':
+      sortedQuery = sortedQuery.orderBy('surgeries.title', sortOrder)
+      break
+    case 'bht':
+      sortedQuery = sortedQuery.orderBy('surgeries.bht', sortOrder)
+      break
+    case 'ward':
+      sortedQuery = sortedQuery.orderBy('surgeries.ward', sortOrder)
+      break
+    case 'created_at':
+      sortedQuery = sortedQuery.orderBy('surgeries.created_at', sortOrder)
+      break
+    case 'updated_at':
+      sortedQuery = sortedQuery.orderBy('surgeries.updated_at', sortOrder)
+      break
+    case 'date':
+    default:
+      sortedQuery = sortedQuery.orderBy('surgeries.date', sortOrder)
+      break
+  }
+
+  const surgeries = await sortedQuery.limit(pageSize).offset(page * pageSize).execute()
 
   const totalResult = await query
     .clearSelect()

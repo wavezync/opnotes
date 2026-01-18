@@ -13,6 +13,8 @@ export interface SurgeryFilter {
   start_date?: Date
   end_date?: Date
   patient_id?: number
+  sortBy?: 'title' | 'bht' | 'date' | 'ward' | 'updated_at' | 'created_at'
+  sortOrder?: 'asc' | 'desc'
 
   pageSize?: number
   page?: number
