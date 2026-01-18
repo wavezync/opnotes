@@ -1123,6 +1123,411 @@
   --chart-5: oklch(65% 0.14 300);
 }
 
+/* ============================================
+   EMBER - Volcanic Fire & Molten Energy
+   Deep crimson with orange flames on charred black
+   Font: Nunito | Radius: Sharp | Borders: Bold
+
+   Design: Intense, dramatic, powerful. Like looking into
+   the heart of a volcano with molten lava flows.
+   ============================================ */
+
+[data-theme='ember-light'] {
+  --font-family: var(--font-nunito);
+  --radius-base: 0.375rem;
+  --border-width: 1px;
+
+  /* Warm cream with subtle red undertone */
+  --background: oklch(97% 0.012 25);
+  --foreground: oklch(20% 0.04 25);
+
+  /* Parchment cards with warmth */
+  --card: oklch(99% 0.008 25);
+  --card-foreground: oklch(20% 0.04 25);
+
+  --popover: oklch(99% 0.008 25);
+  --popover-foreground: oklch(20% 0.04 25);
+
+  /* Vibrant crimson red primary */
+  --primary: oklch(52% 0.2 25);
+  --primary-foreground: oklch(98% 0.01 25);
+
+  /* Warm beige secondary */
+  --secondary: oklch(94% 0.02 50);
+  --secondary-foreground: oklch(25% 0.04 25);
+
+  --muted: oklch(95% 0.015 40);
+  --muted-foreground: oklch(45% 0.03 25);
+
+  /* Orange accent */
+  --accent: oklch(92% 0.025 50);
+  --accent-foreground: oklch(25% 0.04 25);
+
+  --destructive: oklch(50% 0.22 25);
+  --destructive-foreground: oklch(98% 0.01 25);
+
+  --border: oklch(88% 0.02 30);
+  --input: oklch(88% 0.02 30);
+  --ring: oklch(52% 0.2 25);
+
+  --sidebar-background: oklch(95% 0.015 30);
+  --sidebar-foreground: oklch(30% 0.04 25);
+  --sidebar-primary: oklch(52% 0.2 25);
+  --sidebar-primary-foreground: oklch(98% 0.01 25);
+  --sidebar-accent: oklch(91% 0.02 40);
+  --sidebar-accent-foreground: oklch(25% 0.04 25);
+  --sidebar-border: oklch(88% 0.02 30);
+  --sidebar-ring: oklch(52% 0.2 25);
+
+  --gradient-primary: linear-gradient(135deg, oklch(52% 0.2 25), oklch(58% 0.18 40));
+  --gradient-bg-radial: radial-gradient(ellipse at top, oklch(92% 0.03 30 / 0.5), transparent 70%);
+  --gradient-card-shine: linear-gradient(110deg, transparent 25%, oklch(100% 0 0 / 0.4) 50%, transparent 75%);
+
+  --shadow-sm: 0 1px 2px oklch(20% 0.04 25 / 0.08);
+  --shadow-md: 0 4px 6px -1px oklch(20% 0.04 25 / 0.1), 0 2px 4px -2px oklch(20% 0.04 25 / 0.06);
+  --shadow-lg: 0 10px 15px -3px oklch(20% 0.04 25 / 0.12), 0 4px 6px -4px oklch(20% 0.04 25 / 0.08);
+  --shadow-primary: 0 4px 14px -3px oklch(52% 0.2 25 / 0.4);
+
+  --chart-1: oklch(52% 0.2 25);
+  --chart-2: oklch(65% 0.18 45);
+  --chart-3: oklch(55% 0.12 200);
+  --chart-4: oklch(60% 0.16 80);
+  --chart-5: oklch(58% 0.14 330);
+}
+
+[data-theme='ember-dark'] {
+  --font-family: var(--font-nunito);
+  --radius-base: 0.375rem;
+  --border-width: 1px;
+
+  /* Deep charred black with warm undertone */
+  --background: oklch(8% 0.025 25);
+  --foreground: oklch(92% 0.02 40);
+
+  /* Slightly warmer card */
+  --card: oklch(12% 0.03 25);
+  --card-foreground: oklch(92% 0.02 40);
+
+  --popover: oklch(12% 0.03 25);
+  --popover-foreground: oklch(92% 0.02 40);
+
+  /* Bright molten orange-red primary */
+  --primary: oklch(68% 0.22 35);
+  --primary-foreground: oklch(8% 0.025 25);
+
+  --secondary: oklch(18% 0.035 30);
+  --secondary-foreground: oklch(92% 0.02 40);
+
+  --muted: oklch(16% 0.025 25);
+  --muted-foreground: oklch(60% 0.04 40);
+
+  /* Deep ember accent */
+  --accent: oklch(15% 0.03 30);
+  --accent-foreground: oklch(92% 0.02 40);
+
+  --destructive: oklch(55% 0.22 25);
+  --destructive-foreground: oklch(96% 0.01 25);
+
+  --border: oklch(22% 0.035 30);
+  --input: oklch(22% 0.035 30);
+  --ring: oklch(68% 0.22 35);
+
+  --sidebar-background: oklch(6% 0.02 25);
+  --sidebar-foreground: oklch(65% 0.04 40);
+  --sidebar-primary: oklch(68% 0.22 35);
+  --sidebar-primary-foreground: oklch(8% 0.025 25);
+  --sidebar-accent: oklch(14% 0.03 30);
+  --sidebar-accent-foreground: oklch(92% 0.02 40);
+  --sidebar-border: oklch(20% 0.03 30);
+  --sidebar-ring: oklch(68% 0.22 35);
+
+  --gradient-primary: linear-gradient(135deg, oklch(68% 0.22 35), oklch(60% 0.2 25));
+  --gradient-bg-radial: radial-gradient(ellipse at top, oklch(18% 0.05 25 / 0.6), transparent 70%);
+  --gradient-card-shine: linear-gradient(110deg, transparent 25%, oklch(68% 0.22 35 / 0.06) 50%, transparent 75%);
+
+  /* Warm glow shadows */
+  --shadow-sm: 0 1px 2px oklch(0% 0 0 / 0.5);
+  --shadow-md: 0 4px 6px -1px oklch(0% 0 0 / 0.6), 0 2px 4px -2px oklch(0% 0 0 / 0.4);
+  --shadow-lg: 0 10px 15px -3px oklch(0% 0 0 / 0.7), 0 4px 6px -4px oklch(0% 0 0 / 0.5);
+  --shadow-primary: 0 0 20px oklch(68% 0.22 35 / 0.4), 0 4px 14px -3px oklch(68% 0.22 35 / 0.5);
+
+  --chart-1: oklch(68% 0.22 35);
+  --chart-2: oklch(72% 0.18 50);
+  --chart-3: oklch(60% 0.12 200);
+  --chart-4: oklch(65% 0.16 80);
+  --chart-5: oklch(62% 0.14 330);
+}
+
+/* ============================================
+   FROST - Arctic Ice & Crystalline Cold
+   Icy blues with silver whites and frozen edges
+   Font: Inter | Radius: Sharp angles | Borders: Crisp
+
+   Design: Clean, sharp, ethereal. Like ice crystals
+   catching light in a frozen landscape.
+   ============================================ */
+
+[data-theme='frost-light'] {
+  --font-family: var(--font-inter);
+  --radius-base: 0.25rem;
+  --border-width: 1px;
+
+  /* Cool white with blue undertone */
+  --background: oklch(98.5% 0.008 230);
+  --foreground: oklch(18% 0.02 230);
+
+  /* Pure frost white cards */
+  --card: oklch(100% 0 0);
+  --card-foreground: oklch(18% 0.02 230);
+
+  --popover: oklch(100% 0 0);
+  --popover-foreground: oklch(18% 0.02 230);
+
+  /* Brilliant ice blue primary */
+  --primary: oklch(58% 0.14 230);
+  --primary-foreground: oklch(98% 0.01 230);
+
+  /* Silver-blue secondary */
+  --secondary: oklch(96% 0.01 230);
+  --secondary-foreground: oklch(25% 0.02 230);
+
+  --muted: oklch(96% 0.008 230);
+  --muted-foreground: oklch(48% 0.015 230);
+
+  /* Light frost accent */
+  --accent: oklch(95% 0.012 230);
+  --accent-foreground: oklch(25% 0.02 230);
+
+  --destructive: oklch(55% 0.22 25);
+  --destructive-foreground: oklch(98% 0.01 25);
+
+  --border: oklch(92% 0.01 230);
+  --input: oklch(92% 0.01 230);
+  --ring: oklch(58% 0.14 230);
+
+  --sidebar-background: oklch(97.5% 0.01 230);
+  --sidebar-foreground: oklch(35% 0.02 230);
+  --sidebar-primary: oklch(58% 0.14 230);
+  --sidebar-primary-foreground: oklch(98% 0.01 230);
+  --sidebar-accent: oklch(94% 0.012 230);
+  --sidebar-accent-foreground: oklch(25% 0.02 230);
+  --sidebar-border: oklch(92% 0.01 230);
+  --sidebar-ring: oklch(58% 0.14 230);
+
+  --gradient-primary: linear-gradient(135deg, oklch(58% 0.14 230), oklch(62% 0.12 250));
+  --gradient-bg-radial: radial-gradient(ellipse at top, oklch(94% 0.02 230 / 0.4), transparent 70%);
+  --gradient-card-shine: linear-gradient(110deg, transparent 25%, oklch(100% 0 0 / 0.6) 50%, transparent 75%);
+
+  --shadow-sm: 0 1px 2px oklch(20% 0.02 230 / 0.05);
+  --shadow-md: 0 4px 6px -1px oklch(20% 0.02 230 / 0.07), 0 2px 4px -2px oklch(20% 0.02 230 / 0.04);
+  --shadow-lg: 0 10px 15px -3px oklch(20% 0.02 230 / 0.08), 0 4px 6px -4px oklch(20% 0.02 230 / 0.05);
+  --shadow-primary: 0 4px 14px -3px oklch(58% 0.14 230 / 0.35);
+
+  --chart-1: oklch(58% 0.14 230);
+  --chart-2: oklch(65% 0.12 200);
+  --chart-3: oklch(55% 0.1 280);
+  --chart-4: oklch(60% 0.14 180);
+  --chart-5: oklch(58% 0.12 260);
+}
+
+[data-theme='frost-dark'] {
+  --font-family: var(--font-inter);
+  --radius-base: 0.25rem;
+  --border-width: 1px;
+
+  /* Deep frozen blue-black */
+  --background: oklch(10% 0.025 230);
+  --foreground: oklch(95% 0.01 230);
+
+  /* Darker ice card */
+  --card: oklch(14% 0.025 230);
+  --card-foreground: oklch(95% 0.01 230);
+
+  --popover: oklch(14% 0.025 230);
+  --popover-foreground: oklch(95% 0.01 230);
+
+  /* Glowing ice blue primary */
+  --primary: oklch(72% 0.14 220);
+  --primary-foreground: oklch(10% 0.025 220);
+
+  --secondary: oklch(20% 0.025 230);
+  --secondary-foreground: oklch(95% 0.01 230);
+
+  --muted: oklch(18% 0.02 230);
+  --muted-foreground: oklch(62% 0.015 230);
+
+  /* Frozen accent */
+  --accent: oklch(17% 0.025 230);
+  --accent-foreground: oklch(95% 0.01 230);
+
+  --destructive: oklch(55% 0.2 25);
+  --destructive-foreground: oklch(95% 0.01 25);
+
+  --border: oklch(24% 0.025 230);
+  --input: oklch(24% 0.025 230);
+  --ring: oklch(72% 0.14 220);
+
+  --sidebar-background: oklch(8% 0.02 230);
+  --sidebar-foreground: oklch(68% 0.015 230);
+  --sidebar-primary: oklch(72% 0.14 220);
+  --sidebar-primary-foreground: oklch(10% 0.025 220);
+  --sidebar-accent: oklch(15% 0.025 230);
+  --sidebar-accent-foreground: oklch(95% 0.01 230);
+  --sidebar-border: oklch(22% 0.025 230);
+  --sidebar-ring: oklch(72% 0.14 220);
+
+  --gradient-primary: linear-gradient(135deg, oklch(72% 0.14 220), oklch(65% 0.12 240));
+  --gradient-bg-radial: radial-gradient(ellipse at top, oklch(18% 0.03 230 / 0.5), transparent 70%);
+  --gradient-card-shine: linear-gradient(110deg, transparent 25%, oklch(72% 0.14 220 / 0.05) 50%, transparent 75%);
+
+  /* Cold crystalline shadows with subtle glow */
+  --shadow-sm: 0 1px 2px oklch(0% 0 0 / 0.4);
+  --shadow-md: 0 4px 6px -1px oklch(0% 0 0 / 0.5), 0 2px 4px -2px oklch(0% 0 0 / 0.35);
+  --shadow-lg: 0 10px 15px -3px oklch(0% 0 0 / 0.6), 0 4px 6px -4px oklch(0% 0 0 / 0.4);
+  --shadow-primary: 0 0 16px oklch(72% 0.14 220 / 0.35), 0 4px 14px -3px oklch(72% 0.14 220 / 0.4);
+
+  --chart-1: oklch(72% 0.14 220);
+  --chart-2: oklch(68% 0.12 200);
+  --chart-3: oklch(60% 0.1 280);
+  --chart-4: oklch(65% 0.14 180);
+  --chart-5: oklch(62% 0.12 260);
+}
+
+/* ============================================
+   SAKURA - Japanese Cherry Blossom Elegance
+   Soft pinks with deep magentas and zen grays
+   Font: Source Sans 3 | Radius: Soft | Borders: Delicate
+
+   Design: Elegant, serene, poetic. Like standing under
+   cherry blossom trees in a traditional Japanese garden.
+   ============================================ */
+
+[data-theme='sakura-light'] {
+  --font-family: var(--font-source);
+  --radius-base: 0.625rem;
+  --border-width: 1px;
+
+  /* Soft blush white */
+  --background: oklch(98% 0.012 0);
+  --foreground: oklch(22% 0.025 340);
+
+  /* Pearl white cards */
+  --card: oklch(99.5% 0.008 350);
+  --card-foreground: oklch(22% 0.025 340);
+
+  --popover: oklch(99.5% 0.008 350);
+  --popover-foreground: oklch(22% 0.025 340);
+
+  /* Cherry blossom pink primary */
+  --primary: oklch(62% 0.16 350);
+  --primary-foreground: oklch(98% 0.01 350);
+
+  /* Soft petal secondary */
+  --secondary: oklch(95% 0.018 350);
+  --secondary-foreground: oklch(28% 0.02 340);
+
+  --muted: oklch(96% 0.012 355);
+  --muted-foreground: oklch(48% 0.02 340);
+
+  /* Zen gray-green accent */
+  --accent: oklch(94% 0.015 160);
+  --accent-foreground: oklch(28% 0.02 340);
+
+  --destructive: oklch(55% 0.22 25);
+  --destructive-foreground: oklch(98% 0.01 25);
+
+  --border: oklch(91% 0.015 355);
+  --input: oklch(91% 0.015 355);
+  --ring: oklch(62% 0.16 350);
+
+  --sidebar-background: oklch(97% 0.015 355);
+  --sidebar-foreground: oklch(35% 0.02 340);
+  --sidebar-primary: oklch(62% 0.16 350);
+  --sidebar-primary-foreground: oklch(98% 0.01 350);
+  --sidebar-accent: oklch(94% 0.018 355);
+  --sidebar-accent-foreground: oklch(28% 0.02 340);
+  --sidebar-border: oklch(91% 0.015 355);
+  --sidebar-ring: oklch(62% 0.16 350);
+
+  --gradient-primary: linear-gradient(135deg, oklch(62% 0.16 350), oklch(58% 0.14 330));
+  --gradient-bg-radial: radial-gradient(ellipse at top, oklch(94% 0.025 350 / 0.4), transparent 70%);
+  --gradient-card-shine: linear-gradient(110deg, transparent 25%, oklch(100% 0 0 / 0.5) 50%, transparent 75%);
+
+  --shadow-sm: 0 1px 3px oklch(30% 0.02 340 / 0.06);
+  --shadow-md: 0 4px 8px -1px oklch(30% 0.02 340 / 0.08), 0 2px 4px -2px oklch(30% 0.02 340 / 0.05);
+  --shadow-lg: 0 12px 20px -4px oklch(30% 0.02 340 / 0.1), 0 4px 8px -4px oklch(30% 0.02 340 / 0.06);
+  --shadow-primary: 0 4px 16px -3px oklch(62% 0.16 350 / 0.35);
+
+  --chart-1: oklch(62% 0.16 350);
+  --chart-2: oklch(65% 0.12 160);
+  --chart-3: oklch(55% 0.1 280);
+  --chart-4: oklch(60% 0.14 80);
+  --chart-5: oklch(58% 0.15 320);
+}
+
+[data-theme='sakura-dark'] {
+  --font-family: var(--font-source);
+  --radius-base: 0.625rem;
+  --border-width: 1px;
+
+  /* Deep twilight with magenta undertone */
+  --background: oklch(10% 0.025 340);
+  --foreground: oklch(94% 0.012 350);
+
+  /* Dark plum cards */
+  --card: oklch(14% 0.03 340);
+  --card-foreground: oklch(94% 0.012 350);
+
+  --popover: oklch(14% 0.03 340);
+  --popover-foreground: oklch(94% 0.012 350);
+
+  /* Luminous sakura pink primary */
+  --primary: oklch(75% 0.15 350);
+  --primary-foreground: oklch(10% 0.025 340);
+
+  --secondary: oklch(20% 0.03 340);
+  --secondary-foreground: oklch(94% 0.012 350);
+
+  --muted: oklch(18% 0.025 340);
+  --muted-foreground: oklch(62% 0.02 350);
+
+  /* Zen accent */
+  --accent: oklch(16% 0.025 160);
+  --accent-foreground: oklch(94% 0.012 350);
+
+  --destructive: oklch(55% 0.2 25);
+  --destructive-foreground: oklch(94% 0.012 25);
+
+  --border: oklch(24% 0.03 340);
+  --input: oklch(24% 0.03 340);
+  --ring: oklch(75% 0.15 350);
+
+  --sidebar-background: oklch(8% 0.02 340);
+  --sidebar-foreground: oklch(68% 0.02 350);
+  --sidebar-primary: oklch(75% 0.15 350);
+  --sidebar-primary-foreground: oklch(10% 0.025 340);
+  --sidebar-accent: oklch(14% 0.025 340);
+  --sidebar-accent-foreground: oklch(94% 0.012 350);
+  --sidebar-border: oklch(22% 0.025 340);
+  --sidebar-ring: oklch(75% 0.15 350);
+
+  --gradient-primary: linear-gradient(135deg, oklch(75% 0.15 350), oklch(68% 0.13 330));
+  --gradient-bg-radial: radial-gradient(ellipse at top, oklch(18% 0.04 340 / 0.5), transparent 70%);
+  --gradient-card-shine: linear-gradient(110deg, transparent 25%, oklch(75% 0.15 350 / 0.05) 50%, transparent 75%);
+
+  /* Soft ethereal shadows */
+  --shadow-sm: 0 1px 3px oklch(0% 0 0 / 0.4);
+  --shadow-md: 0 4px 8px -1px oklch(0% 0 0 / 0.5), 0 2px 4px -2px oklch(0% 0 0 / 0.35);
+  --shadow-lg: 0 12px 20px -4px oklch(0% 0 0 / 0.6), 0 4px 8px -4px oklch(0% 0 0 / 0.4);
+  --shadow-primary: 0 0 18px oklch(75% 0.15 350 / 0.35), 0 4px 16px -3px oklch(75% 0.15 350 / 0.4);
+
+  --chart-1: oklch(75% 0.15 350);
+  --chart-2: oklch(68% 0.12 160);
+  --chart-3: oklch(60% 0.1 280);
+  --chart-4: oklch(65% 0.14 80);
+  --chart-5: oklch(62% 0.15 320);
+}
+
 /* Apply font family and radius globally */
 [data-theme] body,
 :root body {

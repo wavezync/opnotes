@@ -68,6 +68,21 @@ const themeVisuals: Record<
     gradient: 'from-amber-400 via-yellow-500 to-green-500',
     preview: { bg: '#1a1408', accent: '#4aff4a', text: '#ffcc00' },
     icon: '📺'
+  },
+  ember: {
+    gradient: 'from-red-500 via-orange-500 to-amber-500',
+    preview: { bg: '#1a0a08', accent: '#ff6a35', text: '#ffd0b0' },
+    icon: '🔥'
+  },
+  frost: {
+    gradient: 'from-cyan-300 via-blue-400 to-indigo-400',
+    preview: { bg: '#0a1420', accent: '#6bb8e8', text: '#e0f0ff' },
+    icon: '❄️'
+  },
+  sakura: {
+    gradient: 'from-pink-300 via-rose-400 to-fuchsia-400',
+    preview: { bg: '#1a0a14', accent: '#e890b0', text: '#ffe8f0' },
+    icon: '🌸'
   }
 }
 
@@ -80,7 +95,10 @@ const themeLabels: Record<ThemeBase, { name: string; tagline: string }> = {
   midnight: { name: 'Midnight', tagline: 'Purple elegance' },
   obsidian: { name: 'Obsidian', tagline: 'True black AMOLED' },
   ocean: { name: 'Ocean', tagline: 'Calm & professional' },
-  retro: { name: 'Retro', tagline: 'CRT nostalgia' }
+  retro: { name: 'Retro', tagline: 'CRT nostalgia' },
+  ember: { name: 'Ember', tagline: 'Volcanic fire' },
+  frost: { name: 'Frost', tagline: 'Arctic ice' },
+  sakura: { name: 'Sakura', tagline: 'Cherry blossom' }
 }
 
 interface ThemeCardProps {
@@ -183,8 +201,8 @@ export function ThemeDropdown() {
   const isDark = theme.mode === 'dark'
   const currentVisuals = themeVisuals[theme.base]
 
-  // All 9 themes
-  const allThemes: ThemeBase[] = ['aurora', 'meadow', 'bloom', 'latte', 'slate', 'midnight', 'obsidian', 'ocean', 'retro']
+  // All 12 themes
+  const allThemes: ThemeBase[] = ['aurora', 'meadow', 'bloom', 'latte', 'slate', 'midnight', 'obsidian', 'ocean', 'retro', 'ember', 'frost', 'sakura']
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -251,7 +269,7 @@ export function ThemeDropdown() {
       </TooltipProvider>
       <PopoverContent
         align="end"
-        className="w-[340px] p-3"
+        className="w-[420px] p-3"
         sideOffset={8}
       >
         {/* Header */}
@@ -297,8 +315,8 @@ export function ThemeDropdown() {
           </div>
         </div>
 
-        {/* Theme grid - 3x3 for 9 themes */}
-        <div className="grid grid-cols-3 gap-2">
+        {/* Theme grid - 4x3 for 12 themes */}
+        <div className="grid grid-cols-4 gap-2">
           {allThemes.map((base) => {
             const isCurrentBase = theme.base === base
             return (

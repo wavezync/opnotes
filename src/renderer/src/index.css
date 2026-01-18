@@ -1,7 +1,7 @@
 @import 'tailwindcss';
 
 /* Custom dark mode variant for data-theme attribute - matches all dark theme variants */
-@custom-variant dark (&:where([data-theme=aurora-dark], [data-theme=meadow-dark], [data-theme=bloom-dark], [data-theme=latte-dark], [data-theme=slate-dark], [data-theme=midnight-dark], [data-theme=obsidian-dark], [data-theme=ocean-dark], [data-theme=retro-dark], [data-theme=aurora-dark] *, [data-theme=meadow-dark] *, [data-theme=bloom-dark] *, [data-theme=latte-dark] *, [data-theme=slate-dark] *, [data-theme=midnight-dark] *, [data-theme=obsidian-dark] *, [data-theme=ocean-dark] *, [data-theme=retro-dark] *));
+@custom-variant dark (&:where([data-theme=aurora-dark], [data-theme=meadow-dark], [data-theme=bloom-dark], [data-theme=latte-dark], [data-theme=slate-dark], [data-theme=midnight-dark], [data-theme=obsidian-dark], [data-theme=ocean-dark], [data-theme=retro-dark], [data-theme=ember-dark], [data-theme=frost-dark], [data-theme=sakura-dark], [data-theme=aurora-dark] *, [data-theme=meadow-dark] *, [data-theme=bloom-dark] *, [data-theme=latte-dark] *, [data-theme=slate-dark] *, [data-theme=midnight-dark] *, [data-theme=obsidian-dark] *, [data-theme=ocean-dark] *, [data-theme=retro-dark] *, [data-theme=ember-dark] *, [data-theme=frost-dark] *, [data-theme=sakura-dark] *));
 
 /* Source paths for class detection - relative to this CSS file */
 @source ".";

@@ -43,6 +43,18 @@ const themePreviewColors: Record<ThemeBase, {
   retro: {
     light: { bg: '#f5f0e8', card: '#faf8f4', primary: '#4a8a4a', accent: '#c8a040', border: '#d8d0c0', muted: '#e8e0d4', text: '#2a2818' },
     dark: { bg: '#1a1408', card: '#201a10', primary: '#4aff4a', accent: '#ffcc00', border: '#3a3020', muted: '#282018', text: '#e0c880' }
+  },
+  ember: {
+    light: { bg: '#f8f2f0', card: '#fdfaf9', primary: '#c83030', accent: '#e86030', border: '#e8d8d0', muted: '#f0e4e0', text: '#2a1818' },
+    dark: { bg: '#1a0a08', card: '#201210', primary: '#ff6a35', accent: '#ff9050', border: '#3a2018', muted: '#281810', text: '#ffd0b0' }
+  },
+  frost: {
+    light: { bg: '#f5f8fa', card: '#fafcff', primary: '#4090d0', accent: '#60a8e8', border: '#d0e0f0', muted: '#e8f0f8', text: '#1a2830' },
+    dark: { bg: '#0a1420', card: '#101a28', primary: '#6bb8e8', accent: '#90d0ff', border: '#1a2a40', muted: '#142030', text: '#e0f0ff' }
+  },
+  sakura: {
+    light: { bg: '#faf5f8', card: '#fefcfd', primary: '#d87090', accent: '#e890b0', border: '#f0dfe8', muted: '#f8e8f0', text: '#2a1820' },
+    dark: { bg: '#1a0a14', card: '#201018', primary: '#e890b0', accent: '#f0b0c8', border: '#382030', muted: '#281820', text: '#ffe8f0' }
   }
 }
 
@@ -55,7 +67,10 @@ const themeMetadata: Record<ThemeBase, { icon: string; name: string; description
   midnight: { icon: '🌙', name: 'Midnight', description: 'Elegant purple, sophisticated vibes' },
   obsidian: { icon: '⬛', name: 'Obsidian', description: 'True black AMOLED, minimal' },
   ocean: { icon: '🌊', name: 'Ocean', description: 'Deep blue, calm and professional' },
-  retro: { icon: '📺', name: 'Retro', description: 'CRT terminal nostalgia, vintage feel' }
+  retro: { icon: '📺', name: 'Retro', description: 'CRT terminal nostalgia, vintage feel' },
+  ember: { icon: '🔥', name: 'Ember', description: 'Volcanic fire, molten energy' },
+  frost: { icon: '❄️', name: 'Frost', description: 'Arctic ice, crystalline cold' },
+  sakura: { icon: '🌸', name: 'Sakura', description: 'Cherry blossom elegance, zen serenity' }
 }
 
 interface ThemePreviewProps {
@@ -214,8 +229,8 @@ function ThemeGroup({ base }: ThemeGroupProps) {
 }
 
 export function ThemeSwitcher() {
-  // All 9 themes
-  const allThemes: ThemeBase[] = ['aurora', 'meadow', 'bloom', 'latte', 'slate', 'midnight', 'obsidian', 'ocean', 'retro']
+  // All 12 themes
+  const allThemes: ThemeBase[] = ['aurora', 'meadow', 'bloom', 'latte', 'slate', 'midnight', 'obsidian', 'ocean', 'retro', 'ember', 'frost', 'sakura']
 
   return (
     <Card>

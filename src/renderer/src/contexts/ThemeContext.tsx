@@ -19,8 +19,14 @@ export type ThemeId =
   | 'ocean-dark'
   | 'retro-light'
   | 'retro-dark'
+  | 'ember-light'
+  | 'ember-dark'
+  | 'frost-light'
+  | 'frost-dark'
+  | 'sakura-light'
+  | 'sakura-dark'
 
-export type ThemeBase = 'aurora' | 'meadow' | 'bloom' | 'latte' | 'slate' | 'midnight' | 'obsidian' | 'ocean' | 'retro'
+export type ThemeBase = 'aurora' | 'meadow' | 'bloom' | 'latte' | 'slate' | 'midnight' | 'obsidian' | 'ocean' | 'retro' | 'ember' | 'frost' | 'sakura'
 export type ThemeMode = 'light' | 'dark'
 
 export interface Theme {
@@ -176,6 +182,54 @@ export const themes: Theme[] = [
     mode: 'dark',
     fontFamily: 'VT323',
     description: 'CRT phosphor glow, amber on black'
+  },
+  {
+    id: 'ember-light',
+    name: 'Ember',
+    base: 'ember',
+    mode: 'light',
+    fontFamily: 'Nunito',
+    description: 'Warm crimson, volcanic energy'
+  },
+  {
+    id: 'ember-dark',
+    name: 'Ember',
+    base: 'ember',
+    mode: 'dark',
+    fontFamily: 'Nunito',
+    description: 'Molten fire on charred black'
+  },
+  {
+    id: 'frost-light',
+    name: 'Frost',
+    base: 'frost',
+    mode: 'light',
+    fontFamily: 'Inter',
+    description: 'Crystalline ice, sharp and pure'
+  },
+  {
+    id: 'frost-dark',
+    name: 'Frost',
+    base: 'frost',
+    mode: 'dark',
+    fontFamily: 'Inter',
+    description: 'Frozen depths, arctic glow'
+  },
+  {
+    id: 'sakura-light',
+    name: 'Sakura',
+    base: 'sakura',
+    mode: 'light',
+    fontFamily: 'Source Sans 3',
+    description: 'Cherry blossom elegance'
+  },
+  {
+    id: 'sakura-dark',
+    name: 'Sakura',
+    base: 'sakura',
+    mode: 'dark',
+    fontFamily: 'Source Sans 3',
+    description: 'Twilight petals, zen serenity'
   }
 ]
 
@@ -321,6 +375,9 @@ export function getThemesByBase(): Record<ThemeBase, Theme[]> {
     midnight: themes.filter((t) => t.base === 'midnight'),
     obsidian: themes.filter((t) => t.base === 'obsidian'),
     ocean: themes.filter((t) => t.base === 'ocean'),
-    retro: themes.filter((t) => t.base === 'retro')
+    retro: themes.filter((t) => t.base === 'retro'),
+    ember: themes.filter((t) => t.base === 'ember'),
+    frost: themes.filter((t) => t.base === 'frost'),
+    sakura: themes.filter((t) => t.base === 'sakura')
   }
 }
