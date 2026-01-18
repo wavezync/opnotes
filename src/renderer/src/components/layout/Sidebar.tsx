@@ -8,6 +8,7 @@ import {
   Settings
 } from 'lucide-react'
 import opNotesLogo from '@renderer/assets/opnotes-logo.png'
+import wavezyncLogoDark from '../../../../../resources/wavezync-dark.png?asset'
 
 interface NavItemProps {
   to: string
@@ -91,6 +92,20 @@ export function Sidebar() {
           index={mainNavItems.length}
         />
       </div>
+
+      {/* WaveZync Attribution */}
+      <a
+        href="https://wavezync.com"
+        target="_blank"
+        rel="noreferrer"
+        className="group flex flex-col items-center gap-1 py-3 px-2 border-t border-sidebar-border/50 transition-all duration-300 hover:bg-sidebar-accent/30"
+      >
+        <img
+          src={wavezyncLogoDark}
+          alt="WaveZync"
+          className="h-4 opacity-40 grayscale transition-all duration-300 group-hover:opacity-80 group-hover:grayscale-0"
+        />
+      </a>
     </aside>
   )
 }

@@ -2,7 +2,6 @@ import { useState, useCallback } from 'react'
 import { Outlet } from 'react-router-dom'
 import { Sidebar } from './Sidebar'
 import { Header } from './Header'
-import { MadeWithLove } from '@renderer/components/brand/MadeWithLove'
 import { CommandPalette } from '@renderer/components/command-palette/CommandPalette'
 import { KeyboardShortcutsHelp } from '@renderer/components/keyboard/KeyboardShortcutsHelp'
 import { useKeyboardShortcuts } from '@renderer/hooks/useKeyboardShortcuts'
@@ -35,11 +34,6 @@ export function MainLayout() {
         <main className="flex-1 overflow-y-auto p-4">
           <Outlet />
         </main>
-
-        {/* Footer */}
-        <footer className="border-t">
-          <MadeWithLove />
-        </footer>
       </div>
 
       {/* Command Palette */}

@@ -1,6 +1,10 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import type { UpdateStatus, UpdateStatusPayload } from '../../../preload/interfaces'
 
+// Development mode simulation - set to true to test update UI states
+const DEV_SIMULATE_UPDATE = false
+const DEV_SIMULATE_STATE: UpdateStatus = 'available' // 'checking' | 'available' | 'downloading' | 'ready' | 'error'
+
 export interface UpdateContextType {
   status: UpdateStatus
   updateInfo?: UpdateStatusPayload['updateInfo']
@@ -15,10 +19,18 @@ export interface UpdateContextType {
 export const UpdateContext = createContext<UpdateContextType | null>(null)
 
 export const UpdateProvider = ({ children }: { children: React.ReactNode }) => {
-  const [status, setStatus] = useState<UpdateStatus>('idle')
-  const [updateInfo, setUpdateInfo] = useState<UpdateStatusPayload['updateInfo']>()
-  const [progress, setProgress] = useState<UpdateStatusPayload['progress']>()
-  const [error, setError] = useState<string>()
+  const [status, setStatus] = useState<UpdateStatus>(DEV_SIMULATE_UPDATE ? DEV_SIMULATE_STATE : 'idle')
+  const [updateInfo, setUpdateInfo] = useState<UpdateStatusPayload['updateInfo']>(
+    DEV_SIMULATE_UPDATE ? { version: '2.1.0', releaseName: 'Performance & Reliability Update' } : undefined
+  )
+  const [progress, setProgress] = useState<UpdateStatusPayload['progress']>(
+    DEV_SIMULATE_UPDATE && DEV_SIMULATE_STATE === 'downloading'
+      ? { percent: 45, bytesPerSecond: 1250000, transferred: 12500000, total: 28000000 }
+      : undefined
+  )
+  const [error, setError] = useState<string>(
+    DEV_SIMULATE_UPDATE && DEV_SIMULATE_STATE === 'error' ? 'Network connection failed' : undefined
+  )
 
   useEffect(() => {
     const cleanup = window.electronApi.onUpdateStatus((payload) => {

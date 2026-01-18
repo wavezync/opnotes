@@ -1,17 +1,58 @@
 import { Toaster } from 'react-hot-toast'
-import { cn } from '@renderer/lib/utils'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { queries } from '@renderer/lib/queries'
-import hero from '../assets/hero.svg?asset'
+import opnotesLogo from '../assets/opnotes-logo.png?asset'
+import wavezyncLogoDark from '../../../../resources/wavezync-dark.png?asset'
 
-import { Loader2Icon } from 'lucide-react'
+import { AlertCircle } from 'lucide-react'
 import { useEffect } from 'react'
 import { SettingsProvider, useSettings } from '@renderer/contexts/SettingsContext'
 import { UpdateProvider } from '@renderer/contexts/UpdateContext'
 import { ThemeProvider } from '@renderer/contexts/ThemeContext'
-import { PoweredBy } from '@renderer/components/brand/PowredBy'
 import { OnboardingWizard } from '@renderer/components/onboarding/OnboardingWizard'
 import { MainLayout } from '@renderer/components/layout/MainLayout'
+
+// Animated OpNotes logo with glow effects
+const SplashIcon = () => (
+  <div className="relative w-40 h-40 animate-splash-icon">
+    {/* Outer glow ring */}
+    <div className="absolute inset-0 rounded-full bg-primary/20 animate-splash-glow" />
+
+    {/* Main icon container */}
+    <div className="absolute inset-3 rounded-full bg-gradient-to-br from-primary/20 to-transparent backdrop-blur-sm border border-primary/20 flex items-center justify-center">
+      {/* OpNotes Logo */}
+      <img
+        src={opnotesLogo}
+        alt="OpNotes"
+        className="w-20 h-20 drop-shadow-[0_0_12px_var(--primary)]"
+      />
+    </div>
+
+    {/* Rotating accent ring */}
+    <svg className="absolute inset-0 w-full h-full animate-spin-slow" viewBox="0 0 160 160">
+      <circle
+        cx="80"
+        cy="80"
+        r="76"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1"
+        strokeDasharray="8 16"
+        className="text-primary/30"
+      />
+    </svg>
+  </div>
+)
+
+// Error icon
+const ErrorIcon = () => (
+  <div className="relative w-40 h-40 animate-splash-icon">
+    <div className="absolute inset-0 rounded-full bg-destructive/20" />
+    <div className="absolute inset-3 rounded-full bg-gradient-to-br from-destructive/20 to-transparent backdrop-blur-sm border border-destructive/20 flex items-center justify-center">
+      <AlertCircle className="w-20 h-20 text-destructive drop-shadow-[0_0_12px_var(--destructive)]" />
+    </div>
+  </div>
+)
 
 const SplashScreen = ({ error }: { error?: string }) => {
   const { data: appVersion, isLoading: isLoadingAppVersion } = useQuery({
@@ -20,28 +61,134 @@ const SplashScreen = ({ error }: { error?: string }) => {
   const hasError = !!error
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen w-full">
-      <div className="text-8xl font-bold relative">
-        Op Notes
+    <div className="relative flex flex-col items-center justify-center h-screen w-full overflow-hidden">
+      {/* Background layers */}
+
+      {/* Main center glow */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background: hasError
+            ? 'radial-gradient(ellipse 80% 50% at 50% 50%, var(--destructive) 0%, transparent 50%)'
+            : 'radial-gradient(ellipse 80% 50% at 50% 50%, var(--primary) 0%, transparent 50%)',
+          opacity: 0.15
+        }}
+      />
+
+      {/* Floating orbs - creates depth and atmosphere */}
+      <div
+        className="absolute w-[500px] h-[500px] rounded-full animate-float"
+        style={{
+          background: hasError
+            ? 'radial-gradient(circle, var(--destructive) 0%, transparent 70%)'
+            : 'radial-gradient(circle, var(--primary) 0%, transparent 70%)',
+          top: '10%',
+          left: '10%',
+          opacity: 0.08,
+          filter: 'blur(60px)'
+        }}
+      />
+      <div
+        className="absolute w-[400px] h-[400px] rounded-full animate-float"
+        style={{
+          background: hasError
+            ? 'radial-gradient(circle, var(--destructive) 0%, transparent 70%)'
+            : 'radial-gradient(circle, var(--primary) 0%, transparent 70%)',
+          bottom: '5%',
+          right: '5%',
+          opacity: 0.1,
+          filter: 'blur(50px)',
+          animationDelay: '-2s'
+        }}
+      />
+      <div
+        className="absolute w-[300px] h-[300px] rounded-full animate-float"
+        style={{
+          background: 'radial-gradient(circle, var(--foreground) 0%, transparent 70%)',
+          top: '20%',
+          right: '15%',
+          opacity: 0.03,
+          filter: 'blur(40px)',
+          animationDelay: '-4s'
+        }}
+      />
+
+      {/* Subtle vignette */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse at center, transparent 0%, var(--background) 100%)',
+          opacity: 0.6
+        }}
+      />
+
+      {/* Content */}
+      <div className="relative z-10 flex flex-col items-center">
+        {/* Icon */}
+        {hasError ? <ErrorIcon /> : <SplashIcon />}
+
+        {/* App Name */}
+        <h1 className="mt-8 text-5xl font-bold tracking-tight animate-splash-title">
+          <span className="bg-gradient-to-r from-foreground via-foreground to-foreground/70 bg-clip-text">
+            Op Notes
+          </span>
+        </h1>
+
+        {/* Version badge */}
         {!isLoadingAppVersion && appVersion && (
-          <span className="absolute text-sm text-secondary-foreground top-0">v{appVersion}</span>
-        )}
-      </div>
-      <img src={hero} alt="logo" className="w-72 h-72 animate-fade-in" />
-      <div className={cn('text-xl p-2', hasError ? 'text-red-500' : 'text-primary-500')}>
-        {!hasError ? (
-          <div className="flex justify-center items-center">
-            <Loader2Icon className="w-5 h-5 animate-spin mr-1" />
-            Starting...
-          </div>
-        ) : (
-          <div className="flex flex-col text-center">
-            <div className="text-red-600">Failed to start the application!</div>
-            <div className="text-sm text-red-500">{error}</div>
+          <div className="mt-2 animate-splash-subtitle">
+            <span className="px-2.5 py-0.5 text-xs font-medium rounded-full bg-primary/10 text-primary border border-primary/20">
+              v{appVersion}
+            </span>
           </div>
         )}
+
+        {/* Tagline */}
+        <p className="mt-3 text-sm text-muted-foreground animate-splash-subtitle">
+          Surgical Notes Management System
+        </p>
+
+        {/* Progress or Error */}
+        <div className="mt-10 w-64">
+          {!hasError ? (
+            <>
+              {/* Progress bar container */}
+              <div className="h-1 w-full bg-muted rounded-full overflow-hidden animate-splash-progress">
+                <div
+                  className="h-full w-1/2 bg-gradient-to-r from-primary/50 via-primary to-primary/50 rounded-full animate-progress-bar"
+                />
+              </div>
+
+              {/* Status text */}
+              <p className="mt-4 text-sm text-center text-muted-foreground animate-splash-status">
+                Initializing application...
+              </p>
+            </>
+          ) : (
+            <div className="animate-splash-progress">
+              <div className="p-4 rounded-lg bg-destructive/10 border border-destructive/20">
+                <p className="text-sm font-medium text-destructive text-center">
+                  Failed to start application
+                </p>
+                <p className="mt-1 text-xs text-destructive/80 text-center">{error}</p>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
-      <PoweredBy />
+
+      {/* Footer */}
+      <div className="absolute bottom-6 flex items-center gap-1.5 animate-splash-footer">
+        <span className="text-xs text-muted-foreground">Powered by</span>
+        <a
+          href="https://wavezync.com"
+          target="_blank"
+          rel="noreferrer"
+          className="opacity-70 hover:opacity-100 transition-opacity"
+        >
+          <img src={wavezyncLogoDark} alt="WaveZync" className="h-5" />
+        </a>
+      </div>
     </div>
   )
 }
