@@ -6,8 +6,12 @@ import React, { useEffect, useMemo } from 'react'
 import ReactDOM from 'react-dom/client'
 import handlebars from 'handlebars'
 import surgeryOpNoteTemplate from '../../../resources/templates/surgery-opnote.hbs?raw'
+import followupTemplate from '../../../resources/templates/followup.hbs?raw'
 
-const printTemplate = handlebars.compile(surgeryOpNoteTemplate)
+const templates: Record<string, HandlebarsTemplateDelegate> = {
+  surgery: handlebars.compile(surgeryOpNoteTemplate),
+  followup: handlebars.compile(followupTemplate)
+}
 
 const Print = () => {
   const [printData, setPrintData] = React.useState<object | null>(null)
@@ -23,7 +27,10 @@ const Print = () => {
     if (!printData) {
       return ''
     }
-    return printTemplate((printData as any).data)
+    const data = (printData as any).data
+    const templateName = data.template || 'surgery'
+    const template = templates[templateName] || templates.surgery
+    return template(data)
   }, [printData])
 
   const handlePrint = () => {
