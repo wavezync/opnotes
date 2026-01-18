@@ -1,0 +1,70 @@
+name: Feature Request
+description: Suggest a new feature for Op Notes
+title: "[Feature]: "
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to suggest a feature! Your ideas help make Op Notes better for healthcare professionals worldwide.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or Need
+      description: What problem are you trying to solve? What workflow challenge does this address?
+      placeholder: |
+        I'm frustrated when...
+        It would be helpful if...
+        Currently I have to...
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: Describe the solution you'd like. How would this feature work?
+      placeholder: |
+        I would like to see...
+        It could work by...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: impact
+    attributes:
+      label: Who Would Benefit?
+      description: How many people do you think would benefit from this feature?
+      options:
+        - Just me
+        - My team/unit
+        - Multiple departments
+        - The entire hospital
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority for Your Workflow
+      description: How important is this feature for your daily work?
+      options:
+        - Nice to have
+        - Would improve my workflow
+        - Would significantly help my work
+        - Critical for my workflow
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Have you considered any alternative solutions or workarounds?
+      placeholder: Describe any alternative solutions you've thought of...
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Add any other context, screenshots, or examples about the feature request here.
+      placeholder: Any other information, mockups, or examples...
