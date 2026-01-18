@@ -1,6 +1,6 @@
 import { useTheme, type ThemeId, type ThemeBase } from '@renderer/contexts/ThemeContext'
 import { cn } from '@renderer/lib/utils'
-import { Check, Sparkles } from 'lucide-react'
+import { Check } from 'lucide-react'
 import { Button } from '@renderer/components/ui/button'
 import {
   Popover,
@@ -8,6 +8,12 @@ import {
   PopoverTrigger
 } from '@renderer/components/ui/popover'
 import { useState } from 'react'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger
+} from '@renderer/components/ui/tooltip'
 
 // Theme visual data with gradients and preview colors
 const themeVisuals: Record<
@@ -182,35 +188,67 @@ export function ThemeDropdown() {
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="ghost"
-          size="icon"
-          className={cn(
-            'h-9 w-9 relative overflow-hidden transition-all duration-300',
-            'hover:bg-accent/50',
-            open && 'bg-accent'
-          )}
-        >
-          {/* Animated gradient background */}
-          <div
-            className={cn(
-              'absolute inset-0.5 rounded-md bg-gradient-to-br opacity-0 transition-opacity duration-300',
-              'group-hover:opacity-100',
-              currentVisuals.gradient
-            )}
-          />
-          <Sparkles className="h-4 w-4 relative z-10" />
-          {/* Theme color indicator */}
-          <div
-            className={cn(
-              'absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full',
-              'border-2 border-background',
-              `bg-gradient-to-br ${currentVisuals.gradient}`
-            )}
-          />
-        </Button>
-      </PopoverTrigger>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <PopoverTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className={cn(
+                  'h-9 w-9 relative overflow-hidden transition-all duration-300 group',
+                  'hover:bg-accent/50 active:scale-95',
+                  open && 'bg-accent'
+                )}
+              >
+                {/* Subtle gradient background on hover */}
+                <div
+                  className={cn(
+                    'absolute inset-0 rounded-lg opacity-0 transition-opacity duration-300',
+                    'group-hover:opacity-100',
+                    'bg-gradient-to-br from-primary/10 via-transparent to-primary/5'
+                  )}
+                />
+
+                {/* Custom palette icon - 4 color swatches in a grid */}
+                <div className="relative z-10 h-[18px] w-[18px] grid grid-cols-2 gap-[2px] transition-transform duration-300 group-hover:scale-110">
+                  {/* Top-left swatch - uses current theme primary */}
+                  <div
+                    className="rounded-tl-[4px] rounded-tr-[1px] rounded-bl-[1px] rounded-br-[1px] transition-all duration-300"
+                    style={{ backgroundColor: currentVisuals.preview.accent }}
+                  />
+                  {/* Top-right swatch - lighter variant */}
+                  <div
+                    className="rounded-tl-[1px] rounded-tr-[4px] rounded-bl-[1px] rounded-br-[1px] transition-all duration-300 opacity-70"
+                    style={{ backgroundColor: currentVisuals.preview.accent }}
+                  />
+                  {/* Bottom-left swatch - muted variant */}
+                  <div
+                    className="rounded-tl-[1px] rounded-tr-[1px] rounded-bl-[4px] rounded-br-[1px] transition-all duration-300 opacity-40"
+                    style={{ backgroundColor: currentVisuals.preview.accent }}
+                  />
+                  {/* Bottom-right swatch - text color */}
+                  <div
+                    className="rounded-tl-[1px] rounded-tr-[1px] rounded-bl-[1px] rounded-br-[4px] transition-all duration-300 opacity-60"
+                    style={{ backgroundColor: currentVisuals.preview.text }}
+                  />
+                </div>
+
+                {/* Animated ring on hover */}
+                <div
+                  className={cn(
+                    'absolute inset-0.5 rounded-lg border border-primary/0 transition-all duration-300',
+                    'group-hover:border-primary/30'
+                  )}
+                />
+              </Button>
+            </PopoverTrigger>
+          </TooltipTrigger>
+          <TooltipContent side="bottom" className="text-xs">
+            <p>Change theme</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
       <PopoverContent
         align="end"
         className="w-[340px] p-3"

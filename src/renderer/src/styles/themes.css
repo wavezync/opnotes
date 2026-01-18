@@ -984,126 +984,143 @@
 /* ============================================
    RETRO - CRT Terminal Nostalgia
    Amber phosphor on dark screen, vintage hospital terminal feel
-   Font: VT323 | Radius: Sharp | Borders: Pixelated feel
+   Font: VT323 (scaled up) | Radius: Sharp | Borders: Pixelated feel
+
+   Design: Classic CRT terminal with glowing phosphor text,
+   dark scanlines, and authentic vintage computing aesthetic
    ============================================ */
 
 [data-theme='retro-light'] {
   --font-family: var(--font-vt323);
-  --radius-base: 0.25rem;
+  --font-size-scale: 1.25;
+  --radius-base: 0.125rem;
   --border-width: 2px;
 
-  --background: oklch(95% 0.02 85);
-  --foreground: oklch(25% 0.04 85);
+  /* Aged paper/terminal paper with warm undertone */
+  --background: oklch(94% 0.025 80);
+  --foreground: oklch(22% 0.06 75);
 
-  --card: oklch(98% 0.015 85);
-  --card-foreground: oklch(25% 0.04 85);
+  /* Parchment card backgrounds */
+  --card: oklch(96% 0.02 82);
+  --card-foreground: oklch(22% 0.06 75);
 
-  --popover: oklch(98% 0.015 85);
-  --popover-foreground: oklch(25% 0.04 85);
+  --popover: oklch(96% 0.02 82);
+  --popover-foreground: oklch(22% 0.06 75);
 
-  --primary: oklch(50% 0.14 145);
+  /* Vibrant green terminal primary */
+  --primary: oklch(48% 0.18 145);
   --primary-foreground: oklch(98% 0.01 145);
 
-  --secondary: oklch(90% 0.03 85);
-  --secondary-foreground: oklch(30% 0.04 85);
+  /* Warm sepia secondary */
+  --secondary: oklch(88% 0.04 80);
+  --secondary-foreground: oklch(28% 0.05 75);
 
-  --muted: oklch(92% 0.02 85);
-  --muted-foreground: oklch(45% 0.03 85);
+  --muted: oklch(90% 0.025 80);
+  --muted-foreground: oklch(42% 0.04 75);
 
-  --accent: oklch(88% 0.04 85);
-  --accent-foreground: oklch(30% 0.04 85);
+  /* Amber accent for highlights */
+  --accent: oklch(85% 0.06 80);
+  --accent-foreground: oklch(28% 0.05 75);
 
-  --destructive: oklch(55% 0.2 25);
+  --destructive: oklch(52% 0.22 25);
   --destructive-foreground: oklch(98% 0.01 25);
 
-  --border: oklch(82% 0.03 85);
-  --input: oklch(82% 0.03 85);
-  --ring: oklch(50% 0.14 145);
+  --border: oklch(78% 0.04 80);
+  --input: oklch(78% 0.04 80);
+  --ring: oklch(48% 0.18 145);
 
-  --sidebar-background: oklch(92% 0.025 85);
-  --sidebar-foreground: oklch(35% 0.04 85);
-  --sidebar-primary: oklch(50% 0.14 145);
+  --sidebar-background: oklch(91% 0.03 80);
+  --sidebar-foreground: oklch(32% 0.05 75);
+  --sidebar-primary: oklch(48% 0.18 145);
   --sidebar-primary-foreground: oklch(98% 0.01 145);
-  --sidebar-accent: oklch(88% 0.03 85);
-  --sidebar-accent-foreground: oklch(30% 0.04 85);
-  --sidebar-border: oklch(82% 0.03 85);
-  --sidebar-ring: oklch(50% 0.14 145);
+  --sidebar-accent: oklch(86% 0.04 80);
+  --sidebar-accent-foreground: oklch(28% 0.05 75);
+  --sidebar-border: oklch(78% 0.04 80);
+  --sidebar-ring: oklch(48% 0.18 145);
 
-  --gradient-primary: linear-gradient(135deg, oklch(50% 0.14 145), oklch(55% 0.12 130));
-  --gradient-bg-radial: radial-gradient(ellipse at top, oklch(88% 0.04 85 / 0.5), transparent 70%);
-  --gradient-card-shine: linear-gradient(110deg, transparent 25%, oklch(100% 0 0 / 0.3) 50%, transparent 75%);
+  --gradient-primary: linear-gradient(135deg, oklch(48% 0.18 145), oklch(52% 0.15 130));
+  --gradient-bg-radial: radial-gradient(ellipse at top, oklch(85% 0.05 80 / 0.6), transparent 70%);
+  --gradient-card-shine: linear-gradient(110deg, transparent 25%, oklch(100% 0 0 / 0.25) 50%, transparent 75%);
 
-  --shadow-sm: 0 2px 0 oklch(25% 0.04 85 / 0.15);
-  --shadow-md: 0 4px 0 oklch(25% 0.04 85 / 0.12), 0 2px 0 oklch(25% 0.04 85 / 0.08);
-  --shadow-lg: 0 6px 0 oklch(25% 0.04 85 / 0.1), 0 3px 0 oklch(25% 0.04 85 / 0.06);
-  --shadow-primary: 0 4px 0 oklch(50% 0.14 145 / 0.4);
+  /* Hard-edged retro shadows */
+  --shadow-sm: 0 2px 0 oklch(22% 0.06 75 / 0.2);
+  --shadow-md: 0 3px 0 oklch(22% 0.06 75 / 0.18), 0 1px 0 oklch(22% 0.06 75 / 0.12);
+  --shadow-lg: 0 4px 0 oklch(22% 0.06 75 / 0.15), 0 2px 0 oklch(22% 0.06 75 / 0.1);
+  --shadow-primary: 0 3px 0 oklch(48% 0.18 145 / 0.5);
 
-  --chart-1: oklch(50% 0.14 145);
-  --chart-2: oklch(65% 0.15 85);
-  --chart-3: oklch(55% 0.1 200);
-  --chart-4: oklch(60% 0.14 25);
-  --chart-5: oklch(58% 0.12 300);
+  --chart-1: oklch(48% 0.18 145);
+  --chart-2: oklch(62% 0.16 80);
+  --chart-3: oklch(52% 0.12 200);
+  --chart-4: oklch(58% 0.18 25);
+  --chart-5: oklch(55% 0.14 300);
 }
 
 [data-theme='retro-dark'] {
   --font-family: var(--font-vt323);
-  --radius-base: 0.25rem;
+  --font-size-scale: 1.25;
+  --radius-base: 0.125rem;
   --border-width: 2px;
 
-  /* Classic amber phosphor CRT colors */
-  --background: oklch(8% 0.015 85);
-  --foreground: oklch(80% 0.14 85);
+  /* Deep CRT black with slight warm tint */
+  --background: oklch(6% 0.02 75);
+  --foreground: oklch(82% 0.16 80);
 
-  --card: oklch(12% 0.02 85);
-  --card-foreground: oklch(80% 0.14 85);
+  /* Slightly lighter card for depth */
+  --card: oklch(10% 0.025 75);
+  --card-foreground: oklch(82% 0.16 80);
 
-  --popover: oklch(12% 0.02 85);
-  --popover-foreground: oklch(80% 0.14 85);
+  --popover: oklch(10% 0.025 75);
+  --popover-foreground: oklch(82% 0.16 80);
 
-  /* Green phosphor primary */
-  --primary: oklch(70% 0.18 145);
-  --primary-foreground: oklch(8% 0.015 145);
+  /* Vivid neon green phosphor primary - the star of the show */
+  --primary: oklch(75% 0.22 145);
+  --primary-foreground: oklch(6% 0.02 145);
 
-  --secondary: oklch(18% 0.025 85);
-  --secondary-foreground: oklch(80% 0.14 85);
+  --secondary: oklch(16% 0.035 75);
+  --secondary-foreground: oklch(82% 0.16 80);
 
-  --muted: oklch(15% 0.02 85);
-  --muted-foreground: oklch(55% 0.08 85);
+  --muted: oklch(14% 0.025 75);
+  --muted-foreground: oklch(58% 0.1 80);
 
-  --accent: oklch(16% 0.025 85);
-  --accent-foreground: oklch(80% 0.14 85);
+  /* Amber phosphor accent */
+  --accent: oklch(15% 0.03 75);
+  --accent-foreground: oklch(82% 0.16 80);
 
-  --destructive: oklch(55% 0.2 25);
-  --destructive-foreground: oklch(95% 0.01 25);
+  --destructive: oklch(58% 0.22 25);
+  --destructive-foreground: oklch(96% 0.01 25);
 
-  --border: oklch(25% 0.03 85);
-  --input: oklch(25% 0.03 85);
-  --ring: oklch(70% 0.18 145);
+  --border: oklch(24% 0.04 75);
+  --input: oklch(24% 0.04 75);
+  --ring: oklch(75% 0.22 145);
 
-  --sidebar-background: oklch(6% 0.015 85);
-  --sidebar-foreground: oklch(60% 0.1 85);
-  --sidebar-primary: oklch(70% 0.18 145);
-  --sidebar-primary-foreground: oklch(8% 0.015 145);
-  --sidebar-accent: oklch(14% 0.02 85);
-  --sidebar-accent-foreground: oklch(80% 0.14 85);
-  --sidebar-border: oklch(22% 0.025 85);
-  --sidebar-ring: oklch(70% 0.18 145);
+  --sidebar-background: oklch(4% 0.015 75);
+  --sidebar-foreground: oklch(65% 0.12 80);
+  --sidebar-primary: oklch(75% 0.22 145);
+  --sidebar-primary-foreground: oklch(6% 0.02 145);
+  --sidebar-accent: oklch(12% 0.025 75);
+  --sidebar-accent-foreground: oklch(82% 0.16 80);
+  --sidebar-border: oklch(20% 0.035 75);
+  --sidebar-ring: oklch(75% 0.22 145);
 
-  --gradient-primary: linear-gradient(135deg, oklch(70% 0.18 145), oklch(65% 0.15 130));
-  --gradient-bg-radial: radial-gradient(ellipse at top, oklch(15% 0.03 85 / 0.5), transparent 70%);
-  --gradient-card-shine: linear-gradient(110deg, transparent 25%, oklch(80% 0.14 85 / 0.05) 50%, transparent 75%);
+  --gradient-primary: linear-gradient(135deg, oklch(75% 0.22 145), oklch(68% 0.18 130));
+  --gradient-bg-radial: radial-gradient(ellipse at top, oklch(14% 0.04 75 / 0.6), transparent 70%);
+  --gradient-card-shine: linear-gradient(110deg, transparent 25%, oklch(82% 0.16 80 / 0.04) 50%, transparent 75%);
 
-  /* Blocky, pixelated shadows for retro feel */
-  --shadow-sm: 0 2px 0 oklch(0% 0 0 / 0.5);
-  --shadow-md: 0 4px 0 oklch(0% 0 0 / 0.6), 0 2px 0 oklch(0% 0 0 / 0.4);
-  --shadow-lg: 0 6px 0 oklch(0% 0 0 / 0.7), 0 3px 0 oklch(0% 0 0 / 0.5);
-  --shadow-primary: 0 4px 0 oklch(70% 0.18 145 / 0.5);
+  /* Hard-edged CRT shadows with phosphor glow */
+  --shadow-sm: 0 2px 0 oklch(0% 0 0 / 0.6);
+  --shadow-md: 0 3px 0 oklch(0% 0 0 / 0.7), 0 1px 0 oklch(0% 0 0 / 0.5);
+  --shadow-lg: 0 4px 0 oklch(0% 0 0 / 0.8), 0 2px 0 oklch(0% 0 0 / 0.6);
+  --shadow-primary: 0 0 12px oklch(75% 0.22 145 / 0.5), 0 3px 0 oklch(75% 0.22 145 / 0.6);
 
-  --chart-1: oklch(70% 0.18 145);
-  --chart-2: oklch(75% 0.14 85);
-  --chart-3: oklch(60% 0.1 200);
-  --chart-4: oklch(65% 0.14 25);
-  --chart-5: oklch(62% 0.12 300);
+  /* Phosphor glow effect */
+  --glow-primary: 0 0 8px oklch(75% 0.22 145 / 0.6), 0 0 16px oklch(75% 0.22 145 / 0.3);
+  --glow-amber: 0 0 8px oklch(82% 0.16 80 / 0.5), 0 0 16px oklch(82% 0.16 80 / 0.25);
+
+  --chart-1: oklch(75% 0.22 145);
+  --chart-2: oklch(78% 0.16 80);
+  --chart-3: oklch(62% 0.12 200);
+  --chart-4: oklch(68% 0.18 25);
+  --chart-5: oklch(65% 0.14 300);
 }
 
 /* Apply font family and radius globally */
@@ -1117,4 +1134,163 @@
   --radius-lg: var(--radius-base);
   --radius-md: calc(var(--radius-base) - 2px);
   --radius-sm: calc(var(--radius-base) - 4px);
+}
+
+/* ============================================
+   RETRO Theme Special Styles
+   Larger fonts, CRT effects, phosphor glow
+   ============================================ */
+
+/* Retro theme: Scale up VT323 font for readability */
+[data-theme='retro-light'],
+[data-theme='retro-dark'] {
+  /* VT323 is a pixel font - needs to be larger for proper display */
+  font-size: 20px;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+}
+
+/* Even larger text for major headings in retro theme */
+[data-theme='retro-light'] h1,
+[data-theme='retro-light'] h2,
+[data-theme='retro-light'] .text-2xl,
+[data-theme='retro-light'] .text-3xl,
+[data-theme='retro-dark'] h1,
+[data-theme='retro-dark'] h2,
+[data-theme='retro-dark'] .text-2xl,
+[data-theme='retro-dark'] .text-3xl {
+  letter-spacing: 0.04em;
+}
+
+/* Retro dark: CRT scanline overlay effect */
+[data-theme='retro-dark']::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    oklch(0% 0 0 / 0.03) 2px,
+    oklch(0% 0 0 / 0.03) 4px
+  );
+}
+
+/* Retro dark: subtle vignette effect for CRT feel */
+[data-theme='retro-dark']::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 9998;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 0%,
+    transparent 60%,
+    oklch(0% 0 0 / 0.15) 100%
+  );
+}
+
+/* Phosphor glow effect for primary elements in retro dark */
+[data-theme='retro-dark'] .text-primary,
+[data-theme='retro-dark'] [class*='text-emerald'],
+[data-theme='retro-dark'] [class*='text-green'] {
+  text-shadow: 0 0 6px currentColor;
+}
+
+/* Stronger glow for headings and important text */
+[data-theme='retro-dark'] h1,
+[data-theme='retro-dark'] h2,
+[data-theme='retro-dark'] h3,
+[data-theme='retro-dark'] .font-bold,
+[data-theme='retro-dark'] .font-semibold {
+  text-shadow: 0 0 4px oklch(82% 0.16 80 / 0.3);
+}
+
+/* Amber glow for foreground text in retro dark */
+[data-theme='retro-dark'] .text-foreground {
+  text-shadow: 0 0 3px oklch(82% 0.16 80 / 0.2);
+}
+
+/* Card glow effect for retro dark */
+[data-theme='retro-dark'] .border {
+  border-color: oklch(30% 0.05 75);
+  box-shadow: inset 0 0 0 1px oklch(25% 0.04 75 / 0.5);
+}
+
+/* Primary button glow in retro theme */
+[data-theme='retro-dark'] .bg-primary {
+  box-shadow: 0 0 12px oklch(75% 0.22 145 / 0.4),
+              0 0 24px oklch(75% 0.22 145 / 0.2),
+              0 2px 0 oklch(0% 0 0 / 0.5);
+}
+
+[data-theme='retro-dark'] .bg-primary:hover {
+  box-shadow: 0 0 16px oklch(75% 0.22 145 / 0.5),
+              0 0 32px oklch(75% 0.22 145 / 0.25),
+              0 2px 0 oklch(0% 0 0 / 0.5);
+}
+
+/* Retro light theme: paper texture feel */
+[data-theme='retro-light'] .border {
+  border-color: oklch(72% 0.05 80);
+}
+
+/* Input fields with terminal-style appearance */
+[data-theme='retro-dark'] input,
+[data-theme='retro-dark'] textarea,
+[data-theme='retro-dark'] select {
+  background-color: oklch(8% 0.02 75);
+  border: 2px solid oklch(28% 0.04 75);
+  color: oklch(82% 0.16 80);
+}
+
+[data-theme='retro-dark'] input:focus,
+[data-theme='retro-dark'] textarea:focus,
+[data-theme='retro-dark'] select:focus {
+  border-color: oklch(75% 0.22 145);
+  box-shadow: 0 0 8px oklch(75% 0.22 145 / 0.3);
+}
+
+/* Retro cursor blink for inputs */
+[data-theme='retro-dark'] input:focus,
+[data-theme='retro-dark'] textarea:focus {
+  caret-color: oklch(75% 0.22 145);
+}
+
+/* Scrollbar styling for retro theme */
+[data-theme='retro-dark'] ::-webkit-scrollbar {
+  width: 10px;
+  background-color: oklch(8% 0.02 75);
+}
+
+[data-theme='retro-dark'] ::-webkit-scrollbar-thumb {
+  background-color: oklch(75% 0.22 145 / 0.5);
+  border: 2px solid oklch(8% 0.02 75);
+}
+
+[data-theme='retro-dark'] ::-webkit-scrollbar-thumb:hover {
+  background-color: oklch(75% 0.22 145 / 0.7);
+}
+
+[data-theme='retro-light'] ::-webkit-scrollbar {
+  width: 10px;
+  background-color: oklch(90% 0.025 80);
+}
+
+[data-theme='retro-light'] ::-webkit-scrollbar-thumb {
+  background-color: oklch(48% 0.18 145 / 0.5);
+  border: 2px solid oklch(90% 0.025 80);
+}
+
+[data-theme='retro-light'] ::-webkit-scrollbar-thumb:hover {
+  background-color: oklch(48% 0.18 145 / 0.7);
 }
