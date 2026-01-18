@@ -63,7 +63,9 @@ API methods return `{ result }` on success or `{ error }` on failure.
 - **Location**: `~/.opnotes/data.db`
 - **Tables**: patients, doctors, surgeries, surgery_followups, surgery_doctors_done_by, surgery_doctors_assisted_by, app_settings
 - **FTS tables**: patients_fts, surgeries_fts, doctors_fts for full-text search
-- **Migrations**: Code-based in `src/main/db/migrations/`
+- **Migrations**: Code-based in `src/main/db/migrations/`. When adding a new migration:
+  1. Create file `src/main/db/migrations/NNN_name.ts` with `up()` and `down()` functions
+  2. **Register it** in `src/main/db/migrations.ts` (import and add to default export)
 
 ### Key Type Definitions
 
@@ -81,6 +83,15 @@ API methods return `{ result }` on success or `{ error }` on failure.
 ### Printing
 
 Separate print window loads `src/renderer/print.html`. Data passed via IPC `printData` event. Templates use Handlebars in `resources/templates/`.
+
+### Onboarding
+
+- **Trigger**: `onboarding_completed` setting in app_settings table
+- **Location**: `src/renderer/src/components/onboarding/`
+- **Gate**: `OnboardingGate` component in `routes/root.tsx` controls wizard visibility
+- **Flow**: SplashScreen → SettingsProvider loads → OnboardingGate checks flag → shows wizard or MainLayout
+- **Re-run**: Users can re-run wizard from Settings > General via "Run Setup Wizard" button
+- **Migration**: `006_onboarding_setting.ts` auto-detects existing configured users (hospital+unit set)
 
 ## Tech Stack
 
