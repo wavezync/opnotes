@@ -1,43 +1,17 @@
-import { NavLink, Outlet } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import { cn } from '@renderer/lib/utils'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { queries } from '@renderer/lib/queries'
 import hero from '../assets/hero.svg?asset'
 
-import { Loader2Icon, Settings } from 'lucide-react'
+import { Loader2Icon } from 'lucide-react'
 import { useEffect } from 'react'
 import { SettingsProvider, useSettings } from '@renderer/contexts/SettingsContext'
 import { UpdateProvider } from '@renderer/contexts/UpdateContext'
-import { UpdateIndicator } from '@renderer/components/update/UpdateIndicator'
+import { ThemeProvider } from '@renderer/contexts/ThemeContext'
 import { PoweredBy } from '@renderer/components/brand/PowredBy'
-import { MadeWithLove } from '@renderer/components/brand/MadeWithLove'
 import { OnboardingWizard } from '@renderer/components/onboarding/OnboardingWizard'
-
-const NavLinkComponent = ({
-  to,
-  children,
-  className
-}: {
-  to: string
-  children: React.ReactNode
-  className?: string
-}) => {
-  return (
-    <NavLink
-      to={to}
-      className={({ isActive, isPending }) =>
-        cn(
-          'text-secondary-foreground text-sm underline-offset-4 hover:underline cursor-pointer hover:bg-accent/80 p-2 rounded-lg',
-          (isActive || isPending) && 'bg-accent',
-          className
-        )
-      }
-    >
-      {children}
-    </NavLink>
-  )
-}
+import { MainLayout } from '@renderer/components/layout/MainLayout'
 
 const SplashScreen = ({ error }: { error?: string }) => {
   const { data: appVersion, isLoading: isLoadingAppVersion } = useQuery({
@@ -91,42 +65,15 @@ const OnboardingGate = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>
 }
 
-const Providers = ({ children }) => {
+const Providers = ({ children }: { children: React.ReactNode }) => {
   return (
-    <SettingsProvider>
-      <UpdateProvider>
-        <OnboardingGate>{children}</OnboardingGate>
-      </UpdateProvider>
-    </SettingsProvider>
-  )
-}
-
-const MainLayout = () => {
-  const { appVersion } = useSettings()
-
-  return (
-    <>
-      <nav className="flex w-full space-x-2 text-2xl justify-start items-center p-1 text-left m-1 border-b-2">
-        <NavLinkComponent to="/">Home</NavLinkComponent>
-        <NavLinkComponent to="/patients">Patients</NavLinkComponent>
-        <NavLinkComponent to="/surgeries">Surgeries</NavLinkComponent>
-        <NavLinkComponent to="/doctors">Doctors</NavLinkComponent>
-
-        <div className="flex-1"></div>
-        <UpdateIndicator />
-        {appVersion && <div className="text-xs text-secondary-foreground">v{appVersion}</div>}
-
-        <NavLinkComponent to="/settings" className="!mr-1">
-          <Settings className="w-4 h-4" />
-        </NavLinkComponent>
-      </nav>
-      <div className="grow m-1 p-3 overflow-y-auto">
-        <Outlet />
-      </div>
-      <footer className="border-t">
-        <MadeWithLove />
-      </footer>
-    </>
+    <ThemeProvider>
+      <SettingsProvider>
+        <UpdateProvider>
+          <OnboardingGate>{children}</OnboardingGate>
+        </UpdateProvider>
+      </SettingsProvider>
+    </ThemeProvider>
   )
 }
 
@@ -155,7 +102,7 @@ export default function Root() {
 
   return (
     <>
-      <main className="h-screen w-full flex flex-col antialiased bg-background overflow-hidden">
+      <main className="h-screen w-full flex antialiased bg-background overflow-hidden">
         {isBooting && <SplashScreen error={error?.message} />}
         {!isBooting && isSuccess && (
           <Providers>

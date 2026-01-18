@@ -45,6 +45,7 @@ import {
   getTemplateTags
 } from './repository/surgery-template'
 import { createBackup, listBackups, deleteBackup, restoreBackup } from './backup'
+import { getDashboardStats, getRecentActivity } from './repository/dashboard'
 
 // Custom APIs for renderer
 export const api = {
@@ -91,7 +92,10 @@ export const api = {
   createBackup,
   listBackups,
   deleteBackup,
-  restoreBackup
+  restoreBackup,
+
+  getDashboardStats,
+  getRecentActivity
 }
 
 export type ApiType = typeof api

@@ -1,0 +1,346 @@
+/* ============================================
+   Theme Variants - 4 themes x 2 modes = 8 total
+   ============================================ */
+
+/* Default Theme - Light (Inter font) */
+[data-theme='default-light'],
+:root:not([data-theme]) {
+  --font-family: var(--font-inter);
+
+  --background: oklch(100% 0 0);
+  --foreground: oklch(14.1% 0.02 264.7);
+
+  --card: oklch(100% 0 0);
+  --card-foreground: oklch(14.1% 0.02 264.7);
+
+  --popover: oklch(100% 0 0);
+  --popover-foreground: oklch(14.1% 0.02 264.7);
+
+  --primary: oklch(54.6% 0.245 262.9);
+  --primary-foreground: oklch(97.1% 0.01 264.7);
+
+  --secondary: oklch(96.7% 0.01 264.7);
+  --secondary-foreground: oklch(21% 0.02 264.7);
+
+  --muted: oklch(96.7% 0.01 264.7);
+  --muted-foreground: oklch(55.6% 0.02 264.7);
+
+  --accent: oklch(96.7% 0.01 264.7);
+  --accent-foreground: oklch(21% 0.02 264.7);
+
+  --destructive: oklch(57.7% 0.215 27.3);
+  --destructive-foreground: oklch(97.1% 0.01 264.7);
+
+  --border: oklch(91.4% 0.01 264.7);
+  --input: oklch(91.4% 0.01 264.7);
+  --ring: oklch(54.6% 0.245 262.9);
+
+  --sidebar-background: oklch(98.5% 0.005 264.7);
+  --sidebar-foreground: oklch(37% 0.02 264.7);
+  --sidebar-primary: oklch(54.6% 0.245 262.9);
+  --sidebar-primary-foreground: oklch(97.1% 0.01 264.7);
+  --sidebar-accent: oklch(95% 0.01 264.7);
+  --sidebar-accent-foreground: oklch(21% 0.02 264.7);
+  --sidebar-border: oklch(91.4% 0.01 264.7);
+  --sidebar-ring: oklch(54.6% 0.245 262.9);
+}
+
+/* Default Theme - Dark (Inter font) */
+[data-theme='default-dark'] {
+  --font-family: var(--font-inter);
+
+  --background: oklch(14.5% 0.035 264.7);
+  --foreground: oklch(97.1% 0.01 264.7);
+
+  --card: oklch(17% 0.035 264.7);
+  --card-foreground: oklch(97.1% 0.01 264.7);
+
+  --popover: oklch(17% 0.035 264.7);
+  --popover-foreground: oklch(97.1% 0.01 264.7);
+
+  --primary: oklch(62.8% 0.19 259);
+  --primary-foreground: oklch(14% 0.02 264.7);
+
+  --secondary: oklch(25% 0.04 264.7);
+  --secondary-foreground: oklch(97.1% 0.01 264.7);
+
+  --muted: oklch(25% 0.04 264.7);
+  --muted-foreground: oklch(71.1% 0.02 264.7);
+
+  --accent: oklch(25% 0.04 264.7);
+  --accent-foreground: oklch(97.1% 0.01 264.7);
+
+  --destructive: oklch(55% 0.2 27.3);
+  --destructive-foreground: oklch(97.1% 0.01 264.7);
+
+  --border: oklch(28% 0.04 264.7);
+  --input: oklch(28% 0.04 264.7);
+  --ring: oklch(56% 0.2 259);
+
+  --sidebar-background: oklch(12% 0.035 264.7);
+  --sidebar-foreground: oklch(75% 0.02 264.7);
+  --sidebar-primary: oklch(62.8% 0.19 259);
+  --sidebar-primary-foreground: oklch(14% 0.02 264.7);
+  --sidebar-accent: oklch(22% 0.035 264.7);
+  --sidebar-accent-foreground: oklch(97.1% 0.01 264.7);
+  --sidebar-border: oklch(25% 0.04 264.7);
+  --sidebar-ring: oklch(56% 0.2 259);
+}
+
+/* Medical Professional Theme - Light (IBM Plex Sans) */
+[data-theme='medical-light'] {
+  --font-family: var(--font-ibm-plex);
+
+  --background: oklch(99.5% 0.005 220);
+  --foreground: oklch(20% 0.02 220);
+
+  --card: oklch(100% 0 0);
+  --card-foreground: oklch(20% 0.02 220);
+
+  --popover: oklch(100% 0 0);
+  --popover-foreground: oklch(20% 0.02 220);
+
+  --primary: oklch(48% 0.15 220);
+  --primary-foreground: oklch(98% 0.01 220);
+
+  --secondary: oklch(96% 0.015 220);
+  --secondary-foreground: oklch(25% 0.02 220);
+
+  --muted: oklch(96% 0.015 220);
+  --muted-foreground: oklch(50% 0.02 220);
+
+  --accent: oklch(92% 0.03 180);
+  --accent-foreground: oklch(25% 0.02 180);
+
+  --destructive: oklch(55% 0.22 25);
+  --destructive-foreground: oklch(98% 0.01 25);
+
+  --border: oklch(90% 0.015 220);
+  --input: oklch(90% 0.015 220);
+  --ring: oklch(48% 0.15 220);
+
+  --sidebar-background: oklch(97% 0.01 220);
+  --sidebar-foreground: oklch(35% 0.02 220);
+  --sidebar-primary: oklch(48% 0.15 220);
+  --sidebar-primary-foreground: oklch(98% 0.01 220);
+  --sidebar-accent: oklch(94% 0.02 220);
+  --sidebar-accent-foreground: oklch(25% 0.02 220);
+  --sidebar-border: oklch(90% 0.015 220);
+  --sidebar-ring: oklch(48% 0.15 220);
+}
+
+/* Medical Professional Theme - Dark (IBM Plex Sans) */
+[data-theme='medical-dark'] {
+  --font-family: var(--font-ibm-plex);
+
+  --background: oklch(15% 0.03 220);
+  --foreground: oklch(96% 0.01 220);
+
+  --card: oklch(18% 0.03 220);
+  --card-foreground: oklch(96% 0.01 220);
+
+  --popover: oklch(18% 0.03 220);
+  --popover-foreground: oklch(96% 0.01 220);
+
+  --primary: oklch(60% 0.15 200);
+  --primary-foreground: oklch(15% 0.02 200);
+
+  --secondary: oklch(25% 0.035 220);
+  --secondary-foreground: oklch(96% 0.01 220);
+
+  --muted: oklch(25% 0.035 220);
+  --muted-foreground: oklch(70% 0.02 220);
+
+  --accent: oklch(30% 0.05 180);
+  --accent-foreground: oklch(96% 0.01 180);
+
+  --destructive: oklch(50% 0.18 25);
+  --destructive-foreground: oklch(96% 0.01 25);
+
+  --border: oklch(28% 0.035 220);
+  --input: oklch(28% 0.035 220);
+  --ring: oklch(60% 0.15 200);
+
+  --sidebar-background: oklch(12% 0.03 220);
+  --sidebar-foreground: oklch(75% 0.02 220);
+  --sidebar-primary: oklch(60% 0.15 200);
+  --sidebar-primary-foreground: oklch(15% 0.02 200);
+  --sidebar-accent: oklch(22% 0.03 220);
+  --sidebar-accent-foreground: oklch(96% 0.01 220);
+  --sidebar-border: oklch(25% 0.035 220);
+  --sidebar-ring: oklch(60% 0.15 200);
+}
+
+/* Classic Theme - Light (Source Serif Pro) */
+[data-theme='classic-light'] {
+  --font-family: var(--font-source-serif);
+
+  --background: oklch(98% 0.01 80);
+  --foreground: oklch(22% 0.02 60);
+
+  --card: oklch(99% 0.008 80);
+  --card-foreground: oklch(22% 0.02 60);
+
+  --popover: oklch(99% 0.008 80);
+  --popover-foreground: oklch(22% 0.02 60);
+
+  --primary: oklch(45% 0.1 40);
+  --primary-foreground: oklch(97% 0.01 40);
+
+  --secondary: oklch(95% 0.015 80);
+  --secondary-foreground: oklch(28% 0.02 60);
+
+  --muted: oklch(95% 0.015 80);
+  --muted-foreground: oklch(50% 0.02 60);
+
+  --accent: oklch(93% 0.02 80);
+  --accent-foreground: oklch(28% 0.02 60);
+
+  --destructive: oklch(52% 0.2 25);
+  --destructive-foreground: oklch(97% 0.01 25);
+
+  --border: oklch(90% 0.015 80);
+  --input: oklch(90% 0.015 80);
+  --ring: oklch(45% 0.1 40);
+
+  --sidebar-background: oklch(96% 0.012 80);
+  --sidebar-foreground: oklch(35% 0.02 60);
+  --sidebar-primary: oklch(45% 0.1 40);
+  --sidebar-primary-foreground: oklch(97% 0.01 40);
+  --sidebar-accent: oklch(93% 0.018 80);
+  --sidebar-accent-foreground: oklch(28% 0.02 60);
+  --sidebar-border: oklch(88% 0.015 80);
+  --sidebar-ring: oklch(45% 0.1 40);
+}
+
+/* Classic Theme - Dark (Source Serif Pro) */
+[data-theme='classic-dark'] {
+  --font-family: var(--font-source-serif);
+
+  --background: oklch(18% 0.02 60);
+  --foreground: oklch(94% 0.01 80);
+
+  --card: oklch(21% 0.02 60);
+  --card-foreground: oklch(94% 0.01 80);
+
+  --popover: oklch(21% 0.02 60);
+  --popover-foreground: oklch(94% 0.01 80);
+
+  --primary: oklch(65% 0.12 45);
+  --primary-foreground: oklch(18% 0.02 45);
+
+  --secondary: oklch(28% 0.025 60);
+  --secondary-foreground: oklch(94% 0.01 80);
+
+  --muted: oklch(28% 0.025 60);
+  --muted-foreground: oklch(68% 0.02 80);
+
+  --accent: oklch(32% 0.03 60);
+  --accent-foreground: oklch(94% 0.01 80);
+
+  --destructive: oklch(48% 0.17 25);
+  --destructive-foreground: oklch(94% 0.01 25);
+
+  --border: oklch(30% 0.025 60);
+  --input: oklch(30% 0.025 60);
+  --ring: oklch(65% 0.12 45);
+
+  --sidebar-background: oklch(15% 0.02 60);
+  --sidebar-foreground: oklch(72% 0.02 80);
+  --sidebar-primary: oklch(65% 0.12 45);
+  --sidebar-primary-foreground: oklch(18% 0.02 45);
+  --sidebar-accent: oklch(25% 0.025 60);
+  --sidebar-accent-foreground: oklch(94% 0.01 80);
+  --sidebar-border: oklch(28% 0.025 60);
+  --sidebar-ring: oklch(65% 0.12 45);
+}
+
+/* Minimal Theme - Light (Space Grotesk) */
+[data-theme='minimal-light'] {
+  --font-family: var(--font-space-grotesk);
+
+  --background: oklch(100% 0 0);
+  --foreground: oklch(15% 0 0);
+
+  --card: oklch(100% 0 0);
+  --card-foreground: oklch(15% 0 0);
+
+  --popover: oklch(100% 0 0);
+  --popover-foreground: oklch(15% 0 0);
+
+  --primary: oklch(25% 0 0);
+  --primary-foreground: oklch(100% 0 0);
+
+  --secondary: oklch(96% 0 0);
+  --secondary-foreground: oklch(20% 0 0);
+
+  --muted: oklch(96% 0 0);
+  --muted-foreground: oklch(50% 0 0);
+
+  --accent: oklch(96% 0 0);
+  --accent-foreground: oklch(20% 0 0);
+
+  --destructive: oklch(55% 0.22 25);
+  --destructive-foreground: oklch(100% 0 0);
+
+  --border: oklch(88% 0 0);
+  --input: oklch(88% 0 0);
+  --ring: oklch(25% 0 0);
+
+  --sidebar-background: oklch(98% 0 0);
+  --sidebar-foreground: oklch(35% 0 0);
+  --sidebar-primary: oklch(25% 0 0);
+  --sidebar-primary-foreground: oklch(100% 0 0);
+  --sidebar-accent: oklch(94% 0 0);
+  --sidebar-accent-foreground: oklch(20% 0 0);
+  --sidebar-border: oklch(88% 0 0);
+  --sidebar-ring: oklch(25% 0 0);
+}
+
+/* Minimal Theme - Dark (Space Grotesk) */
+[data-theme='minimal-dark'] {
+  --font-family: var(--font-space-grotesk);
+
+  --background: oklch(10% 0 0);
+  --foreground: oklch(98% 0 0);
+
+  --card: oklch(13% 0 0);
+  --card-foreground: oklch(98% 0 0);
+
+  --popover: oklch(13% 0 0);
+  --popover-foreground: oklch(98% 0 0);
+
+  --primary: oklch(98% 0 0);
+  --primary-foreground: oklch(10% 0 0);
+
+  --secondary: oklch(20% 0 0);
+  --secondary-foreground: oklch(98% 0 0);
+
+  --muted: oklch(20% 0 0);
+  --muted-foreground: oklch(65% 0 0);
+
+  --accent: oklch(20% 0 0);
+  --accent-foreground: oklch(98% 0 0);
+
+  --destructive: oklch(55% 0.22 25);
+  --destructive-foreground: oklch(98% 0 0);
+
+  --border: oklch(25% 0 0);
+  --input: oklch(25% 0 0);
+  --ring: oklch(85% 0 0);
+
+  --sidebar-background: oklch(8% 0 0);
+  --sidebar-foreground: oklch(70% 0 0);
+  --sidebar-primary: oklch(98% 0 0);
+  --sidebar-primary-foreground: oklch(10% 0 0);
+  --sidebar-accent: oklch(18% 0 0);
+  --sidebar-accent-foreground: oklch(98% 0 0);
+  --sidebar-border: oklch(22% 0 0);
+  --sidebar-ring: oklch(85% 0 0);
+}
+
+/* Apply font family globally when theme is set */
+[data-theme] body,
+:root body {
+  font-family: var(--font-family, var(--font-inter));
+}

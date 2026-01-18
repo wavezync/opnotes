@@ -84,5 +84,15 @@ export const queries = createQueryKeyStore({
       queryKey: null,
       queryFn: () => unwrapResult(window.api.invoke('listBackups'))
     }
+  },
+  dashboard: {
+    stats: {
+      queryKey: null,
+      queryFn: () => unwrapResult(window.api.invoke('getDashboardStats'))
+    },
+    recentActivity: (limit: number = 10) => ({
+      queryKey: [limit],
+      queryFn: () => unwrapResult(window.api.invoke('getRecentActivity', limit))
+    })
   }
 })

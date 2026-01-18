@@ -1,3 +1,5 @@
+import './styles/fonts.css'
+import './styles/themes.css'
 import './index.css'
 
 import React from 'react'

@@ -1,8 +1,10 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { Globe, User, Search } from 'lucide-react'
-import { Dialog, DialogContent } from '@renderer/components/ui/dialog'
+import * as DialogPrimitive from '@radix-ui/react-dialog'
+import { Dialog } from '@renderer/components/ui/dialog'
 import { Badge } from '@renderer/components/ui/badge'
+import { Button } from '@renderer/components/ui/button'
 import { Input } from '@renderer/components/ui/input'
 import { FilterCombobox, FilterComboboxItem } from './FilterCombobox'
 import { queries } from '@renderer/lib/queries'
@@ -160,7 +162,9 @@ export const TemplateSelector = ({ open, onOpenChange, onSelect }: TemplateSelec
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl p-0 gap-0 overflow-hidden h-[600px] flex flex-col">
+      <DialogPrimitive.Portal>
+        <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/80" />
+        <DialogPrimitive.Content className="fixed left-[50%] top-[50%] z-50 translate-x-[-50%] translate-y-[-50%] max-w-4xl w-full p-0 gap-0 overflow-hidden h-[600px] flex flex-col border bg-background shadow-lg rounded-lg">
         {/* Search input */}
         <div className="flex items-center border-b px-3">
           <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
@@ -281,8 +285,17 @@ export const TemplateSelector = ({ open, onOpenChange, onSelect }: TemplateSelec
 
           {/* Preview panel */}
           <div className="w-[60%] flex flex-col">
-            <div className="px-4 py-2 border-b bg-muted/30">
+            <div className="flex items-center justify-between px-4 py-2 border-b bg-muted/30">
               <h3 className="text-sm font-medium">Template Preview</h3>
+              <Button
+                size="sm"
+                onClick={() => selectedTemplate && handleSelect(selectedTemplate.content)}
+                disabled={!selectedTemplate}
+                className="gap-2"
+              >
+                Insert
+                <kbd className="px-1.5 py-0.5 rounded bg-primary-foreground/20 text-[10px] font-mono">↵</kbd>
+              </Button>
             </div>
             <div className="flex-1 overflow-y-auto">
               {selectedTemplate ? (
@@ -323,11 +336,18 @@ export const TemplateSelector = ({ open, onOpenChange, onSelect }: TemplateSelec
         </div>
 
         {/* Footer */}
-        <div className="border-t px-3 py-2 text-xs text-muted-foreground bg-muted/30">
-          Type to search &bull; Use arrow keys to navigate &bull; Press Enter to insert &bull;
-          Double-click to insert
+        <div className="border-t px-3 py-2 bg-muted/30">
+          <div className="text-xs text-muted-foreground">
+            <kbd className="px-1.5 py-0.5 rounded bg-muted border text-[10px] font-mono">↑↓</kbd>
+            <span className="ml-1 mr-3">navigate</span>
+            <kbd className="px-1.5 py-0.5 rounded bg-muted border text-[10px] font-mono">↵</kbd>
+            <span className="ml-1 mr-3">insert</span>
+            <kbd className="px-1.5 py-0.5 rounded bg-muted border text-[10px] font-mono">esc</kbd>
+            <span className="ml-1">close</span>
+          </div>
         </div>
-      </DialogContent>
+        </DialogPrimitive.Content>
+      </DialogPrimitive.Portal>
     </Dialog>
   )
 }
