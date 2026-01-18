@@ -3,7 +3,7 @@ import { useBreadcrumbs } from '@renderer/contexts/BreadcrumbContext'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { Save, Stethoscope } from 'lucide-react'
 import { useEffect, useMemo, useRef } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { getPatientByIdQuery } from '../patients/edit-patient'
 import {
   AddOrEditSurgery,
@@ -57,7 +57,13 @@ export const AddNewSurgery = () => {
           <div>
             <h1 className="text-2xl font-bold tracking-tight">Add Surgery</h1>
             <p className="text-sm text-muted-foreground">
-              Recording new surgery for <span className="font-medium text-foreground">{ptName}</span>
+              Recording new surgery for{' '}
+              <Link
+                to={`/patients/${patient?.id}`}
+                className="font-medium text-foreground hover:text-primary hover:underline transition-colors"
+              >
+                {ptName}
+              </Link>
             </p>
           </div>
         </div>

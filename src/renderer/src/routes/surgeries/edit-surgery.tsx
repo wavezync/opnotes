@@ -3,7 +3,7 @@ import { useBreadcrumbs } from '@renderer/contexts/BreadcrumbContext'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { Save, Stethoscope } from 'lucide-react'
 import { useEffect, useMemo, useRef } from 'react'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { getPatientByIdQuery } from '../patients/edit-patient'
 import {
   AddOrEditSurgery,
@@ -68,7 +68,12 @@ export const EditSurgery = () => {
             <h1 className="text-2xl font-bold tracking-tight">Edit Surgery</h1>
             <p className="text-sm text-muted-foreground">
               Editing <span className="font-medium text-foreground font-mono">{surgeryName}</span> for{' '}
-              <span className="font-medium text-foreground">{ptName}</span>
+              <Link
+                to={`/patients/${patient?.id}`}
+                className="font-medium text-foreground hover:text-primary hover:underline transition-colors"
+              >
+                {ptName}
+              </Link>
             </p>
           </div>
         </div>
