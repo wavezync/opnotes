@@ -36,7 +36,7 @@ import {
 } from '@renderer/components/ui/dropdown-menu'
 import { DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu'
 import { ColumnDef, PaginationState } from '@tanstack/react-table'
-import toast from 'react-hot-toast'
+import { toast } from '@renderer/components/ui/sonner'
 import { SurgeryFilter } from 'src/shared/types/api'
 import { Input } from '@renderer/components/ui/input'
 import { cn, formatDate, formatDateTime } from '@renderer/lib/utils'

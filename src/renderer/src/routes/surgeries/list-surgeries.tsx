@@ -46,7 +46,7 @@ import {
   Trash2
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
+import { toast } from '@renderer/components/ui/sonner'
 import { useNavigate } from 'react-router-dom'
 
 type SortBy = NonNullable<SurgeryFilter['sortBy']>

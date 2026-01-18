@@ -39,18 +39,19 @@ export function UpdateIndicator() {
 
   // Animate progress smoothly
   useEffect(() => {
-    if (status === 'downloading' && progress?.percent) {
-      const target = Math.round(progress.percent)
-      const step = () => {
-        setAnimatedPercent((prev) => {
-          if (prev < target) return Math.min(prev + 1, target)
-          if (prev > target) return Math.max(prev - 1, target)
-          return prev
-        })
-      }
-      const interval = setInterval(step, 20)
-      return () => clearInterval(interval)
+    if (status !== 'downloading' || !progress?.percent) {
+      return
     }
+    const target = Math.round(progress.percent)
+    const step = () => {
+      setAnimatedPercent((prev) => {
+        if (prev < target) return Math.min(prev + 1, target)
+        if (prev > target) return Math.max(prev - 1, target)
+        return prev
+      })
+    }
+    const interval = setInterval(step, 20)
+    return () => clearInterval(interval)
   }, [status, progress?.percent])
 
   if (status === 'idle' || status === 'not-available') {

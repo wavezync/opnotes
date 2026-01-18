@@ -18,7 +18,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useSettings } from '@renderer/contexts/SettingsContext'
 import { queries } from '@renderer/lib/queries'
 import { useEffect } from 'react'
-import toast from 'react-hot-toast'
+import { toast } from '@renderer/components/ui/sonner'
 
 const formSchema = z.object({
   hospital: z.string(),

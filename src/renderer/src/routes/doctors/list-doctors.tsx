@@ -44,7 +44,7 @@ import {
   UserCog
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
+import { toast } from '@renderer/components/ui/sonner'
 import { useNavigate } from 'react-router-dom'
 import { DoctorModel } from 'src/shared/models/DoctorModel'
 import { DoctorFilter } from 'src/shared/types/api'

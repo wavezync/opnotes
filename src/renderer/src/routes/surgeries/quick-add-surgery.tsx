@@ -15,7 +15,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@renderer/components/u
 import { queries } from '@renderer/lib/queries'
 import { useKeyboardEvent } from '@renderer/hooks/useKeyboardEvent'
 import { cn } from '@renderer/lib/utils'
-import toast from 'react-hot-toast'
+import { toast } from '@renderer/components/ui/sonner'
 import {
   Stethoscope,
   Search,

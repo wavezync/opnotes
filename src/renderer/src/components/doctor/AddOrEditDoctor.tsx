@@ -14,7 +14,7 @@ import { Input } from '../ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 
 import { forwardRef, useImperativeHandle } from 'react'
-import toast from 'react-hot-toast'
+import { toast } from '@renderer/components/ui/sonner'
 import { unwrapResult } from '@renderer/lib/utils'
 import { DoctorModel } from '@shared/models/DoctorModel'
 import { User, Briefcase, Award, Stethoscope } from 'lucide-react'
@@ -57,9 +57,7 @@ export const AddOrEditDoctor = forwardRef<AddOrEditDoctorRef, AddOrEditDoctorPro
       try {
         const result = await unwrapResult(window.api.invoke('createNewDoctor', data))
 
-        toast.success('Doctor added successfully', {
-          position: 'bottom-center'
-        })
+        toast.success('Doctor added successfully')
 
         if (result) {
           onUpdated?.(new DoctorModel(result))
@@ -76,9 +74,7 @@ export const AddOrEditDoctor = forwardRef<AddOrEditDoctorRef, AddOrEditDoctorPro
 
         const result = await unwrapResult(window.api.invoke('updateDoctorById', doctor.id, data))
 
-        toast.success('Doctor updated successfully', {
-          position: 'bottom-center'
-        })
+        toast.success('Doctor updated successfully')
 
         if (result) {
           onUpdated?.(new DoctorModel(result))

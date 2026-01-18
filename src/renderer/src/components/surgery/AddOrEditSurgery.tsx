@@ -16,7 +16,7 @@ import { RichTextEditor } from '../common/RichTextEditor'
 
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef } from 'react'
 import { DoctorAutoComplete } from '../doctor/DoctorAutoComplete'
-import toast from 'react-hot-toast'
+import { toast } from '@renderer/components/ui/sonner'
 import { SurgeryModel } from '../../../../shared/models/SurgeryModel'
 import { unwrapResult } from '@renderer/lib/utils'
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
@@ -105,9 +105,7 @@ export const AddOrEditSurgery = forwardRef<AddOrEditSurgeryRef, AddOrEditSurgery
         )
         await unwrapResult(window.api.invoke('updateSurgeryDoctorsDoneBy', result.id, doneBy))
 
-        toast.success('Surgery created successfully', {
-          position: 'bottom-center'
-        })
+        toast.success('Surgery created successfully')
 
         if (onUpdated) {
           onUpdated(new SurgeryModel(result))
@@ -140,9 +138,7 @@ export const AddOrEditSurgery = forwardRef<AddOrEditSurgeryRef, AddOrEditSurgery
         )
         await unwrapResult(window.api.invoke('updateSurgeryDoctorsDoneBy', surgery.id, doneBy))
 
-        toast.success('Surgery updated successfully', {
-          position: 'bottom-center'
-        })
+        toast.success('Surgery updated successfully')
 
         if (onUpdated) {
           onUpdated(new SurgeryModel(result))

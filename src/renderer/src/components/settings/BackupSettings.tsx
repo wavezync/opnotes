@@ -14,7 +14,7 @@ import {
   History,
   FileArchive
 } from 'lucide-react'
-import toast from 'react-hot-toast'
+import { toast } from '@renderer/components/ui/sonner'
 import { Button } from '@renderer/components/ui/button'
 import { Input } from '@renderer/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@renderer/components/ui/card'

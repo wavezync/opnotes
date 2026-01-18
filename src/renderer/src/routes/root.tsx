@@ -1,4 +1,4 @@
-import { Toaster } from 'react-hot-toast'
+import { Toaster } from '@renderer/components/ui/sonner'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { queries } from '@renderer/lib/queries'
 import opnotesLogo from '../assets/opnotes-logo.png?asset'

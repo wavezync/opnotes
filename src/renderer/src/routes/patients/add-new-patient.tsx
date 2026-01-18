@@ -5,7 +5,7 @@ import { useBreadcrumbs } from '@renderer/contexts/BreadcrumbContext'
 import { useKeyboardEvent } from '@renderer/hooks/useKeyboardEvent'
 import { Save, UserPlus, Hash, Cake, Building2, Lightbulb } from 'lucide-react'
 import { useEffect, useRef } from 'react'
-import toast from 'react-hot-toast'
+import { toast } from '@renderer/components/ui/sonner'
 import { useNavigate } from 'react-router-dom'
 import { Patient } from 'src/shared/types/db'
 

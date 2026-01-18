@@ -21,7 +21,7 @@ import {
   FormLabel,
   FormMessage
 } from '../ui/form'
-import toast from 'react-hot-toast'
+import { toast } from '@renderer/components/ui/sonner'
 import { RichTextEditor } from '../common/RichTextEditor'
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 import { cn } from '@renderer/lib/utils'

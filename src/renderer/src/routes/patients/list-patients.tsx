@@ -27,7 +27,7 @@ import {
   Users
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
+import { toast } from '@renderer/components/ui/sonner'
 import { LoaderFunctionArgs, useNavigate, useSearchParams } from 'react-router-dom'
 import { PatientModel } from 'src/shared/models/PatientModel'
 import { PatientFilter } from 'src/shared/types/api'
