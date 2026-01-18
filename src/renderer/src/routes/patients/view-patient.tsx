@@ -1,6 +1,5 @@
 import { Button } from '@renderer/components/ui/button'
 import { useBreadcrumbs } from '@renderer/contexts/BreadcrumbContext'
-import { AppLayout } from '@renderer/layouts/AppLayout'
 import { QueryClient, queryOptions, useQuery, useSuspenseQuery } from '@tanstack/react-query'
 import {
   EditIcon,
@@ -21,7 +20,7 @@ import {
   Building2,
   Cake
 } from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, LoaderFunctionArgs, useLoaderData, useNavigate } from 'react-router-dom'
 import { PatientModel } from 'src/shared/models/PatientModel'
 import { getPatientByIdQuery } from './edit-patient'
@@ -440,31 +439,51 @@ export const ViewPatient = () => {
   const { id } = useLoaderData() as Awaited<ReturnType<ReturnType<typeof loader>>>
   const { data: patient } = useSuspenseQuery(getPatientByIdQuery(parseInt(id)))
 
-  const ptName = useMemo(
-    () => patient?.name || patient?.phn || 'Patient',
-    [patient?.name, patient?.phn]
-  )
-
   useEffect(() => {
-    setBreadcrumbs([{ label: 'Patients', to: '/patients' }, { label: ptName }])
-  }, [ptName, setBreadcrumbs])
+    setBreadcrumbs([{ label: 'Patients', to: '/patients' }])
+  }, [setBreadcrumbs])
 
   const handleAddSurgery = () => navigate(`/patients/${id}/surgeries/add`)
   const handleEdit = () => navigate(`/patients/${id}/edit`)
 
   return (
-    <AppLayout title={ptName}>
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-4 px-2 h-full">
-        {/* Left Sidebar - Patient Info */}
-        <div className="md:col-span-3">
-          <PatientSidebar patient={patient!} onEdit={handleEdit} />
+    <div className="h-full flex flex-col p-6 overflow-hidden">
+      {/* Header Section */}
+      <div className="flex items-center justify-between mb-6 animate-fade-in-up">
+        <div className="flex items-center gap-3">
+          <div className="h-12 w-12 rounded-xl bg-emerald-500/10 flex items-center justify-center">
+            <User className="h-6 w-6 text-emerald-500" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight">{patient?.name || 'Patient'}</h1>
+            <p className="text-sm text-muted-foreground font-mono">
+              {patient?.phn}
+            </p>
+          </div>
         </div>
+        <Button
+          variant="gradient"
+          leftIcon={<Edit className="h-4 w-4" />}
+          onClick={handleEdit}
+        >
+          Edit Patient
+        </Button>
+      </div>
 
-        {/* Main Content - Surgeries */}
-        <div className="md:col-span-9">
-          <PatientSurgeriesCard patientId={parseInt(id)} onAddSurgery={handleAddSurgery} />
+      {/* Main Content */}
+      <div className="flex-1 overflow-y-auto min-h-0">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 h-full">
+          {/* Left Sidebar - Patient Info */}
+          <div className="md:col-span-3">
+            <PatientSidebar patient={patient!} onEdit={handleEdit} />
+          </div>
+
+          {/* Main Content - Surgeries */}
+          <div className="md:col-span-9">
+            <PatientSurgeriesCard patientId={parseInt(id)} onAddSurgery={handleAddSurgery} />
+          </div>
         </div>
       </div>
-    </AppLayout>
+    </div>
   )
 }

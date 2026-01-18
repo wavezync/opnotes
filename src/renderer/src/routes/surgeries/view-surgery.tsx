@@ -262,14 +262,8 @@ export const ViewSurgery = () => {
   )
 
   useEffect(() => {
-    if (patient) {
-      setBreadcrumbs([
-        { label: 'Patients', to: '/patients' },
-        { label: ptName, to: `/patients/${patient.id}` },
-        { label: surgery?.bht || 'Surgery', to: `/patients/${patient.id}/surgeries/${surgeryId}` }
-      ])
-    }
-  }, [setBreadcrumbs, patient, ptName, surgeryName, surgeryId, surgery?.bht])
+    setBreadcrumbs([{ label: 'Surgeries', to: '/surgeries' }])
+  }, [setBreadcrumbs])
 
   const handlePrint = async () => {
     if (!patient || !surgery) return

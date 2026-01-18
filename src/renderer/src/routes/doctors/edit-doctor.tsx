@@ -34,8 +34,8 @@ export const EditDoctor = () => {
   })
 
   useEffect(() => {
-    setBreadcrumbs([{ label: 'Doctors', to: '/doctors' }, { label: data?.name || 'Doctor' }])
-  }, [setBreadcrumbs, data?.name])
+    setBreadcrumbs([{ label: 'Doctors', to: '/doctors' }])
+  }, [setBreadcrumbs])
 
   return (
     <div className="h-full flex flex-col p-6 overflow-hidden">

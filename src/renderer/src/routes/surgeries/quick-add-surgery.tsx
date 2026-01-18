@@ -38,16 +38,10 @@ export function QuickAddSurgery() {
   const surgeryFormRef = useRef<AddOrEditSurgeryRef>(null)
   const patientFormRef = useRef<NewPatientFormRef>(null)
 
-  // Set breadcrumbs based on current step
+  // Set breadcrumbs
   useEffect(() => {
-    const crumbs = [{ label: 'Quick Add Surgery' }]
-    if (step === 'create-patient') {
-      crumbs.push({ label: 'Create Patient' })
-    } else if (step === 'surgery-form' && selectedPatient) {
-      crumbs.push({ label: selectedPatient.name })
-    }
-    setBreadcrumbs(crumbs)
-  }, [setBreadcrumbs, step, selectedPatient])
+    setBreadcrumbs([{ label: 'Surgeries', to: '/surgeries' }])
+  }, [setBreadcrumbs])
 
   // Handle keyboard shortcut for save
   useKeyboardEvent({

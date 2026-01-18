@@ -1,12 +1,5 @@
 import { Button } from '@renderer/components/ui/button'
 import { Card, CardContent } from '@renderer/components/ui/card'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from '@renderer/components/ui/dropdown-menu'
 import { Input } from '@renderer/components/ui/input'
 import {
   Select,
@@ -26,13 +19,11 @@ import {
   ChevronLeft,
   ChevronRight,
   Copy,
-  Edit3,
-  Eye,
   FileSearch,
-  MoreVertical,
+  Pencil,
   Plus,
-  Scissors,
   Search,
+  Stethoscope,
   Users
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
@@ -139,54 +130,46 @@ function PatientRow({
         <div>{patient.updated_at.toLocaleDateString()}</div>
       </div>
 
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-          <Button variant="ghost" size="icon" className="h-8 w-8 opacity-0 group-hover:opacity-100">
-            <MoreVertical className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-48">
-          <DropdownMenuItem
-            onClick={(e) => {
-              e.stopPropagation()
-              navigator.clipboard.writeText(patient.phn)
-              toast.success('PHN copied to clipboard')
-            }}
-          >
-            <Copy className="h-4 w-4 mr-2" />
-            Copy PHN
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            onClick={(e) => {
-              e.stopPropagation()
-              onNavigate(`/patients/${patient.id}`)
-            }}
-          >
-            <Eye className="h-4 w-4 mr-2" />
-            View Patient
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={(e) => {
-              e.stopPropagation()
-              onNavigate(`/patients/${patient.id}/edit`)
-            }}
-          >
-            <Edit3 className="h-4 w-4 mr-2" />
-            Edit Patient
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            onClick={(e) => {
-              e.stopPropagation()
-              onNavigate(`/patients/${patient.id}/surgeries/add`)
-            }}
-          >
-            <Scissors className="h-4 w-4 mr-2" />
-            Add Surgery
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      {/* Quick Action Buttons */}
+      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8"
+          onClick={(e) => {
+            e.stopPropagation()
+            onNavigate(`/patients/${patient.id}/surgeries/add`)
+          }}
+          title="Add Surgery"
+        >
+          <Stethoscope className="h-4 w-4" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8"
+          onClick={(e) => {
+            e.stopPropagation()
+            onNavigate(`/patients/${patient.id}/edit`)
+          }}
+          title="Edit Patient"
+        >
+          <Pencil className="h-4 w-4" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8"
+          onClick={(e) => {
+            e.stopPropagation()
+            navigator.clipboard.writeText(patient.phn)
+            toast.success('PHN copied to clipboard')
+          }}
+          title="Copy PHN"
+        >
+          <Copy className="h-4 w-4" />
+        </Button>
+      </div>
     </div>
   )
 }

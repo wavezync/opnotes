@@ -46,15 +46,8 @@ export const EditSurgery = () => {
   const surgeryName = useMemo(() => surgery?.bht || 'Surgery', [surgery?.bht])
 
   useEffect(() => {
-    if (patient) {
-      setBreadcrumbs([
-        { label: 'Patients', to: '/patients' },
-        { label: ptName, to: `/patients/${patient.id}` },
-        { label: surgeryName, to: `/patients/${patient.id}/surgeries/${surgeryId}` },
-        { label: 'Edit' }
-      ])
-    }
-  }, [setBreadcrumbs, patient, ptName, surgeryName, surgeryId])
+    setBreadcrumbs([{ label: 'Surgeries', to: '/surgeries' }])
+  }, [setBreadcrumbs])
 
   return (
     <div className="h-full flex flex-col p-6 overflow-hidden">

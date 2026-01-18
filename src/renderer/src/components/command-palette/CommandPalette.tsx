@@ -17,10 +17,7 @@ import {
   UserCog,
   Settings,
   Plus,
-  Search,
-  FileText,
-  User,
-  Clock
+  User
 } from 'lucide-react'
 import { queries } from '@renderer/lib/queries'
 import { useDebounce } from '@renderer/hooks/useDebounce'

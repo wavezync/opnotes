@@ -37,14 +37,8 @@ export const AddNewSurgery = () => {
   )
 
   useEffect(() => {
-    if (patient) {
-      setBreadcrumbs([
-        { label: 'Patients', to: '/patients' },
-        { label: ptName, to: `/patients/${patient.id}` },
-        { label: 'Add Surgery' }
-      ])
-    }
-  }, [setBreadcrumbs, patient, ptName])
+    setBreadcrumbs([{ label: 'Surgeries', to: '/surgeries' }])
+  }, [setBreadcrumbs])
 
   return (
     <div className="h-full flex flex-col p-6 overflow-hidden">

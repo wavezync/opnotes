@@ -29,7 +29,7 @@ export const AddNewDoctor = () => {
   })
 
   useEffect(() => {
-    setBreadcrumbs([{ label: 'Doctors', to: '/doctors' }, { label: 'Add Doctor' }])
+    setBreadcrumbs([{ label: 'Doctors', to: '/doctors' }])
   }, [setBreadcrumbs])
 
   return (
