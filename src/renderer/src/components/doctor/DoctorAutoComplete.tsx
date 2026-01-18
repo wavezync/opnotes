@@ -5,14 +5,13 @@ import { queryOptions, useQueries, useQuery } from '@tanstack/react-query'
 import { queries } from '../../lib/queries'
 import { useCallback, useRef, useState } from 'react'
 import { Badge } from '../ui/badge'
-import { X } from 'lucide-react'
+import { X, UserPlus, Save } from 'lucide-react'
 import {
   Sheet,
-  SheetClose,
   SheetContent,
-  SheetDescription,
   SheetFooter,
-  SheetHeader
+  SheetHeader,
+  SheetTitle
 } from '../ui/sheet'
 import { Button } from '../ui/button'
 import { AddOrEditDoctor, AddOrEditDoctorRef } from './AddOrEditDoctor'
@@ -53,7 +52,7 @@ const SelectedDoctorChips = ({
 
   return (
     <div className="flex flex-wrap">
-      {results.map((result, _i) => {
+      {results.map((result) => {
         const doctor = result.data
         if (!doctor) return null
         return (
@@ -127,25 +126,36 @@ export const DoctorAutoComplete = ({ onSelected, selectedDoctorIds }: DoctorAuto
           <SelectedDoctorChips selectedDoctorIds={selected} onDelete={handleDelete} />
         </div>
       </div>
-      <Sheet open={addNewSheetOpen} onOpenChange={() => setAddNewSheetOpen(false)}>
-        <SheetContent>
-          <SheetHeader>Add New Doctor</SheetHeader>
-          <SheetDescription> Add a new doctor to the system</SheetDescription>
+      <Sheet open={addNewSheetOpen} onOpenChange={setAddNewSheetOpen}>
+        <SheetContent className="sm:max-w-none w-[480px] flex flex-col">
+          <SheetHeader className="pb-4 border-b">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-xl bg-blue-500/10 flex items-center justify-center">
+                <UserPlus className="h-5 w-5 text-blue-500" />
+              </div>
+              <div>
+                <SheetTitle className="text-lg">Add New Doctor</SheetTitle>
+                <p className="text-sm text-muted-foreground mt-0.5">
+                  Add a new doctor to the system
+                </p>
+              </div>
+            </div>
+          </SheetHeader>
 
-          <div className="my-2">
+          <div className="flex-1 py-4">
             <AddOrEditDoctor ref={addDoctorFormRef} onUpdated={handleNewDoctor} />
           </div>
 
-          <SheetFooter>
-            <SheetClose asChild>
-              <Button
-                onClick={() => {
-                  addDoctorFormRef.current?.submit()
-                }}
-              >
-                Save
-              </Button>
-            </SheetClose>
+          <SheetFooter className="pt-4 border-t">
+            <Button
+              variant="gradient"
+              onClick={() => {
+                addDoctorFormRef.current?.submit()
+              }}
+            >
+              <Save className="h-4 w-4 mr-2" />
+              Save Doctor
+            </Button>
           </SheetFooter>
         </SheetContent>
       </Sheet>

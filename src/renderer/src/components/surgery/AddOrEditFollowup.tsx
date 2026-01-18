@@ -2,7 +2,6 @@ import { Followup } from 'src/shared/types/db'
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetFooter,
   SheetHeader,
   SheetTitle,
@@ -15,9 +14,10 @@ import { RichTextEditor } from '../common/RichTextEditor'
 import { Button } from '../ui/button'
 import { useState } from 'react'
 import { unwrapResult } from '@renderer/lib/utils'
-import toast from 'react-hot-toast'
+import { toast } from '@renderer/components/ui/sonner'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { queries } from '@renderer/lib/queries'
+import { ChevronRight, Save } from 'lucide-react'
 
 export interface AddOrEditFollowupProps {
   surgeryId?: number
@@ -27,13 +27,13 @@ export interface AddOrEditFollowupProps {
   trigger?: React.ReactNode
 }
 
-const followupSchema = z.object({
+const _followupSchema = z.object({
   notes: z.string().min(1, {
     message: 'Note is required'
   })
 })
 
-type FollowupSchema = z.infer<typeof followupSchema>
+type FollowupSchema = z.infer<typeof _followupSchema>
 
 export const AddOrEditFollowup = ({
   trigger,
@@ -111,7 +111,7 @@ export const AddOrEditFollowup = ({
       } else {
         await createNewFollowup(values)
       }
-    } catch (error) {
+    } catch {
       toast.error('Failed to save followup')
     }
   }
@@ -121,23 +121,32 @@ export const AddOrEditFollowup = ({
   return (
     <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
       <SheetTrigger asChild>{trigger}</SheetTrigger>
-      <SheetContent className="sm:max-w-none w-[600px]">
+      <SheetContent className="sm:max-w-none w-[720px] flex flex-col">
         <Form {...form}>
-          <SheetHeader>
-            <SheetTitle>{!isUpdate ? <>Add Followup</> : <>Edit Followup</>}</SheetTitle>
-            <SheetDescription>
-              {!isUpdate ? (
-                <>Add a new followup for this surgery</>
-              ) : (
-                <>Edit the followup for this surgery</>
-              )}
-            </SheetDescription>
+          <SheetHeader className="pb-4 border-b">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-xl bg-cyan-500/10 flex items-center justify-center">
+                <ChevronRight className="h-5 w-5 text-cyan-500" />
+              </div>
+              <div>
+                <SheetTitle className="text-lg">
+                  {!isUpdate ? 'Add Follow-up' : 'Edit Follow-up'}
+                </SheetTitle>
+                <p className="text-sm text-muted-foreground mt-0.5">
+                  {!isUpdate
+                    ? 'Record a new follow-up note for this surgery'
+                    : 'Update the follow-up details'}
+                </p>
+              </div>
+            </div>
+          </SheetHeader>
 
+          <div className="flex-1 py-4 overflow-hidden">
             <FormField
               name="notes"
               control={form.control}
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="h-full">
                   <FormControl>
                     <RichTextEditor
                       initialContent={field.value || undefined}
@@ -148,14 +157,17 @@ export const AddOrEditFollowup = ({
                 </FormItem>
               )}
             />
-          </SheetHeader>
-          <SheetFooter>
+          </div>
+
+          <SheetFooter className="pt-4 border-t">
             <Button
               type="submit"
+              variant="gradient"
               onClick={submitForm}
               isLoading={createNewFollowupMutation.isPending || updateFollowupMutation.isPending}
             >
-              Save changes
+              <Save className="h-4 w-4 mr-2" />
+              {isUpdate ? 'Save Changes' : 'Add Follow-up'}
             </Button>
           </SheetFooter>
         </Form>

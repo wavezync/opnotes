@@ -1,6 +1,10 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import type { UpdateStatus, UpdateStatusPayload } from '../../../preload/interfaces'
 
+// Development mode simulation - set to true to test update UI states
+const DEV_SIMULATE_UPDATE = false
+const DEV_SIMULATE_STATE: UpdateStatus = 'available' // 'checking' | 'available' | 'downloading' | 'ready' | 'error'
+
 export interface UpdateContextType {
   status: UpdateStatus
   updateInfo?: UpdateStatusPayload['updateInfo']
@@ -14,11 +18,29 @@ export interface UpdateContextType {
 
 export const UpdateContext = createContext<UpdateContextType | null>(null)
 
+// Helper to get simulated progress based on state
+const getSimulatedProgress = (): UpdateStatusPayload['progress'] | undefined => {
+  if (!DEV_SIMULATE_UPDATE) return undefined
+  if ((DEV_SIMULATE_STATE as UpdateStatus) === 'downloading') {
+    return { percent: 45, bytesPerSecond: 1250000, transferred: 12500000, total: 28000000 }
+  }
+  return undefined
+}
+
+// Helper to get simulated error based on state
+const getSimulatedError = (): string | undefined => {
+  if (!DEV_SIMULATE_UPDATE) return undefined
+  if ((DEV_SIMULATE_STATE as UpdateStatus) === 'error') return 'Network connection failed'
+  return undefined
+}
+
 export const UpdateProvider = ({ children }: { children: React.ReactNode }) => {
-  const [status, setStatus] = useState<UpdateStatus>('idle')
-  const [updateInfo, setUpdateInfo] = useState<UpdateStatusPayload['updateInfo']>()
-  const [progress, setProgress] = useState<UpdateStatusPayload['progress']>()
-  const [error, setError] = useState<string>()
+  const [status, setStatus] = useState<UpdateStatus>(DEV_SIMULATE_UPDATE ? DEV_SIMULATE_STATE : 'idle')
+  const [updateInfo, setUpdateInfo] = useState<UpdateStatusPayload['updateInfo']>(
+    DEV_SIMULATE_UPDATE ? { version: '2.1.0', releaseName: 'Performance & Reliability Update' } : undefined
+  )
+  const [progress, setProgress] = useState<UpdateStatusPayload['progress']>(getSimulatedProgress())
+  const [error, setError] = useState<string | undefined>(getSimulatedError())
 
   useEffect(() => {
     const cleanup = window.electronApi.onUpdateStatus((payload) => {

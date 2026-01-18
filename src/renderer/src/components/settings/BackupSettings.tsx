@@ -8,20 +8,25 @@ import {
   HardDrive,
   Download,
   RotateCcw,
-  Upload
+  Upload,
+  Database,
+  Zap,
+  History,
+  FileArchive
 } from 'lucide-react'
-import toast from 'react-hot-toast'
+import { toast } from '@renderer/components/ui/sonner'
 import { Button } from '@renderer/components/ui/button'
 import { Input } from '@renderer/components/ui/input'
+import { Card, CardContent, CardHeader, CardTitle } from '@renderer/components/ui/card'
+import { Switch } from '@renderer/components/ui/switch'
 import { Label } from '@renderer/components/ui/label'
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow
-} from '@renderer/components/ui/table'
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@renderer/components/ui/select'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -34,8 +39,9 @@ import {
 } from '@renderer/components/ui/alert-dialog'
 import { queries } from '@renderer/lib/queries'
 import { useSettings } from '@renderer/contexts/SettingsContext'
-import { unwrapResult } from '@renderer/lib/utils'
-import { BackupInfo } from 'src/shared/types/backup'
+import { unwrapResult, cn } from '@renderer/lib/utils'
+import { BackupFrequency, BackupInfo } from 'src/shared/types/backup'
+import { Skeleton } from '@renderer/components/ui/skeleton'
 
 function formatBytes(bytes: number): string {
   if (bytes === 0) return '0 Bytes'
@@ -60,6 +66,8 @@ export const BackupSettings = () => {
 
   const [backupEnabled, setBackupEnabled] = useState(true)
   const [backupFolder, setBackupFolder] = useState<string>('')
+  const [backupFrequency, setBackupFrequency] = useState<BackupFrequency>('daily')
+  const [backupTime, setBackupTime] = useState<string>('08:00')
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [backupToDelete, setBackupToDelete] = useState<BackupInfo | null>(null)
   const [restoreDialogOpen, setRestoreDialogOpen] = useState(false)
@@ -71,6 +79,8 @@ export const BackupSettings = () => {
     if (settings) {
       setBackupEnabled(settings['backup_enabled'] === 'true')
       setBackupFolder(settings['backup_folder'] || '')
+      setBackupFrequency((settings['backup_frequency'] as BackupFrequency) || 'daily')
+      setBackupTime(settings['backup_time'] || '08:00')
     }
   }, [settings])
 
@@ -117,7 +127,6 @@ export const BackupSettings = () => {
       toast.success('Database restored successfully. Restarting app...')
       setRestoreDialogOpen(false)
       setBackupToRestore(null)
-      // Wait a moment for the toast to be visible, then restart
       setTimeout(() => {
         window.electronApi.restartApp()
       }, 1000)
@@ -144,7 +153,7 @@ export const BackupSettings = () => {
     try {
       const result = await window.electronApi.saveBackupAs(backup.path, backup.filename)
       if (result.canceled) {
-        // User cancelled, do nothing
+        // User cancelled
       } else if (result.success) {
         toast.success('Backup downloaded successfully')
       } else {
@@ -167,7 +176,9 @@ export const BackupSettings = () => {
   const handleSaveSettings = async () => {
     await updateSettingsMutation.mutateAsync([
       { key: 'backup_enabled', value: backupEnabled ? 'true' : 'false' },
-      { key: 'backup_folder', value: backupFolder || null }
+      { key: 'backup_folder', value: backupFolder || null },
+      { key: 'backup_frequency', value: backupFrequency },
+      { key: 'backup_time', value: backupTime }
     ])
   }
 
@@ -210,54 +221,119 @@ export const BackupSettings = () => {
   }
 
   return (
-    <div className="space-y-8">
-      <h2 className="text-xl font-bold">Backup</h2>
+    <div className="space-y-6">
+      {/* Automatic Backups Card */}
+      <Card className="bg-gradient-to-br from-card to-card/80 animate-fade-in-up overflow-hidden">
+        <CardHeader className="pb-4 pt-5 relative">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl" />
+          <div className="flex items-center gap-3 relative">
+            <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-emerald-500/20 to-emerald-600/20 flex items-center justify-center border border-emerald-500/20">
+              <Database className="h-5 w-5 text-emerald-500" />
+            </div>
+            <div>
+              <CardTitle className="text-base font-semibold">Automatic Backups</CardTitle>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Configure backup schedule and storage location
+              </p>
+            </div>
+          </div>
+        </CardHeader>
 
-      {/* Automatic Backups Section */}
-      <div className="space-y-4">
-        <div>
-          <h3 className="text-lg font-medium">Automatic Backups</h3>
-          <p className="text-sm text-muted-foreground">
-            Configure automatic backup schedule and storage location
-          </p>
-        </div>
-
-        <div className="rounded-lg border p-4 space-y-4">
-          <div className="flex items-center space-x-3">
-            <input
-              type="checkbox"
+        <CardContent className="pt-0 space-y-5">
+          {/* Enable Switch */}
+          <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
+            <Label htmlFor="backup-enabled" className="text-sm font-medium cursor-pointer">
+              Enable automatic backups
+            </Label>
+            <Switch
               id="backup-enabled"
               checked={backupEnabled}
-              onChange={(e) => setBackupEnabled(e.target.checked)}
-              className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+              onCheckedChange={setBackupEnabled}
             />
-            <Label htmlFor="backup-enabled" className="cursor-pointer">
-              Enable hourly automatic backups
-            </Label>
           </div>
 
-          <div className="space-y-2">
-            <Label>Backup Folder</Label>
+          {/* Frequency and Time Settings */}
+          {backupEnabled && (
+            <div className="grid grid-cols-2 gap-4">
+              {/* Frequency Dropdown */}
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="h-6 w-6 rounded-md bg-emerald-500/10 flex items-center justify-center">
+                    <Clock className="h-3.5 w-3.5 text-emerald-500" />
+                  </div>
+                  <label className="text-sm font-medium">Frequency</label>
+                </div>
+                <Select
+                  value={backupFrequency}
+                  onValueChange={(value) => setBackupFrequency(value as BackupFrequency)}
+                >
+                  <SelectTrigger className="h-11">
+                    <SelectValue placeholder="Select frequency" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="hourly">Hourly</SelectItem>
+                    <SelectItem value="daily">Daily</SelectItem>
+                    <SelectItem value="weekly">Weekly (Monday)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Time Picker (only for daily/weekly) */}
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="h-6 w-6 rounded-md bg-emerald-500/10 flex items-center justify-center">
+                    <Clock className="h-3.5 w-3.5 text-emerald-500" />
+                  </div>
+                  <label className="text-sm font-medium">
+                    {backupFrequency === 'hourly' ? 'Time (N/A)' : 'Time'}
+                  </label>
+                </div>
+                <Input
+                  type="time"
+                  value={backupTime}
+                  onChange={(e) => setBackupTime(e.target.value)}
+                  disabled={backupFrequency === 'hourly'}
+                  className="h-11"
+                />
+                {backupFrequency === 'hourly' && (
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Hourly backups run every hour
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Backup Folder */}
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <div className="h-6 w-6 rounded-md bg-emerald-500/10 flex items-center justify-center">
+                <FolderOpen className="h-3.5 w-3.5 text-emerald-500" />
+              </div>
+              <label className="text-sm font-medium">Backup Folder</label>
+            </div>
             <div className="flex gap-2">
               <Input
                 value={backupFolder}
                 onChange={(e) => setBackupFolder(e.target.value)}
                 placeholder="Default: ~/.opnotes/backups/"
-                className="flex-1"
+                className="flex-1 h-11"
               />
-              <Button variant="outline" onClick={handleSelectFolder}>
+              <Button variant="outline" onClick={handleSelectFolder} className="h-11">
                 <FolderOpen className="h-4 w-4 mr-2" />
                 Browse
               </Button>
             </div>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-xs text-muted-foreground mt-2">
               Leave empty to use the default backup location
             </p>
           </div>
 
+          {/* Save Button and Last Backup */}
           <div className="flex items-center justify-between pt-2">
             <Button
               onClick={handleSaveSettings}
+              variant="gradient"
               leftIcon={<Save className="h-4 w-4" />}
               isLoading={updateSettingsMutation.isPending}
               loadingText="Saving..."
@@ -267,21 +343,32 @@ export const BackupSettings = () => {
             {lastBackupTime && (
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Clock className="h-4 w-4" />
-                Last backup: {new Date(lastBackupTime).toLocaleString()}
+                <span>Last backup: {new Date(lastBackupTime).toLocaleString()}</span>
               </div>
             )}
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
-      {/* Quick Actions Section */}
-      <div className="space-y-4">
-        <div>
-          <h3 className="text-lg font-medium">Quick Actions</h3>
-          <p className="text-sm text-muted-foreground">Create a backup or restore from a file</p>
-        </div>
-
-        <div className="rounded-lg border p-4">
+      {/* Quick Actions Card */}
+      <Card
+        className="bg-gradient-to-br from-card to-card/80 animate-fade-in-up"
+        style={{ animationDelay: '50ms' }}
+      >
+        <CardHeader className="pb-3 pt-4">
+          <div className="flex items-center gap-2.5">
+            <div className="h-8 w-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
+              <Zap className="h-4 w-4 text-blue-500" />
+            </div>
+            <CardTitle className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+              Quick Actions
+            </CardTitle>
+          </div>
+        </CardHeader>
+        <CardContent className="pt-0">
+          <p className="text-sm text-muted-foreground mb-4">
+            Create a backup instantly or restore from a file
+          </p>
           <div className="flex gap-3 flex-wrap">
             <Button
               variant="outline"
@@ -300,83 +387,110 @@ export const BackupSettings = () => {
               Restore from File
             </Button>
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
-      {/* Recent Backups Section */}
-      <div className="space-y-4">
-        <div>
-          <h3 className="text-lg font-medium">Recent Backups</h3>
-          <p className="text-sm text-muted-foreground">
-            Up to 10 backups are kept. Older backups are automatically deleted.
-          </p>
-        </div>
+      {/* Recent Backups Card */}
+      <Card
+        className="bg-gradient-to-br from-card to-card/80 animate-fade-in-up"
+        style={{ animationDelay: '100ms' }}
+      >
+        <CardHeader className="pb-3 pt-4">
+          <div className="flex items-center gap-2.5">
+            <div className="h-8 w-8 rounded-lg bg-violet-500/10 flex items-center justify-center">
+              <History className="h-4 w-4 text-violet-500" />
+            </div>
+            <div>
+              <CardTitle className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                Recent Backups
+              </CardTitle>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Up to 10 backups are kept. Older backups are automatically deleted.
+              </p>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="pt-0">
+          {isLoadingBackups ? (
+            <div className="space-y-2">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="flex items-center gap-3 p-3 rounded-lg bg-muted/30">
+                  <Skeleton className="h-10 w-10 rounded-lg" />
+                  <div className="flex-1 space-y-2">
+                    <Skeleton className="h-4 w-48" />
+                    <Skeleton className="h-3 w-32" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : !backups || backups.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-8">
+              <div className="h-12 w-12 rounded-xl bg-muted flex items-center justify-center mb-3">
+                <FileArchive className="h-6 w-6 text-muted-foreground" />
+              </div>
+              <p className="text-sm text-muted-foreground">No backups found</p>
+              <p className="text-xs text-muted-foreground">
+                Click &quot;Backup Now&quot; to create one
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {backups.map((backup: BackupInfo, index: number) => (
+                <div
+                  key={backup.filename}
+                  className={cn(
+                    'flex items-center gap-3 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors group animate-fade-in-up'
+                  )}
+                  style={{ animationDelay: `${index * 50}ms` }}
+                >
+                  <div className="h-10 w-10 rounded-lg bg-emerald-500/10 flex items-center justify-center flex-shrink-0">
+                    <Database className="h-5 w-5 text-emerald-500" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-mono truncate">{backup.filename}</p>
+                    <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                      <span>{formatTimestamp(backup.timestamp)}</span>
+                      <span className="text-border">•</span>
+                      <span>{formatBytes(backup.size)}</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
+                      onClick={() => handleRestoreBackup(backup)}
+                      title="Restore this backup"
+                    >
+                      <RotateCcw className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
+                      onClick={() => handleDownloadBackup(backup)}
+                      title="Download backup"
+                    >
+                      <Download className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                      onClick={() => handleDeleteBackup(backup)}
+                      title="Delete backup"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
-        <div className="rounded-lg border">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Filename</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Size</TableHead>
-                <TableHead className="w-[80px]">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {isLoadingBackups ? (
-                <TableRow>
-                  <TableCell colSpan={4} className="text-center py-8">
-                    Loading...
-                  </TableCell>
-                </TableRow>
-              ) : !backups || backups.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
-                    No backups found. Click &quot;Backup Now&quot; to create one.
-                  </TableCell>
-                </TableRow>
-              ) : (
-                backups.map((backup: BackupInfo) => (
-                  <TableRow key={backup.filename}>
-                    <TableCell className="font-mono text-sm">{backup.filename}</TableCell>
-                    <TableCell>{formatTimestamp(backup.timestamp)}</TableCell>
-                    <TableCell>{formatBytes(backup.size)}</TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-1">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleRestoreBackup(backup)}
-                          title="Restore this backup"
-                        >
-                          <RotateCcw className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleDownloadBackup(backup)}
-                          title="Download backup"
-                        >
-                          <Download className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleDeleteBackup(backup)}
-                          title="Delete backup"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </div>
-      </div>
-
+      {/* Delete Dialog */}
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -401,6 +515,7 @@ export const BackupSettings = () => {
         </AlertDialogContent>
       </AlertDialog>
 
+      {/* Restore Dialog */}
       <AlertDialog open={restoreDialogOpen} onOpenChange={setRestoreDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -422,6 +537,7 @@ export const BackupSettings = () => {
         </AlertDialogContent>
       </AlertDialog>
 
+      {/* External Restore Dialog */}
       <AlertDialog open={externalRestoreDialogOpen} onOpenChange={setExternalRestoreDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>

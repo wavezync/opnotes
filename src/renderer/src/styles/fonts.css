@@ -1,0 +1,28 @@
+/* ============================================
+   Font Imports - Using @fontsource packages
+   Fonts are bundled via npm for offline use
+   ============================================ */
+
+/* Inter - Modern, clean sans-serif (Aurora, Bloom, Ocean, Obsidian themes) */
+@import '@fontsource-variable/inter';
+
+/* Source Sans 3 - Professional, readable (Meadow, Latte themes) */
+@import '@fontsource-variable/source-sans-3';
+
+/* Nunito - Friendly, rounded (Slate, Midnight themes) */
+@import '@fontsource-variable/nunito';
+
+/* VT323 - Pixel/terminal aesthetic (Retro theme) */
+@import '@fontsource/vt323';
+
+/* JetBrains Mono - Code/data displays across all themes */
+@import '@fontsource-variable/jetbrains-mono';
+
+/* Font family variables for themes */
+:root {
+  --font-inter: 'Inter Variable', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-source: 'Source Sans 3 Variable', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-nunito: 'Nunito Variable', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-vt323: 'VT323', 'Courier New', monospace;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+}

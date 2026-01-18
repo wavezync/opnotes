@@ -3,13 +3,13 @@ import { join } from 'path'
 import { copyFile, mkdir, readdir, stat, unlink } from 'fs/promises'
 import log from 'electron-log'
 import { DB_PATH, db } from './db'
-import { BackupInfo, BackupReason, BackupResult } from '../shared/types/backup'
+import { BackupFrequency, BackupInfo, BackupReason, BackupResult } from '../shared/types/backup'
 
 const DEFAULT_BACKUP_FOLDER = join(app.getPath('userData'), 'backups')
 const MAX_BACKUPS = 10
 const HOURLY_MS = 60 * 60 * 1000
 
-let schedulerInterval: NodeJS.Timeout | null = null
+let schedulerTimeout: NodeJS.Timeout | null = null
 
 function formatDate(date: Date): string {
   const pad = (n: number) => n.toString().padStart(2, '0')
@@ -136,15 +136,21 @@ export async function cleanupOldBackups(maxToKeep: number = MAX_BACKUPS): Promis
     const backups = await listBackups()
 
     if (backups.length <= maxToKeep) {
+      log.info(`Backup cleanup: ${backups.length} backups, keeping all (max: ${maxToKeep})`)
       return
     }
 
     // Delete backups beyond the max limit (list is already sorted newest first)
     const toDelete = backups.slice(maxToKeep)
+    log.info(`Backup cleanup: Found ${backups.length} backups, deleting ${toDelete.length} oldest`)
 
     for (const backup of toDelete) {
-      await unlink(backup.path)
-      log.info(`Cleaned up old backup: ${backup.filename}`)
+      try {
+        await unlink(backup.path)
+        log.info(`Deleted old backup: ${backup.filename}`)
+      } catch (error) {
+        log.warn(`Failed to delete backup ${backup.filename}: ${error}`)
+      }
     }
   } catch (error) {
     log.error('Error cleaning up old backups:', error)
@@ -171,6 +177,58 @@ async function getLastBackupTime(): Promise<Date | null> {
   return result?.value ? new Date(result.value) : null
 }
 
+async function getBackupFrequency(): Promise<BackupFrequency> {
+  const result = await db
+    .selectFrom('app_settings')
+    .select('value')
+    .where('key', '=', 'backup_frequency')
+    .executeTakeFirst()
+
+  return (result?.value as BackupFrequency) || 'daily'
+}
+
+async function getBackupTime(): Promise<string> {
+  const result = await db
+    .selectFrom('app_settings')
+    .select('value')
+    .where('key', '=', 'backup_time')
+    .executeTakeFirst()
+
+  return result?.value || '08:00'
+}
+
+function getNextScheduledTime(frequency: BackupFrequency, time: string): Date {
+  const [hours, minutes] = time.split(':').map(Number)
+  const now = new Date()
+  const next = new Date()
+
+  next.setHours(hours, minutes, 0, 0)
+
+  if (frequency === 'hourly') {
+    // For hourly, just return next hour
+    next.setMinutes(0, 0, 0)
+    if (next <= now) {
+      next.setHours(next.getHours() + 1)
+    }
+  } else if (frequency === 'daily') {
+    // Run at specified time daily
+    if (next <= now) {
+      next.setDate(next.getDate() + 1)
+    }
+  } else if (frequency === 'weekly') {
+    // Run on Monday at specified time
+    const dayOfWeek = now.getDay() // 0 = Sunday, 1 = Monday, ...
+    const daysUntilMonday = dayOfWeek === 0 ? 1 : dayOfWeek === 1 ? 0 : 8 - dayOfWeek
+    next.setDate(now.getDate() + daysUntilMonday)
+    // If it's Monday but past the time, schedule for next Monday
+    if (next <= now) {
+      next.setDate(next.getDate() + 7)
+    }
+  }
+
+  return next
+}
+
 export async function initBackupScheduler(): Promise<void> {
   const enabled = await isBackupEnabled()
   if (!enabled) {
@@ -178,32 +236,60 @@ export async function initBackupScheduler(): Promise<void> {
     return
   }
 
+  const frequency = await getBackupFrequency()
+  const backupTime = await getBackupTime()
   const lastBackup = await getLastBackupTime()
-  const now = Date.now()
+  const now = new Date()
 
   let delay: number
 
-  if (lastBackup) {
-    const timeSinceLast = now - lastBackup.getTime()
-    if (timeSinceLast >= HOURLY_MS) {
-      // More than an hour since last backup, backup immediately
-      delay = 0
+  if (frequency === 'hourly') {
+    // For hourly, use the old logic
+    if (lastBackup) {
+      const timeSinceLast = now.getTime() - lastBackup.getTime()
+      if (timeSinceLast >= HOURLY_MS) {
+        delay = 0
+      } else {
+        delay = HOURLY_MS - timeSinceLast
+      }
     } else {
-      // Wait until the hour completes
-      delay = HOURLY_MS - timeSinceLast
+      delay = 0
     }
+    log.info(`Backup scheduler starting (hourly). First backup in ${Math.round(delay / 1000)}s`)
+    scheduleNextBackup(delay, frequency, backupTime)
   } else {
-    // No previous backup, start immediately
-    delay = 0
+    // For daily/weekly, calculate next scheduled time
+    const nextRun = getNextScheduledTime(frequency, backupTime)
+    delay = nextRun.getTime() - now.getTime()
+
+    // If no backup has ever been done, or last backup is older than the interval, run immediately
+    const intervalMs = frequency === 'daily' ? 24 * HOURLY_MS : 7 * 24 * HOURLY_MS
+    if (!lastBackup || now.getTime() - lastBackup.getTime() >= intervalMs) {
+      delay = 0
+      log.info(`Backup scheduler starting (${frequency}). Running backup immediately (overdue)`)
+    } else {
+      log.info(
+        `Backup scheduler starting (${frequency} at ${backupTime}). Next backup: ${nextRun.toLocaleString()}`
+      )
+    }
+    scheduleNextBackup(delay, frequency, backupTime)
   }
+}
 
-  log.info(`Backup scheduler starting. First backup in ${Math.round(delay / 1000)}s`)
-
-  // Schedule first backup
-  setTimeout(async () => {
+function scheduleNextBackup(delay: number, frequency: BackupFrequency, backupTime: string): void {
+  schedulerTimeout = setTimeout(async () => {
     await runScheduledBackup()
-    // Then start hourly interval
-    schedulerInterval = setInterval(runScheduledBackup, HOURLY_MS)
+
+    // Schedule next backup based on frequency
+    let nextDelay: number
+    if (frequency === 'hourly') {
+      nextDelay = HOURLY_MS
+    } else {
+      const nextRun = getNextScheduledTime(frequency, backupTime)
+      nextDelay = nextRun.getTime() - Date.now()
+      log.info(`Next ${frequency} backup scheduled for: ${nextRun.toLocaleString()}`)
+    }
+    scheduleNextBackup(nextDelay, frequency, backupTime)
   }, delay)
 }
 
@@ -219,9 +305,9 @@ async function runScheduledBackup(): Promise<void> {
 }
 
 export function stopBackupScheduler(): void {
-  if (schedulerInterval) {
-    clearInterval(schedulerInterval)
-    schedulerInterval = null
+  if (schedulerTimeout) {
+    clearTimeout(schedulerTimeout)
+    schedulerTimeout = null
     log.info('Backup scheduler stopped')
   }
 }

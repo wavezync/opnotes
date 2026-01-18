@@ -107,6 +107,18 @@ export interface SurgeryTemplatesFTS {
   content: string
 }
 
+export interface ActivityLogTable {
+  id: Generated<number>
+  entity_type: 'patient' | 'surgery' | 'followup' | 'doctor'
+  entity_id: number
+  action: 'created' | 'updated' | 'deleted'
+  title: string
+  description: string | null
+  patient_id: number | null
+  surgery_id: number | null
+  created_at: ColumnType<Date, number, never>
+}
+
 export interface Database {
   patients: PatientTable
   surgeries: SurgeryTable
@@ -115,6 +127,7 @@ export interface Database {
   surgery_doctors_assisted_by: SurgeryDoctorsAssistedByTable
   surgery_followups: SurgeryFollowUpTable
   surgery_templates: SurgeryTemplateTable
+  activity_log: ActivityLogTable
 
   patients_fts: PatientsFTS
   surgeries_fts: SurgeriesFTS
@@ -147,3 +160,6 @@ export type AppSettingUpdate = Updateable<AppSettingsTable>
 export type SurgeryTemplate = Selectable<SurgeryTemplateTable>
 export type NewSurgeryTemplate = Insertable<SurgeryTemplateTable>
 export type SurgeryTemplateUpdate = Updateable<SurgeryTemplateTable>
+
+export type ActivityLog = Selectable<ActivityLogTable>
+export type NewActivityLog = Insertable<ActivityLogTable>

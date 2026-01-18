@@ -75,6 +75,7 @@ const restartApp = async (): Promise<void> => {
 
 const electronApi = {
   ...electronAPI,
+  platform: process.platform,
   getAppVersion,
   boot,
   openPrintDialog,

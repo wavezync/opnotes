@@ -50,7 +50,7 @@ export const deleteDoctorById = async (id: number) => {
 }
 
 export const listDoctors = async (filter: DoctorFilter) => {
-  const { search, pageSize = 25, page = 0 } = filter
+  const { search, pageSize = 25, page = 0, sortBy = 'updated_at', sortOrder = 'desc' } = filter
 
   let query = db.selectFrom('doctors').selectAll('doctors')
 
@@ -59,14 +59,27 @@ export const listDoctors = async (filter: DoctorFilter) => {
     query = query
       .innerJoin('doctors_fts', 'doctors_fts.doctor_id', 'doctors.id')
       .where(sql<boolean>`doctors_fts MATCH ${term}`)
-      .orderBy(sql`rank`, 'desc')
   }
 
-  const doctorResult = await query
-    .orderBy('updated_at desc')
-    .limit(pageSize)
-    .offset(page * pageSize)
-    .execute()
+  // Apply sorting
+  let sortedQuery = query
+  switch (sortBy) {
+    case 'name':
+      sortedQuery = sortedQuery.orderBy('doctors.name', sortOrder)
+      break
+    case 'designation':
+      sortedQuery = sortedQuery.orderBy('doctors.designation', sortOrder)
+      break
+    case 'created_at':
+      sortedQuery = sortedQuery.orderBy('doctors.created_at', sortOrder)
+      break
+    case 'updated_at':
+    default:
+      sortedQuery = sortedQuery.orderBy('doctors.updated_at', sortOrder)
+      break
+  }
+
+  const doctorResult = await sortedQuery.limit(pageSize).offset(page * pageSize).execute()
 
   const totalResult = await query
     .clearSelect()

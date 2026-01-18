@@ -4,10 +4,24 @@ import { db } from '../db'
 import { NewWithoutTimestamps, addTimestamps } from '../utils/sql'
 import { PatientModel } from '../../shared/models/PatientModel'
 import { PatientFilter } from '../../shared/types/api'
+import { logActivity } from './activity'
 
 export const createNewPatient = async (patient: NewWithoutTimestamps<NewPatient>) => {
   const data = addTimestamps(patient)
-  return await db.insertInto('patients').values(data).returningAll().executeTakeFirst()
+  const result = await db.insertInto('patients').values(data).returningAll().executeTakeFirst()
+
+  if (result) {
+    await logActivity({
+      entityType: 'patient',
+      entityId: result.id,
+      action: 'created',
+      title: result.name,
+      description: `PHN: ${result.phn}`,
+      patientId: result.id
+    })
+  }
+
+  return result
 }
 
 export const getPatientById = async (id: number) => {
@@ -45,6 +59,15 @@ export const updatePatientById = async (id: number, patient: PatientUpdate) => {
     .executeTakeFirst()
 
   if (result) {
+    await logActivity({
+      entityType: 'patient',
+      entityId: result.id,
+      action: 'updated',
+      title: result.name,
+      description: `PHN: ${result.phn}`,
+      patientId: result.id
+    })
+
     return new PatientModel(result)
   }
 
@@ -65,9 +88,10 @@ export const findPatientByPHN = async (phn: string) => {
 }
 
 export const listPatients = async (filter: PatientFilter) => {
-  const { search, pageSize = 25, page = 0 } = filter
+  const { search, pageSize = 25, page = 0, sortBy = 'updated_at', sortOrder = 'desc' } = filter
 
   let query = db.selectFrom('patients')
+
   if (search) {
     const term = `${search}*`
     query = query
@@ -87,14 +111,33 @@ export const listPatients = async (filter: PatientFilter) => {
         (join) => join.onRef('matching_patients.patient_id', '=', 'patients.id')
       )
       .where('matching_patients.patient_id', 'is not', null)
-      .orderBy('rank', 'desc')
   }
-  const patients = await query
-    .selectAll('patients')
-    .orderBy('created_at desc')
-    .limit(pageSize)
-    .offset(page * pageSize)
-    .execute()
+
+  // Apply sorting based on sortBy option
+  // For age, sort by birth_year in reverse (lower birth_year = older age)
+  let sortedQuery = query.selectAll('patients')
+
+  switch (sortBy) {
+    case 'name':
+      sortedQuery = sortedQuery.orderBy('patients.name', sortOrder)
+      break
+    case 'phn':
+      sortedQuery = sortedQuery.orderBy('patients.phn', sortOrder)
+      break
+    case 'age':
+      // Reverse sort order for age since lower birth_year = older
+      sortedQuery = sortedQuery.orderBy('patients.birth_year', sortOrder === 'asc' ? 'desc' : 'asc')
+      break
+    case 'created_at':
+      sortedQuery = sortedQuery.orderBy('patients.created_at', sortOrder)
+      break
+    case 'updated_at':
+    default:
+      sortedQuery = sortedQuery.orderBy('patients.updated_at', sortOrder)
+      break
+  }
+
+  const patients = await sortedQuery.limit(pageSize).offset(page * pageSize).execute()
 
   const mappedPatients = patients.map((patient) => new PatientModel(patient))
 
