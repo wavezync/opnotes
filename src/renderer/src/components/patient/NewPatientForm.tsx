@@ -23,6 +23,17 @@ import {
 } from '../ui/form'
 import toast from 'react-hot-toast'
 import { RichTextEditor } from '../common/RichTextEditor'
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
+import { cn } from '@renderer/lib/utils'
+import {
+  Hash,
+  User,
+  Cake,
+  MapPin,
+  Phone,
+  FileText,
+  Calendar
+} from 'lucide-react'
 
 export interface CreatePatientFormProps {
   onRecordUpdated?: (patient: Patient) => void
@@ -112,7 +123,9 @@ export const NewPatientForm = forwardRef<NewPatientFormRef, CreatePatientFormPro
     const isUpdate = values && !!values.id
 
     const watchAge = form.watch('age')
+    const watchGender = form.watch('gender')
     const birthYear = useMemo(() => approximateBirthYear(watchAge), [watchAge])
+
     const resetForm = useCallback(() => {
       if (isUpdate) {
         form.reset({
@@ -132,7 +145,7 @@ export const NewPatientForm = forwardRef<NewPatientFormRef, CreatePatientFormPro
         emergency_contact: '',
         emergency_phone: '',
         remarks: '',
-         
+
         gender: '' as any
       })
     }, [form, isUpdate, values])
@@ -224,184 +237,308 @@ export const NewPatientForm = forwardRef<NewPatientFormRef, CreatePatientFormPro
       reset: () => resetForm()
     }))
 
+    // Dynamic gender icon colors
+    const genderIconBg = watchGender === 'M' ? 'bg-blue-500/10' : watchGender === 'F' ? 'bg-pink-500/10' : 'bg-muted'
+    const genderIconColor = watchGender === 'M' ? 'text-blue-500' : watchGender === 'F' ? 'text-pink-500' : 'text-muted-foreground'
+
     return (
       <Form {...form}>
-        <form className="flex flex-col space-y-2">
-          <div className="flex w-full space-x-1">
-            <FormField
-              control={form.control}
-              name="phn"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>PHN</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter PHN..." {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    PHN of patient is a unique field usually comes with the admission
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+        <form className="space-y-4">
+          {/* Row 1: Identity + Demographics */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Identity Card */}
+            <Card
+              className="bg-gradient-to-br from-card to-card/80 animate-fade-in-up"
+              style={{ animationDelay: '0ms' }}
+            >
+              <CardHeader className="pb-3 pt-4">
+                <div className="flex items-center gap-2.5">
+                  <div className="h-8 w-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
+                    <User className="h-4 w-4 text-blue-500" />
+                  </div>
+                  <CardTitle className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                    Identity
+                  </CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-0 space-y-4">
+                {/* PHN Field */}
+                <FormField
+                  control={form.control}
+                  name="phn"
+                  render={({ field }) => (
+                    <FormItem>
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <div className="h-6 w-6 rounded-md bg-blue-500/10 flex items-center justify-center">
+                          <Hash className="h-3.5 w-3.5 text-blue-500" />
+                        </div>
+                        <FormLabel className="text-sm font-medium">PHN</FormLabel>
+                      </div>
+                      <FormControl>
+                        <Input placeholder="Enter PHN..." {...field} />
+                      </FormControl>
+                      <FormDescription className="text-xs">
+                        Unique identifier from admission
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter the name of patient" {...field} />
-                  </FormControl>
-                  <FormDescription>Name can be used to lookup patient in future</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                {/* Name Field */}
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <div className="h-6 w-6 rounded-md bg-violet-500/10 flex items-center justify-center">
+                          <User className="h-3.5 w-3.5 text-violet-500" />
+                        </div>
+                        <FormLabel className="text-sm font-medium">Name</FormLabel>
+                      </div>
+                      <FormControl>
+                        <Input placeholder="Enter the name of patient" {...field} />
+                      </FormControl>
+                      <FormDescription className="text-xs">
+                        Used for patient lookup
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </CardContent>
+            </Card>
+
+            {/* Demographics Card */}
+            <Card
+              className="bg-gradient-to-br from-card to-card/80 animate-fade-in-up"
+              style={{ animationDelay: '75ms' }}
+            >
+              <CardHeader className="pb-3 pt-4">
+                <div className="flex items-center gap-2.5">
+                  <div className="h-8 w-8 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+                    <Cake className="h-4 w-4 text-emerald-500" />
+                  </div>
+                  <CardTitle className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                    Demographics
+                  </CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-0 space-y-4">
+                {/* Age Field */}
+                <FormField
+                  control={form.control}
+                  name="age"
+                  render={({ field }) => (
+                    <FormItem>
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <div className="h-6 w-6 rounded-md bg-emerald-500/10 flex items-center justify-center">
+                          <Cake className="h-3.5 w-3.5 text-emerald-500" />
+                        </div>
+                        <FormLabel className="text-sm font-medium">Age</FormLabel>
+                      </div>
+                      <FormControl>
+                        <Input placeholder="Eg: 20y, 45y 8m, 10m" {...field} />
+                      </FormControl>
+                      {birthYear ? (
+                        <div className="flex items-center gap-2 p-2 rounded-lg bg-emerald-500/10 mt-2">
+                          <Calendar className="h-3.5 w-3.5 text-emerald-500" />
+                          <span className="text-xs">
+                            Birth year:{' '}
+                            <strong className="font-semibold text-emerald-600 dark:text-emerald-400">
+                              {birthYear}
+                            </strong>
+                          </span>
+                        </div>
+                      ) : (
+                        <FormDescription className="text-xs">
+                          Format: 20y, 1y 6m, or 5m
+                        </FormDescription>
+                      )}
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Gender Field */}
+                <FormField
+                  control={form.control}
+                  name="gender"
+                  render={({ field }) => (
+                    <FormItem>
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <div className={cn('h-6 w-6 rounded-md flex items-center justify-center transition-colors', genderIconBg)}>
+                          <User className={cn('h-3.5 w-3.5 transition-colors', genderIconColor)} />
+                        </div>
+                        <FormLabel className="text-sm font-medium">Gender</FormLabel>
+                      </div>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select Gender..." />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="M">Male</SelectItem>
+                          <SelectItem value="F">Female</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </CardContent>
+            </Card>
           </div>
 
-          <div className="flex space-x-1 w-full">
-            <FormField
-              control={form.control}
-              name="age"
-              render={({ field }) => (
-                <FormItem className="w-1/2">
-                  <FormLabel>Age</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Eg: 20y, 45y 8m, 10m" {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    {birthYear ? (
-                      <span>
-                        Birth year is approximately <strong className="bold">{birthYear}</strong>
-                      </span>
-                    ) : (
-                      <span>
-                        Enter the age we will calculate the birth year of the patient.
-                        <br /> If the user is
-                        <i> 20years old</i> enter <strong>20y</strong>. If the patient is{' '}
-                        <i>1 year 6 months</i> old enter <strong>1y 6m</strong>
-                      </span>
-                    )}
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="gender"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Gender</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
+          {/* Row 2: Location */}
+          <Card
+            className="bg-gradient-to-br from-card to-card/80 animate-fade-in-up"
+            style={{ animationDelay: '150ms' }}
+          >
+            <CardHeader className="pb-3 pt-4">
+              <div className="flex items-center gap-2.5">
+                <div className="h-8 w-8 rounded-lg bg-violet-500/10 flex items-center justify-center">
+                  <MapPin className="h-4 w-4 text-violet-500" />
+                </div>
+                <CardTitle className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  Location
+                </CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <FormField
+                control={form.control}
+                name="address"
+                render={({ field: { value, ...field } }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-medium">Address</FormLabel>
                     <FormControl>
-                      <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder="Select Gender..." />
-                      </SelectTrigger>
+                      <Input
+                        placeholder="Enter the address of patient"
+                        value={value || ''}
+                        {...field}
+                      />
                     </FormControl>
-                    <SelectContent>
-                      <SelectItem value="M">Male</SelectItem>
-                      <SelectItem value="F">Female</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
 
-          <FormField
-            control={form.control}
-            name="address"
-            render={({ field: { value, ...field } }) => (
-              <FormItem>
-                <FormLabel>Address</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Enter the address of patient"
-                    value={value || ''}
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          {/* Row 3: Contact */}
+          <Card
+            className="bg-gradient-to-br from-card to-card/80 animate-fade-in-up"
+            style={{ animationDelay: '225ms' }}
+          >
+            <CardHeader className="pb-3 pt-4">
+              <div className="flex items-center gap-2.5">
+                <div className="h-8 w-8 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+                  <Phone className="h-4 w-4 text-emerald-500" />
+                </div>
+                <CardTitle className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  Contact Information
+                </CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {/* Phone Field */}
+                <FormField
+                  control={form.control}
+                  name="phone"
+                  render={({ field: { value, ...field } }) => (
+                    <FormItem>
+                      <FormLabel className="text-sm font-medium">Phone</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Phone number"
+                          value={value || ''}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-          <div className="flex grow space-x-1 w-full">
-            <FormField
-              control={form.control}
-              name="phone"
-              render={({ field: { value, ...field } }) => (
-                <FormItem className="w-full">
-                  <FormLabel>Phone</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Enter the phone number of patient"
-                      value={value || ''}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                {/* Emergency Contact Field */}
+                <FormField
+                  control={form.control}
+                  name="emergency_contact"
+                  render={({ field: { value, ...field } }) => (
+                    <FormItem>
+                      <FormLabel className="text-sm font-medium">Emergency Contact</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Contact name"
+                          value={value || ''}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            <FormField
-              control={form.control}
-              name="emergency_contact"
-              render={({ field: { value, ...field } }) => (
-                <FormItem className="w-full">
-                  <FormLabel>Emergency Contact</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Enter the emergency contact"
-                      value={value || ''}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                {/* Emergency Phone Field */}
+                <FormField
+                  control={form.control}
+                  name="emergency_phone"
+                  render={({ field: { value, ...field } }) => (
+                    <FormItem>
+                      <FormLabel className="text-sm font-medium">Emergency Phone</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Emergency phone"
+                          value={value || ''}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </CardContent>
+          </Card>
 
-            <FormField
-              control={form.control}
-              name="emergency_phone"
-              render={({ field: { value, ...field } }) => (
-                <FormItem className="w-full">
-                  <FormLabel>Emergency Phone</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Enter the emergency phone number"
-                      value={value || ''}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <FormField
-            control={form.control}
-            name="remarks"
-            render={({ field: { value, ...field } }) => (
-              <FormItem>
-                <FormLabel>Remarks</FormLabel>
-                <FormControl>
-                  <RichTextEditor initialContent={value || undefined} onUpdate={field.onChange} />
-                </FormControl>
-                <FormDescription className="mx-1">
-                  Any additional remarks about the patient
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          {/* Row 4: Notes */}
+          <Card
+            className="bg-gradient-to-br from-card to-card/80 animate-fade-in-up"
+            style={{ animationDelay: '300ms' }}
+          >
+            <CardHeader className="pb-3 pt-4">
+              <div className="flex items-center gap-2.5">
+                <div className="h-8 w-8 rounded-lg bg-amber-500/10 flex items-center justify-center">
+                  <FileText className="h-4 w-4 text-amber-500" />
+                </div>
+                <CardTitle className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  Notes
+                </CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <FormField
+                control={form.control}
+                name="remarks"
+                render={({ field: { value, ...field } }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-medium">Remarks</FormLabel>
+                    <FormControl>
+                      <RichTextEditor initialContent={value || undefined} onUpdate={field.onChange} />
+                    </FormControl>
+                    <FormDescription className="text-xs">
+                      Any additional remarks about the patient
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
         </form>
       </Form>
     )

@@ -8,7 +8,7 @@ import { Patient } from 'src/shared/types/db'
 import { queries } from '../../lib/queries'
 import { AppLayout } from '@renderer/layouts/AppLayout'
 import { Button } from '@renderer/components/ui/button'
-import { SaveIcon } from 'lucide-react'
+import { RotateCcw, SaveIcon } from 'lucide-react'
 import { useKeyboardEvent } from '@renderer/hooks/useKeyboardEvent'
 
 export const getPatientByIdQuery = (id: number) =>
@@ -41,13 +41,19 @@ export const EditPatient = () => {
   const actions = (
     <>
       <Button
+        variant="gradient"
+        leftIcon={<SaveIcon className="h-4 w-4" />}
         onClick={() => {
           ref.current?.submit()
         }}
       >
-        <SaveIcon className="w-5 h-5 mr-1" /> Save
+        Save
       </Button>
-      <Button variant="secondary" onClick={() => ref.current?.reset()}>
+      <Button
+        variant="outline"
+        leftIcon={<RotateCcw className="h-4 w-4" />}
+        onClick={() => ref.current?.reset()}
+      >
         Reset
       </Button>
     </>
