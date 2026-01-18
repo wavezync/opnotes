@@ -9,7 +9,7 @@ import {
 } from '@renderer/components/ui/form'
 import { Input } from '@renderer/components/ui/input'
 import { Button } from '@renderer/components/ui/button'
-import { Save } from 'lucide-react'
+import { Save, RotateCcw } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -63,6 +63,15 @@ export const GeneralSettings = () => {
     },
     onError: (error: Error) => {
       toast.error(error.message)
+    }
+  })
+
+  const resetOnboardingMutation = useMutation({
+    mutationFn: async () => {
+      await window.api.invoke('updateSettings', [{ key: 'onboarding_completed', value: null }])
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(queries.app.settings)
     }
   })
 
@@ -137,6 +146,22 @@ export const GeneralSettings = () => {
           </Button>
         </div>
       </Form>
+
+      <div className="mt-8 pt-6 border-t">
+        <h3 className="text-lg font-semibold mb-2">Setup Wizard</h3>
+        <p className="text-sm text-muted-foreground mb-4">
+          Re-run the setup wizard to update your hospital information and review the app features.
+        </p>
+        <Button
+          variant="outline"
+          leftIcon={<RotateCcw className="w-4 h-4" />}
+          onClick={() => resetOnboardingMutation.mutate()}
+          isLoading={resetOnboardingMutation.isPending}
+          loadingText="Resetting..."
+        >
+          Run Setup Wizard
+        </Button>
+      </div>
     </div>
   )
 }

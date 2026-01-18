@@ -4,6 +4,7 @@ import * as m_002_telephone_setting from './migrations/002_telephone_setting'
 import * as m_003_doa_dod from './migrations/003_doa_dod'
 import * as m_004_surgery_templates from './migrations/004_surgery_templates'
 import * as m_005_backup_settings from './migrations/005_backup_settings'
+import * as m_006_onboarding_setting from './migrations/006_onboarding_setting'
 
 export default {
   '000_init': m_000_init,
@@ -11,5 +12,6 @@ export default {
   '002_telephone_setting': m_002_telephone_setting,
   '003_doa_dod': m_003_doa_dod,
   '004_surgery_templates': m_004_surgery_templates,
-  '005_backup_settings': m_005_backup_settings
+  '005_backup_settings': m_005_backup_settings,
+  '006_onboarding_setting': m_006_onboarding_setting
 }
