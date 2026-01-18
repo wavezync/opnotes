@@ -82,4 +82,107 @@
     height: 0;
     pointer-events: none;
   }
+
+  /* Template preview styles */
+  .template-preview {
+    font-family: system-ui, -apple-system, sans-serif;
+    line-height: 1.6;
+    color: hsl(var(--foreground));
+  }
+
+  .template-preview h1,
+  .template-preview h2,
+  .template-preview h3,
+  .template-preview h4,
+  .template-preview h5,
+  .template-preview h6 {
+    color: hsl(var(--foreground));
+    margin-top: 1em;
+    margin-bottom: 0.5em;
+    font-weight: 600;
+  }
+
+  .template-preview h1 { font-size: 1.75rem; }
+  .template-preview h2 { font-size: 1.5rem; }
+  .template-preview h3 { font-size: 1.25rem; }
+  .template-preview h4 { font-size: 1.125rem; }
+  .template-preview h5 { font-size: 1rem; }
+  .template-preview h6 { font-size: 0.875rem; }
+
+  .template-preview p {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+  }
+
+  .template-preview ul,
+  .template-preview ol {
+    margin-left: 1.5em;
+    margin-bottom: 0.5em;
+  }
+
+  .template-preview ul {
+    list-style-type: disc;
+  }
+
+  .template-preview ol {
+    list-style-type: decimal;
+  }
+
+  .template-preview li {
+    margin-bottom: 0.25em;
+  }
+
+  .template-preview blockquote {
+    border-left: 3px solid hsl(var(--border));
+    padding-left: 1em;
+    margin: 0.5em 0;
+    color: hsl(var(--muted-foreground));
+    font-style: italic;
+  }
+
+  .template-preview strong,
+  .template-preview b {
+    font-weight: 600;
+  }
+
+  .template-preview em,
+  .template-preview i {
+    font-style: italic;
+  }
+
+  .template-preview a {
+    color: hsl(var(--primary));
+    text-decoration: underline;
+  }
+
+  .template-preview code {
+    background-color: hsl(var(--muted));
+    padding: 0.125em 0.25em;
+    border-radius: 0.25em;
+    font-size: 0.875em;
+  }
+
+  .template-preview pre {
+    background-color: hsl(var(--muted));
+    padding: 0.75em;
+    border-radius: 0.375em;
+    overflow-x: auto;
+  }
+
+  .template-preview table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.5em 0;
+  }
+
+  .template-preview th,
+  .template-preview td {
+    border: 1px solid hsl(var(--border));
+    padding: 0.5em;
+  }
+
+  .template-preview th {
+    background-color: hsl(var(--muted));
+    font-weight: 600;
+  }
 }

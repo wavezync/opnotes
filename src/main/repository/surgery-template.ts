@@ -117,9 +117,25 @@ export const listSurgeryTemplates = async (filter: SurgeryTemplateFilter) => {
   return { data: templates, total, pages }
 }
 
-// For editor popup - search templates with FTS
-export const searchTemplatesForEditor = async (params: { search?: string; doctorId?: number }) => {
-  const { search, doctorId } = params
+// Template item type for editor popup
+export interface EditorTemplateItem {
+  id: number
+  title: string
+  content: string
+  category: string
+  tags: string[]
+  doctorId: number | null
+  doctorName: string | null
+}
+
+// For editor popup - search templates with FTS and filters
+export const searchTemplatesForEditor = async (params: {
+  search?: string
+  doctorId?: number
+  category?: string
+  tag?: string
+}): Promise<EditorTemplateItem[]> => {
+  const { search, doctorId, category, tag } = params
 
   let query = db
     .selectFrom('surgery_templates')
@@ -159,42 +175,33 @@ export const searchTemplatesForEditor = async (params: { search?: string; doctor
     )
   }
 
+  // Category filter
+  if (category) {
+    query = query.where('surgery_templates.category', '=', category)
+  }
+
   const results = await query
     .orderBy('surgery_templates.category')
     .orderBy('surgery_templates.title')
     .execute()
 
-  // Group by category
-  const grouped: Record<
-    string,
-    Array<{
-      id: number
-      title: string
-      content: string
-      category: string
-      tags: string[]
-      doctorId: number | null
-      doctorName: string | null
-    }>
-  > = {}
+  // Map to flat array with parsed tags
+  let templates: EditorTemplateItem[] = results.map((row) => ({
+    id: row.id,
+    title: row.title,
+    content: row.content,
+    category: row.category,
+    tags: row.tags ? JSON.parse(row.tags) : [],
+    doctorId: row.doctor_id,
+    doctorName: row.doctor_name ?? null
+  }))
 
-  for (const row of results) {
-    const category = row.category
-    if (!grouped[category]) {
-      grouped[category] = []
-    }
-    grouped[category].push({
-      id: row.id,
-      title: row.title,
-      content: row.content,
-      category: row.category,
-      tags: row.tags ? JSON.parse(row.tags) : [],
-      doctorId: row.doctor_id,
-      doctorName: row.doctor_name ?? null
-    })
+  // Filter by tag (done in JS since tags are stored as JSON)
+  if (tag) {
+    templates = templates.filter((t) => t.tags.includes(tag))
   }
 
-  return grouped
+  return templates
 }
 
 // Get all distinct categories
@@ -207,4 +214,21 @@ export const getTemplateCategories = async () => {
     .execute()
 
   return results.map((r) => r.category)
+}
+
+// Get all distinct tags across all templates
+export const getTemplateTags = async () => {
+  const results = await db.selectFrom('surgery_templates').select('tags').execute()
+
+  const allTags = new Set<string>()
+  for (const row of results) {
+    if (row.tags) {
+      const tags = JSON.parse(row.tags) as string[]
+      for (const tag of tags) {
+        allTags.add(tag)
+      }
+    }
+  }
+
+  return Array.from(allTags).sort()
 }
