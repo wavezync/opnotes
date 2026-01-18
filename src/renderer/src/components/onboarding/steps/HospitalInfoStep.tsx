@@ -15,7 +15,7 @@ import { useSettings } from '@renderer/contexts/SettingsContext'
 import { useEffect, useImperativeHandle, forwardRef } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { queries } from '@renderer/lib/queries'
-import { Building2 } from 'lucide-react'
+import { Building2, Phone, MapPin } from 'lucide-react'
 
 const formSchema = z.object({
   hospital: z.string().min(1, 'Hospital name is required'),
@@ -78,65 +78,108 @@ export const HospitalInfoStep = forwardRef<HospitalInfoStepRef>((_, ref) => {
   }))
 
   return (
-    <div className="flex flex-col items-center space-y-6">
-      <div className="flex items-center justify-center w-16 h-16 rounded-full bg-primary/10">
-        <Building2 className="w-8 h-8 text-primary" />
-      </div>
-      <div className="text-center space-y-2">
-        <h2 className="text-2xl font-bold">Hospital Information</h2>
-        <p className="text-muted-foreground">
-          Enter your hospital details. This information will appear on printed documents.
-        </p>
+    <div className="flex flex-col items-center space-y-8">
+      {/* Header */}
+      <div className="text-center space-y-4">
+        <div className="relative inline-flex">
+          <div className="absolute inset-0 bg-primary/20 rounded-2xl blur-xl animate-pulse-soft" />
+          <div className="relative h-16 w-16 rounded-xl bg-gradient-primary shadow-theme-primary flex items-center justify-center">
+            <Building2 className="h-7 w-7 text-primary-foreground" />
+          </div>
+        </div>
+        <div className="space-y-2">
+          <h2 className="text-2xl font-bold tracking-tight">Hospital Information</h2>
+          <p className="text-muted-foreground max-w-sm mx-auto">
+            This information will appear on printed surgical notes and reports
+          </p>
+        </div>
       </div>
 
+      {/* Form */}
       <Form {...form}>
-        <form className="w-full max-w-md space-y-4">
+        <form className="w-full space-y-5">
           <FormField
             name="hospital"
             control={form.control}
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>Hospital Name</FormLabel>
+              <FormItem className="animate-fade-in-up" style={{ animationDelay: '0ms' }}>
+                <FormLabel className="text-sm font-medium flex items-center gap-2">
+                  <Building2 className="h-3.5 w-3.5 text-muted-foreground" />
+                  Hospital Name
+                </FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter hospital name" {...field} />
+                  <Input
+                    placeholder="e.g., General Hospital Colombo"
+                    className="h-11 bg-card/50 border-border/50 focus:border-primary/50"
+                    {...field}
+                  />
                 </FormControl>
-                <FormDescription>
-                  The name of your hospital (e.g., General Hospital Colombo)
+                <FormDescription className="text-xs">
+                  The official name of your healthcare facility
                 </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
+
           <FormField
             name="unit"
             control={form.control}
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>Unit Name</FormLabel>
+              <FormItem className="animate-fade-in-up" style={{ animationDelay: '100ms' }}>
+                <FormLabel className="text-sm font-medium flex items-center gap-2">
+                  <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
+                  Unit / Department
+                </FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter unit name" {...field} />
+                  <Input
+                    placeholder="e.g., Surgical Unit A"
+                    className="h-11 bg-card/50 border-border/50 focus:border-primary/50"
+                    {...field}
+                  />
                 </FormControl>
-                <FormDescription>Your department or unit (e.g., Surgical Unit A)</FormDescription>
+                <FormDescription className="text-xs">
+                  Your department or ward within the hospital
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
+
           <FormField
             name="telephone"
             control={form.control}
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>Contact Telephone</FormLabel>
+              <FormItem className="animate-fade-in-up" style={{ animationDelay: '200ms' }}>
+                <FormLabel className="text-sm font-medium flex items-center gap-2">
+                  <Phone className="h-3.5 w-3.5 text-muted-foreground" />
+                  Contact Number
+                  <span className="text-muted-foreground font-normal">(optional)</span>
+                </FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter telephone number" {...field} />
+                  <Input
+                    placeholder="e.g., +94 11 234 5678"
+                    className="h-11 bg-card/50 border-border/50 focus:border-primary/50"
+                    {...field}
+                  />
                 </FormControl>
-                <FormDescription>Contact number for the unit (optional)</FormDescription>
+                <FormDescription className="text-xs">
+                  Unit contact number for printed documents
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
         </form>
       </Form>
+
+      {/* Info note */}
+      <div className="w-full p-4 rounded-xl bg-primary/5 border border-primary/10 animate-fade-in-up" style={{ animationDelay: '300ms' }}>
+        <p className="text-xs text-muted-foreground text-center">
+          You can update these settings anytime from{' '}
+          <span className="text-foreground font-medium">Settings → General</span>
+        </p>
+      </div>
     </div>
   )
 })
