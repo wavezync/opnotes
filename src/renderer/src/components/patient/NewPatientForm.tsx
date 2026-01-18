@@ -526,13 +526,9 @@ export const NewPatientForm = forwardRef<NewPatientFormRef, CreatePatientFormPro
                 name="remarks"
                 render={({ field: { value, ...field } }) => (
                   <FormItem>
-                    <FormLabel className="text-sm font-medium">Remarks</FormLabel>
                     <FormControl>
                       <RichTextEditor initialContent={value || undefined} onUpdate={field.onChange} />
                     </FormControl>
-                    <FormDescription className="text-xs">
-                      Any additional remarks about the patient
-                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}

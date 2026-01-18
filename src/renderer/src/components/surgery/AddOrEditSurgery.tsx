@@ -14,24 +14,30 @@ import { Input } from '../ui/input'
 import { DatePicker } from '../ui/date-picker'
 import { RichTextEditor } from '../common/RichTextEditor'
 
-import { forwardRef, useEffect, useImperativeHandle } from 'react'
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef } from 'react'
 import { DoctorAutoComplete } from '../doctor/DoctorAutoComplete'
 import toast from 'react-hot-toast'
 import { SurgeryModel } from '../../../../shared/models/SurgeryModel'
 import { unwrapResult } from '@renderer/lib/utils'
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
+import { Button } from '../ui/button'
+import {
+  Stethoscope,
+  FileText,
+  Calendar,
+  Users,
+  Hash,
+  Lightbulb,
+  ClipboardPlus
+} from 'lucide-react'
 
 const toValidDate = (date?: Date | null): Date | null => {
   if (!date) return null
   return !isNaN(date.getTime()) ? date : null
 }
-const KBD = ({ children }: { children: React.ReactNode }) => (
-  <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
-    {children}
-  </kbd>
-)
 
 const surgerySchema = z.object({
-  title: z.string().min(1, { message: 'Title is required' }), // Add a custom error message for min(1
+  title: z.string().min(1, { message: 'Title is required' }),
   bht: z.string().min(1, { message: 'BHT is required' }),
   ward: z.string().min(1, { message: 'Ward is required' }),
   date: z.date().nullable(),
@@ -57,6 +63,7 @@ export interface AddOrEditSurgeryRef {
 
 export const AddOrEditSurgery = forwardRef<AddOrEditSurgeryRef, AddOrEditSurgeryProps>(
   ({ surgery, patientId, onUpdated }: AddOrEditSurgeryProps, ref) => {
+    const titleInputRef = useRef<HTMLInputElement>(null)
     const form = useForm<SurgeryFormSchema>({
       resolver: zodResolver(surgerySchema),
       defaultValues: {
@@ -165,12 +172,23 @@ export const AddOrEditSurgery = forwardRef<AddOrEditSurgeryRef, AddOrEditSurgery
       submit: submitForm
     }))
 
+    // Insert down arrow into title
+    const insertDownArrow = useCallback(() => {
+      const currentTitle = form.getValues('title')
+      form.setValue('title', currentTitle + '↓')
+      // Focus the input and move cursor to end
+      if (titleInputRef.current) {
+        titleInputRef.current.focus()
+        const len = titleInputRef.current.value.length
+        titleInputRef.current.setSelectionRange(len, len)
+      }
+    }, [form])
+
     useEffect(() => {
       const handleKeyDown = (e: KeyboardEvent) => {
         if (e.key === 'ArrowDown' && e.ctrlKey && e.shiftKey) {
           e.preventDefault()
-          // Insert ↓ to surgery title
-          form.setValue('title', form.getValues('title') + '↓')
+          insertDownArrow()
         }
       }
 
@@ -179,171 +197,283 @@ export const AddOrEditSurgery = forwardRef<AddOrEditSurgeryRef, AddOrEditSurgery
       return () => {
         window.removeEventListener('keydown', handleKeyDown)
       }
-    }, [form])
+    }, [insertDownArrow])
 
     return (
       <Form {...form}>
-        <form className="flex flex-col space-y-2">
-          {/* Surgery Details */}
-          <section className="mt-1">
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>Title</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Surgery Title..." {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    Press{' '}
-                    <KBD>
-                      <span className="text-xs">Ctrl</span>
-                    </KBD>
-                    +
-                    <KBD>
-                      <span className="text-xs">Shift</span>
-                    </KBD>
-                    +
-                    <KBD>
-                      <span className="text-xs">↓</span>
-                    </KBD>{' '}
-                    to add an ↓
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+        <form className="space-y-4">
+          {/* Procedure Title Card */}
+          <Card
+            className="bg-gradient-to-br from-card to-card/80 animate-fade-in-up"
+            style={{ animationDelay: '0ms' }}
+          >
+            <CardHeader className="pb-3 pt-4">
+              <div className="flex items-center gap-2.5">
+                <div className="h-8 w-8 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+                  <Stethoscope className="h-4 w-4 text-emerald-500" />
+                </div>
+                <CardTitle className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  Procedure
+                </CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent className="pt-0 space-y-4">
+              <FormField
+                control={form.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-medium">Surgery Title</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="e.g., Appendectomy, Cholecystectomy..."
+                        {...field}
+                        ref={(e) => {
+                          field.ref(e)
+                          // @ts-expect-error ref assignment
+                          titleInputRef.current = e
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <div className="flex flex-col md:flex-row md:items-end gap-2 w-full mt-1">
-              <div className="flex flex-col w-full md:w-1/2">
+              {/* Prominent Shortcut Hint */}
+              <div className="flex items-center gap-3 p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                <div className="h-8 w-8 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
+                  <Lightbulb className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-emerald-700 dark:text-emerald-300">
+                    Pro tip: Add down arrow (↓) to title
+                  </p>
+                  <p className="text-xs text-emerald-600/80 dark:text-emerald-400/80 mt-0.5">
+                    Press{' '}
+                    <kbd className="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 font-mono text-[10px]">
+                      Ctrl
+                    </kbd>
+                    {' + '}
+                    <kbd className="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 font-mono text-[10px]">
+                      Shift
+                    </kbd>
+                    {' + '}
+                    <kbd className="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 font-mono text-[10px]">
+                      ↓
+                    </kbd>
+                    {' or click the button'}
+                  </p>
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={insertDownArrow}
+                  className="flex-shrink-0 border-emerald-500/30 hover:bg-emerald-500/10 hover:text-emerald-700 dark:hover:text-emerald-300"
+                >
+                  Insert ↓
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Details Card - BHT & Ward */}
+          <Card
+            className="bg-gradient-to-br from-card to-card/80 animate-fade-in-up"
+            style={{ animationDelay: '75ms' }}
+          >
+            <CardHeader className="pb-3 pt-4">
+              <div className="flex items-center gap-2.5">
+                <div className="h-8 w-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
+                  <Hash className="h-4 w-4 text-blue-500" />
+                </div>
+                <CardTitle className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  Details
+                </CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
                   name="bht"
                   control={form.control}
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>BHT</FormLabel>
+                      <FormLabel className="text-sm font-medium">BHT</FormLabel>
                       <FormControl>
-                        <Input placeholder="BHT" {...field} />
+                        <Input placeholder="BHT Number" {...field} />
                       </FormControl>
+                      <FormDescription className="text-xs">
+                        Bed Head Ticket number
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-              </div>
 
-              <div className="flex flex-col w-full md:w-1/2">
                 <FormField
                   name="ward"
                   control={form.control}
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Ward</FormLabel>
+                      <FormLabel className="text-sm font-medium">Ward</FormLabel>
                       <FormControl>
-                        <Input placeholder="Ward" {...field} />
+                        <Input placeholder="Ward name" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
               </div>
-            </div>
+            </CardContent>
+          </Card>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full mt-2">
-              <FormField
-                name="date"
-                control={form.control}
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>Surgery Date</FormLabel>
-                    <FormControl>
-                      <DatePicker onSelect={field.onChange} selected={field.value || undefined} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                name="doa"
-                control={form.control}
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>Date of Admission</FormLabel>
-                    <FormControl>
-                      <DatePicker onSelect={field.onChange} selected={field.value || undefined} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                name="dod"
-                control={form.control}
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>Date of Discharge</FormLabel>
-                    <FormControl>
-                      <DatePicker onSelect={field.onChange} selected={field.value || undefined} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <div className="flex flex-col mt-4">
-              <div className="flex items-start md:flex-row flex-col gap-2">
-                <div className="flex flex-col md:w-1/2">
-                  <FormField
-                    control={form.control}
-                    name="doneBy"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-col">
-                        <FormLabel>Done By</FormLabel>
-                        <FormControl>
-                          <DoctorAutoComplete
-                            onSelected={(ids) => {
-                              field.onChange(ids.map((id) => +id))
-                            }}
-                            selectedDoctorIds={field.value.map((v) => v.toString())}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+          {/* Dates Card */}
+          <Card
+            className="bg-gradient-to-br from-card to-card/80 animate-fade-in-up"
+            style={{ animationDelay: '150ms' }}
+          >
+            <CardHeader className="pb-3 pt-4">
+              <div className="flex items-center gap-2.5">
+                <div className="h-8 w-8 rounded-lg bg-amber-500/10 flex items-center justify-center">
+                  <Calendar className="h-4 w-4 text-amber-500" />
                 </div>
-
-                <div className="flex flex-col md:w-1/2">
-                  <FormField
-                    control={form.control}
-                    name="assistedBy"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-col">
-                        <FormLabel>Assisted By</FormLabel>
-                        <FormControl>
-                          <DoctorAutoComplete
-                            onSelected={(ids) => {
-                              field.onChange(ids.map((id) => +id))
-                            }}
-                            selectedDoctorIds={field.value.map((v) => v.toString())}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
+                <CardTitle className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  Dates
+                </CardTitle>
               </div>
-            </div>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <FormField
+                  name="date"
+                  control={form.control}
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <FormLabel className="text-sm font-medium">Surgery Date</FormLabel>
+                      <FormControl>
+                        <DatePicker onSelect={field.onChange} selected={field.value || undefined} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  name="doa"
+                  control={form.control}
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <FormLabel className="text-sm font-medium">Date of Admission</FormLabel>
+                      <FormControl>
+                        <DatePicker onSelect={field.onChange} selected={field.value || undefined} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  name="dod"
+                  control={form.control}
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <FormLabel className="text-sm font-medium">Date of Discharge</FormLabel>
+                      <FormControl>
+                        <DatePicker onSelect={field.onChange} selected={field.value || undefined} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </CardContent>
+          </Card>
 
-            <div className="flex flex-col">
+          {/* Surgical Team Card */}
+          <Card
+            className="bg-gradient-to-br from-card to-card/80 animate-fade-in-up"
+            style={{ animationDelay: '225ms' }}
+          >
+            <CardHeader className="pb-3 pt-4">
+              <div className="flex items-center gap-2.5">
+                <div className="h-8 w-8 rounded-lg bg-violet-500/10 flex items-center justify-center">
+                  <Users className="h-4 w-4 text-violet-500" />
+                </div>
+                <CardTitle className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  Surgical Team
+                </CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="doneBy"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <FormLabel className="text-sm font-medium">Done By</FormLabel>
+                      <FormControl>
+                        <DoctorAutoComplete
+                          onSelected={(ids) => {
+                            field.onChange(ids.map((id) => +id))
+                          }}
+                          selectedDoctorIds={field.value.map((v) => v.toString())}
+                        />
+                      </FormControl>
+                      <FormDescription className="text-xs">
+                        Primary surgeon(s)
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="assistedBy"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <FormLabel className="text-sm font-medium">Assisted By</FormLabel>
+                      <FormControl>
+                        <DoctorAutoComplete
+                          onSelected={(ids) => {
+                            field.onChange(ids.map((id) => +id))
+                          }}
+                          selectedDoctorIds={field.value.map((v) => v.toString())}
+                        />
+                      </FormControl>
+                      <FormDescription className="text-xs">
+                        Assisting surgeon(s)
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Notes Card */}
+          <Card
+            className="bg-gradient-to-br from-card to-card/80 animate-fade-in-up"
+            style={{ animationDelay: '300ms' }}
+          >
+            <CardHeader className="pb-3 pt-4">
+              <div className="flex items-center gap-2.5">
+                <div className="h-8 w-8 rounded-lg bg-amber-500/10 flex items-center justify-center">
+                  <FileText className="h-4 w-4 text-amber-500" />
+                </div>
+                <CardTitle className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  Operative Notes
+                </CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent className="pt-0">
               <FormField
                 control={form.control}
                 name="notes"
                 render={({ field: { value, ...field } }) => (
                   <FormItem>
-                    <FormLabel>Notes</FormLabel>
                     <FormControl>
                       <RichTextEditor
                         initialContent={value || undefined}
@@ -354,15 +484,30 @@ export const AddOrEditSurgery = forwardRef<AddOrEditSurgeryRef, AddOrEditSurgery
                   </FormItem>
                 )}
               />
-            </div>
+            </CardContent>
+          </Card>
 
-            <div className="flex flex-col">
+          {/* Post-Op Notes Card */}
+          <Card
+            className="bg-gradient-to-br from-card to-card/80 animate-fade-in-up"
+            style={{ animationDelay: '375ms' }}
+          >
+            <CardHeader className="pb-3 pt-4">
+              <div className="flex items-center gap-2.5">
+                <div className="h-8 w-8 rounded-lg bg-rose-500/10 flex items-center justify-center">
+                  <ClipboardPlus className="h-4 w-4 text-rose-500" />
+                </div>
+                <CardTitle className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  Post-Operative Care
+                </CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent className="pt-0">
               <FormField
                 control={form.control}
                 name="post_op_notes"
                 render={({ field: { value, ...field } }) => (
                   <FormItem>
-                    <FormLabel>Post Op Notes</FormLabel>
                     <FormControl>
                       <RichTextEditor
                         initialContent={value || undefined}
@@ -373,8 +518,8 @@ export const AddOrEditSurgery = forwardRef<AddOrEditSurgeryRef, AddOrEditSurgery
                   </FormItem>
                 )}
               />
-            </div>
-          </section>
+            </CardContent>
+          </Card>
         </form>
       </Form>
     )
