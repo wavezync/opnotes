@@ -333,7 +333,7 @@ export const SurgierisIndex = () => {
             <p className="text-sm text-muted-foreground">{data?.total ?? 0} surgery records</p>
           </div>
         </div>
-        <Button onClick={() => navigate('/surgeries/add')} className="gap-2">
+        <Button onClick={() => navigate('/quick-surgery')} className="gap-2">
           <Plus className="h-4 w-4" />
           Add Surgery
         </Button>

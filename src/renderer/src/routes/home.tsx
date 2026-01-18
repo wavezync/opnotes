@@ -147,19 +147,19 @@ function StatsCards({ stats, isLoading }: StatsCardsProps) {
   )
 }
 
-// Hero CTA - Add Patient card
-interface AddPatientCardProps {
+// Hero CTA - Quick Add Surgery card
+interface QuickAddSurgeryCardProps {
   className?: string
 }
 
-function AddPatientCard({ className }: AddPatientCardProps) {
+function QuickAddSurgeryCard({ className }: QuickAddSurgeryCardProps) {
   const navigate = useNavigate()
 
   return (
     <button
-      onClick={() => navigate('/patients/add')}
+      onClick={() => navigate('/quick-surgery')}
       className={cn(
-        'group relative overflow-hidden rounded-xl bg-gradient-primary p-5 text-primary-foreground transition-all duration-300 hover:shadow-theme-lg hover:scale-[1.01] animate-fade-in-up',
+        'group relative overflow-hidden rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 p-5 text-white transition-all duration-300 hover:shadow-theme-lg hover:scale-[1.01] animate-fade-in-up',
         className
       )}
       style={{ animationDelay: '200ms' }}
@@ -173,11 +173,14 @@ function AddPatientCard({ className }: AddPatientCardProps) {
 
       <div className="relative flex items-center gap-4">
         <div className="h-14 w-14 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 group-hover:bg-white/30">
-          <Plus className="h-7 w-7" strokeWidth={2.5} />
+          <div className="relative">
+            <Stethoscope className="h-6 w-6" strokeWidth={2} />
+            <Plus className="h-3 w-3 absolute -bottom-0.5 -right-1 bg-white/30 rounded-full p-0.5" strokeWidth={3} />
+          </div>
         </div>
         <div className="text-left">
-          <div className="text-lg font-bold tracking-wide">Add Patient</div>
-          <div className="text-sm opacity-80">Register a new patient</div>
+          <div className="text-lg font-bold tracking-wide">Quick Add Surgery</div>
+          <div className="text-sm opacity-80">Record a new surgery</div>
         </div>
         <ArrowRight className="ml-auto h-5 w-5 opacity-60 transition-all duration-300 group-hover:translate-x-1 group-hover:opacity-100" />
       </div>
@@ -367,17 +370,17 @@ export default function Home() {
 
       {/* Row 3: Main Content Grid */}
       <div className="flex-1 grid grid-cols-2 gap-5 min-h-0">
-        {/* Left Column: Add Patient Hero + Nav Cards */}
+        {/* Left Column: Quick Add Surgery Hero + Nav Cards */}
         <div className="flex flex-col gap-4">
           {/* Hero CTA */}
-          <AddPatientCard />
+          <QuickAddSurgeryCard />
 
           {/* Quick Links - 2x2 grid */}
           <div className="grid grid-cols-2 gap-3 flex-1 content-start">
             <NavCard to="/patients" icon={Users} title="Patients" description="Browse all" index={0} />
             <NavCard to="/surgeries" icon={Stethoscope} title="Surgeries" description="View records" index={1} />
             <NavCard to="/doctors" icon={UserCog} title="Doctors" description="Manage list" index={2} />
-            <NavCard to="/surgeries/add" icon={Plus} title="Add Surgery" description="New record" index={3} />
+            <NavCard to="/patients/add" icon={Plus} title="Add Patient" description="New record" index={3} />
           </div>
         </div>
 

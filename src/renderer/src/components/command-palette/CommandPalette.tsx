@@ -169,7 +169,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
                 <Plus className="mr-2 h-4 w-4" />
                 <span>Add New Patient</span>
               </CommandItem>
-              <CommandItem onSelect={() => runCommand(() => navigate('/surgeries/add'))}>
+              <CommandItem onSelect={() => runCommand(() => navigate('/quick-surgery'))}>
                 <Plus className="mr-2 h-4 w-4" />
                 <span>Add New Surgery</span>
               </CommandItem>

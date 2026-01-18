@@ -22,6 +22,7 @@ import { DoctorsIndex } from './routes/doctors/list-doctors'
 import { AddNewDoctor } from './routes/doctors/add-doctor'
 import { EditDoctor } from './routes/doctors/edit-doctor'
 import { SurgierisIndex } from './routes/surgeries/list-surgeries'
+import { QuickAddSurgery } from './routes/surgeries/quick-add-surgery'
 import { SettingsIndex } from './routes/settings/settings-index'
 import { AddTemplatePage, EditTemplatePage } from './routes/settings/template-form-page'
 
@@ -89,6 +90,10 @@ const router = createHashRouter([
       {
         path: '/surgeries',
         element: <SurgierisIndex />
+      },
+      {
+        path: '/quick-surgery',
+        element: <QuickAddSurgery />
       },
 
       {
