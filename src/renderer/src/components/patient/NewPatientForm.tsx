@@ -132,7 +132,7 @@ export const NewPatientForm = forwardRef<NewPatientFormRef, CreatePatientFormPro
         emergency_contact: '',
         emergency_phone: '',
         remarks: '',
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+         
         gender: '' as any
       })
     }, [form, isUpdate, values])
