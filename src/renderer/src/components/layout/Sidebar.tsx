@@ -5,6 +5,7 @@ import {
   Users,
   Stethoscope,
   UserCog,
+  ScrollText,
   Settings
 } from 'lucide-react'
 import opNotesLogo from '@renderer/assets/opnotes-logo.png'
@@ -61,7 +62,8 @@ export function Sidebar() {
     { to: '/', icon: <LayoutDashboard className="h-5 w-5" />, label: 'Home', end: true },
     { to: '/patients', icon: <Users className="h-5 w-5" />, label: 'Patients' },
     { to: '/surgeries', icon: <Stethoscope className="h-5 w-5" />, label: 'Surgeries' },
-    { to: '/doctors', icon: <UserCog className="h-5 w-5" />, label: 'Doctors' }
+    { to: '/doctors', icon: <UserCog className="h-5 w-5" />, label: 'Doctors' },
+    { to: '/activity', icon: <ScrollText className="h-5 w-5" />, label: 'Activity' }
   ]
 
   return (

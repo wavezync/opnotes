@@ -38,3 +38,13 @@ export interface SurgeryTemplateFilter {
   pageSize?: number
   page?: number
 }
+
+export interface ActivityLogFilter {
+  entityType?: 'patient' | 'surgery' | 'followup' | 'doctor'
+  action?: 'created' | 'updated' | 'deleted'
+  search?: string
+  startDate?: number
+  endDate?: number
+  pageSize?: number
+  page?: number
+}

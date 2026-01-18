@@ -25,6 +25,7 @@ import { SurgierisIndex } from './routes/surgeries/list-surgeries'
 import { QuickAddSurgery } from './routes/surgeries/quick-add-surgery'
 import { SettingsIndex } from './routes/settings/settings-index'
 import { AddTemplatePage, EditTemplatePage } from './routes/settings/template-form-page'
+import { ActivityIndex } from './routes/activity/activity-index'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -107,6 +108,11 @@ const router = createHashRouter([
       {
         path: '/settings/templates/:id/edit',
         element: <EditTemplatePage />
+      },
+
+      {
+        path: '/activity',
+        element: <ActivityIndex />
       },
 
       {

@@ -1,5 +1,6 @@
 import { createQueryKeyStore } from '@lukemorales/query-key-factory'
 import {
+  ActivityLogFilter,
   DoctorFilter,
   PatientFilter,
   SurgeryFilter,
@@ -93,6 +94,12 @@ export const queries = createQueryKeyStore({
     recentActivity: (limit: number = 10) => ({
       queryKey: [limit],
       queryFn: () => unwrapResult(window.api.invoke('getRecentActivities', limit))
+    })
+  },
+  activityLog: {
+    list: (filter: ActivityLogFilter) => ({
+      queryKey: [filter],
+      queryFn: () => unwrapResult(window.api.invoke('listActivityLog', filter))
     })
   }
 })
