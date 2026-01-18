@@ -21,6 +21,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@renderer/components/u
 import { Switch } from '@renderer/components/ui/switch'
 import { Label } from '@renderer/components/ui/label'
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@renderer/components/ui/select'
+import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -33,7 +40,7 @@ import {
 import { queries } from '@renderer/lib/queries'
 import { useSettings } from '@renderer/contexts/SettingsContext'
 import { unwrapResult, cn } from '@renderer/lib/utils'
-import { BackupInfo } from 'src/shared/types/backup'
+import { BackupFrequency, BackupInfo } from 'src/shared/types/backup'
 import { Skeleton } from '@renderer/components/ui/skeleton'
 
 function formatBytes(bytes: number): string {
@@ -59,6 +66,8 @@ export const BackupSettings = () => {
 
   const [backupEnabled, setBackupEnabled] = useState(true)
   const [backupFolder, setBackupFolder] = useState<string>('')
+  const [backupFrequency, setBackupFrequency] = useState<BackupFrequency>('daily')
+  const [backupTime, setBackupTime] = useState<string>('08:00')
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [backupToDelete, setBackupToDelete] = useState<BackupInfo | null>(null)
   const [restoreDialogOpen, setRestoreDialogOpen] = useState(false)
@@ -70,6 +79,8 @@ export const BackupSettings = () => {
     if (settings) {
       setBackupEnabled(settings['backup_enabled'] === 'true')
       setBackupFolder(settings['backup_folder'] || '')
+      setBackupFrequency((settings['backup_frequency'] as BackupFrequency) || 'daily')
+      setBackupTime(settings['backup_time'] || '08:00')
     }
   }, [settings])
 
@@ -165,7 +176,9 @@ export const BackupSettings = () => {
   const handleSaveSettings = async () => {
     await updateSettingsMutation.mutateAsync([
       { key: 'backup_enabled', value: backupEnabled ? 'true' : 'false' },
-      { key: 'backup_folder', value: backupFolder || null }
+      { key: 'backup_folder', value: backupFolder || null },
+      { key: 'backup_frequency', value: backupFrequency },
+      { key: 'backup_time', value: backupTime }
     ])
   }
 
@@ -229,11 +242,8 @@ export const BackupSettings = () => {
         <CardContent className="pt-0 space-y-5">
           {/* Enable Switch */}
           <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
-            <Label
-              htmlFor="backup-enabled"
-              className="text-sm font-medium cursor-pointer"
-            >
-              Enable hourly automatic backups
+            <Label htmlFor="backup-enabled" className="text-sm font-medium cursor-pointer">
+              Enable automatic backups
             </Label>
             <Switch
               id="backup-enabled"
@@ -241,6 +251,58 @@ export const BackupSettings = () => {
               onCheckedChange={setBackupEnabled}
             />
           </div>
+
+          {/* Frequency and Time Settings */}
+          {backupEnabled && (
+            <div className="grid grid-cols-2 gap-4">
+              {/* Frequency Dropdown */}
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="h-6 w-6 rounded-md bg-emerald-500/10 flex items-center justify-center">
+                    <Clock className="h-3.5 w-3.5 text-emerald-500" />
+                  </div>
+                  <label className="text-sm font-medium">Frequency</label>
+                </div>
+                <Select
+                  value={backupFrequency}
+                  onValueChange={(value) => setBackupFrequency(value as BackupFrequency)}
+                >
+                  <SelectTrigger className="h-11">
+                    <SelectValue placeholder="Select frequency" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="hourly">Hourly</SelectItem>
+                    <SelectItem value="daily">Daily</SelectItem>
+                    <SelectItem value="weekly">Weekly (Monday)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Time Picker (only for daily/weekly) */}
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="h-6 w-6 rounded-md bg-emerald-500/10 flex items-center justify-center">
+                    <Clock className="h-3.5 w-3.5 text-emerald-500" />
+                  </div>
+                  <label className="text-sm font-medium">
+                    {backupFrequency === 'hourly' ? 'Time (N/A)' : 'Time'}
+                  </label>
+                </div>
+                <Input
+                  type="time"
+                  value={backupTime}
+                  onChange={(e) => setBackupTime(e.target.value)}
+                  disabled={backupFrequency === 'hourly'}
+                  className="h-11"
+                />
+                {backupFrequency === 'hourly' && (
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Hourly backups run every hour
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* Backup Folder */}
           <div>

@@ -6,6 +6,7 @@ import * as m_004_surgery_templates from './migrations/004_surgery_templates'
 import * as m_005_backup_settings from './migrations/005_backup_settings'
 import * as m_006_onboarding_setting from './migrations/006_onboarding_setting'
 import * as m_007_activity_log from './migrations/007_activity_log'
+import * as m_008_backup_frequency from './migrations/008_backup_frequency'
 
 export default {
   '000_init': m_000_init,
@@ -15,5 +16,6 @@ export default {
   '004_surgery_templates': m_004_surgery_templates,
   '005_backup_settings': m_005_backup_settings,
   '006_onboarding_setting': m_006_onboarding_setting,
-  '007_activity_log': m_007_activity_log
+  '007_activity_log': m_007_activity_log,
+  '008_backup_frequency': m_008_backup_frequency
 }
