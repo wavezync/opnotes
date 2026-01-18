@@ -12,6 +12,7 @@ import { UpdateProvider } from '@renderer/contexts/UpdateContext'
 import { UpdateIndicator } from '@renderer/components/update/UpdateIndicator'
 import { PoweredBy } from '@renderer/components/brand/PowredBy'
 import { MadeWithLove } from '@renderer/components/brand/MadeWithLove'
+import { OnboardingWizard } from '@renderer/components/onboarding/OnboardingWizard'
 
 const NavLinkComponent = ({
   to,
@@ -71,10 +72,31 @@ const SplashScreen = ({ error }: { error?: string }) => {
   )
 }
 
+const OnboardingGate = ({ children }: { children: React.ReactNode }) => {
+  const { settings } = useSettings()
+
+  // Wait for settings to load
+  const settingsLoaded = Object.keys(settings).length > 0
+  if (!settingsLoaded) {
+    return null
+  }
+
+  // Show wizard if onboarding not completed
+  const showOnboarding = settings['onboarding_completed'] !== 'true'
+
+  if (showOnboarding) {
+    return <OnboardingWizard onComplete={() => {}} />
+  }
+
+  return <>{children}</>
+}
+
 const Providers = ({ children }) => {
   return (
     <SettingsProvider>
-      <UpdateProvider>{children}</UpdateProvider>
+      <UpdateProvider>
+        <OnboardingGate>{children}</OnboardingGate>
+      </UpdateProvider>
     </SettingsProvider>
   )
 }
