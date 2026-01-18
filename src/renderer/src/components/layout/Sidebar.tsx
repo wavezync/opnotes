@@ -6,6 +6,7 @@ import {
   Stethoscope,
   UserCog,
   ScrollText,
+  HeartHandshake,
   Settings
 } from 'lucide-react'
 import opNotesLogo from '@renderer/assets/opnotes-logo.png'
@@ -103,12 +104,18 @@ export function Sidebar() {
       </nav>
 
       {/* Bottom section */}
-      <div className="flex flex-col items-center py-4 px-2 border-t border-sidebar-border">
+      <div className="flex flex-col items-center py-4 px-2 border-t border-sidebar-border gap-1">
+        <NavItem
+          to="/support"
+          icon={<HeartHandshake className="h-5 w-5" />}
+          label="Support"
+          index={mainNavItems.length}
+        />
         <NavItem
           to="/settings"
           icon={<Settings className="h-5 w-5" />}
           label="Settings"
-          index={mainNavItems.length}
+          index={mainNavItems.length + 1}
         />
       </div>
 
