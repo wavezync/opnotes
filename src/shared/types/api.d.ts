@@ -1,5 +1,7 @@
 export interface PatientFilter {
   search?: string
+  sortBy?: 'name' | 'phn' | 'age' | 'updated_at' | 'created_at'
+  sortOrder?: 'asc' | 'desc'
 
   pageSize?: number
   page?: number
