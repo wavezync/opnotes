@@ -28,7 +28,7 @@ import {
 } from '@renderer/components/ui/alert-dialog'
 import { DoctorModel } from '@shared/models/DoctorModel'
 import { useSettings } from '@renderer/contexts/SettingsContext'
-import { surgeryPrintData } from '@renderer/lib/print'
+import { surgeryPrintData, followupPrintData } from '@renderer/lib/print'
 import { useKeyboardEvent } from '@renderer/hooks/useKeyboardEvent'
 
 const getSurgeryByIdQuery = (id: number) => queries.surgeries.get(id)
@@ -37,6 +37,7 @@ const getSurgeryFollowupsQuery = (surgeryId: number) => queries.surgeries.getFol
 export interface SurgeryCardProps {
   surgery: SurgeryModel
   patient: PatientModel
+  settings?: Record<string, string | null>
 }
 
 const FollowupShimmer = () => {
@@ -53,9 +54,12 @@ const FollowupShimmer = () => {
 
 interface FollowupCardProps {
   followup: FollowupModel
+  patient: PatientModel
+  surgery: SurgeryModel
+  settings?: Record<string, string | null>
 }
 
-const FollowupCard = ({ followup }: FollowupCardProps) => {
+const FollowupCard = ({ followup, patient, surgery, settings }: FollowupCardProps) => {
   const queryClient = useQueryClient()
   const deleteFollowupMutation = useMutation({
     mutationFn: () => unwrapResult(window.api.invoke('deleteFollowUp', followup.id)),
@@ -66,10 +70,27 @@ const FollowupCard = ({ followup }: FollowupCardProps) => {
     }
   })
 
+  const handlePrintFollowup = async () => {
+    const printData = followupPrintData(patient, surgery, followup, settings)
+    await window.electronApi.openPrintDialog({
+      title: `${patient.name || 'Patient'} - Follow-up`,
+      data: printData
+    })
+  }
+
   return (
     <Card className="mb-2 border rounded-lg mt-1 hover:bg-secondary/10">
       <CardHeader className="flex justify-end items-center flex-row w-full space-x-1">
         <span>{formatDateTime(followup.created_at)}</span>
+
+        <Button
+          variant="outline"
+          size="icon"
+          className="!mt-0 !w-8 !h-8"
+          onClick={handlePrintFollowup}
+        >
+          <Printer className="w-4 h-4" />
+        </Button>
 
         <AddOrEditFollowup
           trigger={
@@ -145,7 +166,7 @@ const DoctorListItem = ({ doctor }: DoctorListItemProps) => (
   </li>
 )
 
-export const SurgeryCard = ({ surgery, patient }: SurgeryCardProps) => {
+export const SurgeryCard = ({ surgery, patient, settings }: SurgeryCardProps) => {
   const { data: followups, isLoading: isFollowupLoading } = useQuery({
     ...getSurgeryFollowupsQuery(surgery.id)
   })
@@ -271,7 +292,13 @@ export const SurgeryCard = ({ surgery, patient }: SurgeryCardProps) => {
           )}
 
           {followups?.map((followup) => (
-            <FollowupCard key={followup.id} followup={followup} />
+            <FollowupCard
+              key={followup.id}
+              followup={followup}
+              patient={patient}
+              surgery={surgery}
+              settings={settings}
+            />
           ))}
         </div>
       </div>
@@ -348,7 +375,9 @@ export const ViewSurgery = () => {
 
   return (
     <AppLayout actions={actions} title={surgeryName}>
-      {patient && surgery && <SurgeryCard surgery={surgery} patient={patient} />}
+      {patient && surgery && (
+        <SurgeryCard surgery={surgery} patient={patient} settings={settings} />
+      )}
     </AppLayout>
   )
 }
