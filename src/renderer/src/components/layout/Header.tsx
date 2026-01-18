@@ -1,23 +1,25 @@
-import { Moon, Sun, Search } from 'lucide-react'
+import { Search } from 'lucide-react'
 import { Button } from '@renderer/components/ui/button'
-import { useTheme } from '@renderer/contexts/ThemeContext'
 import { useSettings } from '@renderer/contexts/SettingsContext'
 import { UpdateIndicator } from '@renderer/components/update/UpdateIndicator'
+import { ThemeDropdown } from '@renderer/components/theme/ThemeDropdown'
+import { ModeToggle } from '@renderer/components/theme/ModeToggle'
 
 interface HeaderProps {
   onSearchClick?: () => void
 }
 
 export function Header({ onSearchClick }: HeaderProps) {
-  const { theme, toggleMode } = useTheme()
   const { appVersion, settings } = useSettings()
-  const isDark = theme.mode === 'dark'
 
   const hospitalName = settings?.['hospital'] || ''
   const unitName = settings?.['unit'] || ''
 
   return (
-    <header className="flex h-14 items-center justify-between border-b border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4">
+    <header className="relative flex h-14 items-center justify-between bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4">
+      {/* Gradient border bottom */}
+      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-border to-transparent" />
+
       {/* Left: Hospital & Department in two rows */}
       <div className="flex flex-col justify-center min-w-0 flex-1">
         {(hospitalName || unitName) ? (
@@ -35,7 +37,7 @@ export function Header({ onSearchClick }: HeaderProps) {
       {/* Center: Search trigger */}
       <Button
         variant="outline"
-        className="w-72 h-9 justify-start text-muted-foreground bg-muted/50 border-border/50 hover:bg-muted hover:border-border mx-4"
+        className="w-72 h-9 justify-start text-muted-foreground bg-muted/30 border-border/50 hover:bg-muted hover:border-border focus:ring-2 focus:ring-primary/20 mx-4 transition-all duration-200"
         onClick={onSearchClick}
       >
         <Search className="mr-2 h-4 w-4" />
@@ -46,21 +48,17 @@ export function Header({ onSearchClick }: HeaderProps) {
       </Button>
 
       {/* Right: Actions */}
-      <div className="flex items-center justify-end gap-2 flex-1">
+      <div className="flex items-center justify-end gap-1 flex-1">
         <UpdateIndicator />
 
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={toggleMode}
-          className="h-9 w-9 text-muted-foreground hover:text-foreground"
-          title={`Switch to ${isDark ? 'light' : 'dark'} mode`}
-        >
-          {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-        </Button>
+        {/* Theme dropdown for switching themes */}
+        <ThemeDropdown />
+
+        {/* Animated light/dark toggle */}
+        <ModeToggle />
 
         {appVersion && (
-          <span className="text-xs text-muted-foreground font-medium">v{appVersion}</span>
+          <span className="text-xs text-muted-foreground font-medium tabular-nums ml-1">v{appVersion}</span>
         )}
       </div>
     </header>

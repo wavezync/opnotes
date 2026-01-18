@@ -1,16 +1,26 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react'
 
 export type ThemeId =
-  | 'default-light'
-  | 'default-dark'
-  | 'medical-light'
-  | 'medical-dark'
-  | 'classic-light'
-  | 'classic-dark'
-  | 'minimal-light'
-  | 'minimal-dark'
+  | 'aurora-light'
+  | 'aurora-dark'
+  | 'meadow-light'
+  | 'meadow-dark'
+  | 'bloom-light'
+  | 'bloom-dark'
+  | 'latte-light'
+  | 'latte-dark'
+  | 'slate-light'
+  | 'slate-dark'
+  | 'midnight-light'
+  | 'midnight-dark'
+  | 'obsidian-light'
+  | 'obsidian-dark'
+  | 'ocean-light'
+  | 'ocean-dark'
+  | 'retro-light'
+  | 'retro-dark'
 
-export type ThemeBase = 'default' | 'medical' | 'classic' | 'minimal'
+export type ThemeBase = 'aurora' | 'meadow' | 'bloom' | 'latte' | 'slate' | 'midnight' | 'obsidian' | 'ocean' | 'retro'
 export type ThemeMode = 'light' | 'dark'
 
 export interface Theme {
@@ -24,68 +34,148 @@ export interface Theme {
 
 export const themes: Theme[] = [
   {
-    id: 'default-light',
-    name: 'Default Light',
-    base: 'default',
+    id: 'aurora-light',
+    name: 'Aurora',
+    base: 'aurora',
     mode: 'light',
     fontFamily: 'Inter',
-    description: 'Clean and modern with blue accents'
+    description: 'Modern teal with coral accents'
   },
   {
-    id: 'default-dark',
-    name: 'Default Dark',
-    base: 'default',
+    id: 'aurora-dark',
+    name: 'Aurora',
+    base: 'aurora',
     mode: 'dark',
     fontFamily: 'Inter',
-    description: 'Dark blue-gray palette'
+    description: 'Modern teal with coral accents'
   },
   {
-    id: 'medical-light',
-    name: 'Medical Light',
-    base: 'medical',
+    id: 'meadow-light',
+    name: 'Meadow',
+    base: 'meadow',
     mode: 'light',
-    fontFamily: 'IBM Plex Sans',
-    description: 'Professional clinical appearance'
+    fontFamily: 'Source Sans 3',
+    description: 'Fresh green, earthy and calming'
   },
   {
-    id: 'medical-dark',
-    name: 'Medical Dark',
-    base: 'medical',
+    id: 'meadow-dark',
+    name: 'Meadow',
+    base: 'meadow',
     mode: 'dark',
-    fontFamily: 'IBM Plex Sans',
-    description: 'Deep blue-green dark mode'
+    fontFamily: 'Source Sans 3',
+    description: 'Fresh green, earthy and calming'
   },
   {
-    id: 'classic-light',
-    name: 'Classic Light',
-    base: 'classic',
+    id: 'bloom-light',
+    name: 'Bloom',
+    base: 'bloom',
     mode: 'light',
-    fontFamily: 'Source Serif 4',
-    description: 'Warm paper-like background'
+    fontFamily: 'Inter',
+    description: 'Soft pastel rose, gentle and airy'
   },
   {
-    id: 'classic-dark',
-    name: 'Classic Dark',
-    base: 'classic',
+    id: 'bloom-dark',
+    name: 'Bloom',
+    base: 'bloom',
     mode: 'dark',
-    fontFamily: 'Source Serif 4',
-    description: 'Warm dark tones'
+    fontFamily: 'Inter',
+    description: 'Soft pastel rose, gentle and airy'
   },
   {
-    id: 'minimal-light',
-    name: 'Minimal Light',
-    base: 'minimal',
+    id: 'latte-light',
+    name: 'Latte',
+    base: 'latte',
     mode: 'light',
-    fontFamily: 'Space Grotesk',
-    description: 'Pure white, sharp contrasts'
+    fontFamily: 'Source Sans 3',
+    description: 'Warm coffee browns, cozy and inviting'
   },
   {
-    id: 'minimal-dark',
-    name: 'Minimal Dark',
-    base: 'minimal',
+    id: 'latte-dark',
+    name: 'Latte',
+    base: 'latte',
     mode: 'dark',
-    fontFamily: 'Space Grotesk',
-    description: 'True black, high contrast'
+    fontFamily: 'Source Sans 3',
+    description: 'Warm coffee browns, cozy and inviting'
+  },
+  {
+    id: 'slate-light',
+    name: 'Slate',
+    base: 'slate',
+    mode: 'light',
+    fontFamily: 'Nunito',
+    description: 'Sharp grays, professional and clean'
+  },
+  {
+    id: 'slate-dark',
+    name: 'Slate',
+    base: 'slate',
+    mode: 'dark',
+    fontFamily: 'Nunito',
+    description: 'Sharp grays, professional and clean'
+  },
+  {
+    id: 'midnight-light',
+    name: 'Midnight',
+    base: 'midnight',
+    mode: 'light',
+    fontFamily: 'Nunito',
+    description: 'Elegant lavender with purple accents'
+  },
+  {
+    id: 'midnight-dark',
+    name: 'Midnight',
+    base: 'midnight',
+    mode: 'dark',
+    fontFamily: 'Nunito',
+    description: 'Deep purple, elegant OLED vibes'
+  },
+  {
+    id: 'obsidian-light',
+    name: 'Obsidian',
+    base: 'obsidian',
+    mode: 'light',
+    fontFamily: 'Nunito',
+    description: 'Pure white with black accents'
+  },
+  {
+    id: 'obsidian-dark',
+    name: 'Obsidian',
+    base: 'obsidian',
+    mode: 'dark',
+    fontFamily: 'Nunito',
+    description: 'True black AMOLED, minimal'
+  },
+  {
+    id: 'ocean-light',
+    name: 'Ocean',
+    base: 'ocean',
+    mode: 'light',
+    fontFamily: 'Inter',
+    description: 'Deep blue, calm and professional'
+  },
+  {
+    id: 'ocean-dark',
+    name: 'Ocean',
+    base: 'ocean',
+    mode: 'dark',
+    fontFamily: 'Inter',
+    description: 'Deep blue, calm and professional'
+  },
+  {
+    id: 'retro-light',
+    name: 'Retro',
+    base: 'retro',
+    mode: 'light',
+    fontFamily: 'VT323',
+    description: 'Vintage terminal, paper-tape era'
+  },
+  {
+    id: 'retro-dark',
+    name: 'Retro',
+    base: 'retro',
+    mode: 'dark',
+    fontFamily: 'VT323',
+    description: 'CRT phosphor glow, amber on black'
   }
 ]
 
@@ -102,6 +192,21 @@ const ThemeContext = createContext<ThemeContextValue | undefined>(undefined)
 
 const THEME_STORAGE_KEY = 'app_theme'
 
+// Migration map for old theme IDs to new ones
+const themeMapping: Record<string, ThemeId> = {
+  // Legacy v1 themes
+  'default-light': 'ocean-light',
+  'default-dark': 'ocean-dark',
+  'medical-light': 'meadow-light',
+  'medical-dark': 'meadow-dark',
+  'classic-light': 'bloom-light',
+  'classic-dark': 'bloom-dark',
+  'minimal-light': 'slate-light',
+  'minimal-dark': 'slate-dark',
+  // Legacy single midnight theme
+  'midnight': 'midnight-dark'
+}
+
 function getSystemPrefersDark(): boolean {
   if (typeof window !== 'undefined' && window.matchMedia) {
     return window.matchMedia('(prefers-color-scheme: dark)').matches
@@ -112,15 +217,25 @@ function getSystemPrefersDark(): boolean {
 function getStoredTheme(): ThemeId | null {
   if (typeof window !== 'undefined') {
     const stored = localStorage.getItem(THEME_STORAGE_KEY)
-    if (stored && themes.some((t) => t.id === stored)) {
-      return stored as ThemeId
+    if (stored) {
+      // Check if it's a new theme ID
+      if (themes.some((t) => t.id === stored)) {
+        return stored as ThemeId
+      }
+      // Check if it's an old theme ID that needs migration
+      if (stored in themeMapping) {
+        const migratedTheme = themeMapping[stored]
+        // Save the migrated theme
+        localStorage.setItem(THEME_STORAGE_KEY, migratedTheme)
+        return migratedTheme
+      }
     }
   }
   return null
 }
 
 function getDefaultTheme(systemDark: boolean): ThemeId {
-  return systemDark ? 'default-dark' : 'default-light'
+  return systemDark ? 'ocean-dark' : 'ocean-light'
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
@@ -190,7 +305,7 @@ export function useTheme() {
 // Helper to get the opposite mode theme
 export function getOppositeTheme(themeId: ThemeId): ThemeId {
   const theme = themes.find((t) => t.id === themeId)
-  if (!theme) return 'default-light'
+  if (!theme) return 'ocean-dark'
   const newMode = theme.mode === 'light' ? 'dark' : 'light'
   return `${theme.base}-${newMode}` as ThemeId
 }
@@ -198,9 +313,14 @@ export function getOppositeTheme(themeId: ThemeId): ThemeId {
 // Helper to get themes grouped by base
 export function getThemesByBase(): Record<ThemeBase, Theme[]> {
   return {
-    default: themes.filter((t) => t.base === 'default'),
-    medical: themes.filter((t) => t.base === 'medical'),
-    classic: themes.filter((t) => t.base === 'classic'),
-    minimal: themes.filter((t) => t.base === 'minimal')
+    aurora: themes.filter((t) => t.base === 'aurora'),
+    meadow: themes.filter((t) => t.base === 'meadow'),
+    bloom: themes.filter((t) => t.base === 'bloom'),
+    latte: themes.filter((t) => t.base === 'latte'),
+    slate: themes.filter((t) => t.base === 'slate'),
+    midnight: themes.filter((t) => t.base === 'midnight'),
+    obsidian: themes.filter((t) => t.base === 'obsidian'),
+    ocean: themes.filter((t) => t.base === 'ocean'),
+    retro: themes.filter((t) => t.base === 'retro')
   }
 }

@@ -14,24 +14,36 @@ interface NavItemProps {
   icon: React.ReactNode
   label: string
   end?: boolean
+  index?: number
 }
 
-function NavItem({ to, icon, label, end }: NavItemProps) {
+function NavItem({ to, icon, label, end, index = 0 }: NavItemProps) {
   return (
     <NavLink
       to={to}
       end={end}
       className={({ isActive }) =>
         cn(
-          'flex flex-col items-center justify-center gap-1.5 w-full py-3 rounded-xl transition-all duration-150',
+          'group relative flex flex-col items-center justify-center gap-1.5 w-full py-3 rounded-xl transition-all duration-200 animate-fade-in-up',
           isActive
-            ? 'bg-sidebar-primary text-sidebar-primary-foreground shadow-sm'
+            ? 'bg-sidebar-primary text-sidebar-primary-foreground shadow-theme-md'
             : 'text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
         )
       }
+      style={{ animationDelay: `${index * 50}ms` }}
     >
-      {icon}
-      <span className="text-[10px] font-medium leading-none">{label}</span>
+      {({ isActive }) => (
+        <>
+          {/* Active indicator bar */}
+          {isActive && (
+            <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-sidebar-primary-foreground rounded-r-full opacity-60" />
+          )}
+          <div className="transition-transform duration-200 group-hover:scale-110">
+            {icon}
+          </div>
+          <span className="text-[10px] font-medium leading-none">{label}</span>
+        </>
+      )}
     </NavLink>
   )
 }
@@ -45,22 +57,27 @@ export function Sidebar() {
   ]
 
   return (
-    <aside className="flex flex-col w-[88px] bg-sidebar-background border-r border-sidebar-border">
+    <aside className="flex flex-col w-[88px] bg-gradient-to-b from-sidebar-background to-sidebar-background/95 border-r border-sidebar-border">
       {/* OpNotes Logo */}
       <div className="flex flex-col items-center justify-center gap-1 py-3 border-b border-sidebar-border">
-        <img src={opNotesLogo} alt="OpNotes" className="h-8 w-8 rounded-lg" />
+        <img
+          src={opNotesLogo}
+          alt="OpNotes"
+          className="h-8 w-8 rounded-lg shadow-theme-sm transition-transform duration-200 hover:scale-105"
+        />
         <span className="text-[10px] font-semibold text-sidebar-foreground">OpNotes</span>
       </div>
 
       {/* Main Navigation */}
       <nav className="flex-1 flex flex-col items-center gap-1 py-4 px-2">
-        {mainNavItems.map((item) => (
+        {mainNavItems.map((item, index) => (
           <NavItem
             key={item.to}
             to={item.to}
             icon={item.icon}
             label={item.label}
             end={item.end}
+            index={index}
           />
         ))}
       </nav>
@@ -71,6 +88,7 @@ export function Sidebar() {
           to="/settings"
           icon={<Settings className="h-5 w-5" />}
           label="Settings"
+          index={mainNavItems.length}
         />
       </div>
     </aside>

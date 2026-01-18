@@ -47,9 +47,11 @@ function GreetingHeader() {
   const iconColor = hour < 12 ? 'text-amber-500' : hour < 17 ? 'text-orange-500' : 'text-indigo-400'
 
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex items-center justify-between animate-fade-in-up">
       <div className="flex items-center gap-3">
-        <Icon className={cn('h-7 w-7', iconColor)} />
+        <div className="p-2 rounded-xl bg-accent/50">
+          <Icon className={cn('h-6 w-6', iconColor)} />
+        </div>
         <span className="text-2xl font-semibold tracking-tight">{greeting}</span>
       </div>
       <span className="text-muted-foreground">{format(new Date(), 'EEEE, MMMM d')}</span>
@@ -76,28 +78,41 @@ function StatsCards({ stats, isLoading }: StatsCardsProps) {
       value: stats?.totalPatients ?? 0,
       label: 'Total Patients',
       change: stats?.patientsThisMonth || 0,
-      changeLabel: 'this month'
+      changeLabel: 'this month',
+      color: 'text-blue-500',
+      bgColor: 'bg-blue-500/10'
     },
     {
       icon: Stethoscope,
       value: stats?.totalSurgeries ?? 0,
       label: 'Surgeries',
       change: stats?.surgeriesThisMonth || 0,
-      changeLabel: 'this month'
+      changeLabel: 'this month',
+      color: 'text-emerald-500',
+      bgColor: 'bg-emerald-500/10'
     },
     {
       icon: UserCog,
       value: stats?.totalDoctors ?? 0,
       label: 'Doctors',
       change: null,
-      changeLabel: 'registered'
+      changeLabel: 'registered',
+      color: 'text-violet-500',
+      bgColor: 'bg-violet-500/10'
     }
   ]
 
   return (
     <div className="grid grid-cols-3 gap-4">
       {items.map((item, i) => (
-        <Card key={i} className="relative overflow-hidden">
+        <Card
+          key={i}
+          className={cn(
+            'relative overflow-hidden hover-lift animate-fade-in-up',
+            'bg-gradient-to-br from-card to-card/80'
+          )}
+          style={{ animationDelay: `${(i + 1) * 75}ms` }}
+        >
           <CardContent className="p-5">
             <div className="flex items-start justify-between">
               <div className="space-y-1">
@@ -119,13 +134,13 @@ function StatsCards({ stats, isLoading }: StatsCardsProps) {
                   </p>
                 )}
               </div>
-              <div className="h-11 w-11 rounded-xl bg-primary/10 flex items-center justify-center">
-                <item.icon className="h-5 w-5 text-primary" />
+              <div className={cn('h-11 w-11 rounded-xl flex items-center justify-center', item.bgColor)}>
+                <item.icon className={cn('h-5 w-5', item.color)} />
               </div>
             </div>
           </CardContent>
           {/* Decorative gradient accent */}
-          <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary/50 via-primary to-primary/50 opacity-0 transition-opacity group-hover:opacity-100" />
+          <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary/30 via-primary/60 to-primary/30 opacity-0 transition-opacity group-hover:opacity-100" />
         </Card>
       ))}
     </div>
@@ -144,23 +159,27 @@ function AddPatientCard({ className }: AddPatientCardProps) {
     <button
       onClick={() => navigate('/patients/add')}
       className={cn(
-        'group relative overflow-hidden rounded-xl bg-gradient-to-br from-primary via-primary to-primary/90 p-5 text-primary-foreground transition-all duration-300 hover:shadow-xl hover:shadow-primary/30',
+        'group relative overflow-hidden rounded-xl bg-gradient-primary p-5 text-primary-foreground transition-all duration-300 hover:shadow-theme-lg hover:scale-[1.01] animate-fade-in-up',
         className
       )}
+      style={{ animationDelay: '200ms' }}
     >
+      {/* Shimmer effect */}
+      <div className="absolute inset-0 bg-gradient-shine animate-shimmer opacity-30" />
+
       {/* Background decoration */}
-      <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
-      <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2" />
+      <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl" />
+      <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2 blur-2xl" />
 
       <div className="relative flex items-center gap-4">
-        <div className="h-14 w-14 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
+        <div className="h-14 w-14 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 group-hover:bg-white/30">
           <Plus className="h-7 w-7" strokeWidth={2.5} />
         </div>
         <div className="text-left">
           <div className="text-lg font-bold tracking-wide">Add Patient</div>
           <div className="text-sm opacity-80">Register a new patient</div>
         </div>
-        <ArrowRight className="ml-auto h-5 w-5 opacity-60 transition-transform duration-300 group-hover:translate-x-1 group-hover:opacity-100" />
+        <ArrowRight className="ml-auto h-5 w-5 opacity-60 transition-all duration-300 group-hover:translate-x-1 group-hover:opacity-100" />
       </div>
     </button>
   )
@@ -173,18 +192,20 @@ interface NavCardProps {
   title: string
   description: string
   className?: string
+  index?: number
 }
 
-function NavCard({ to, icon: Icon, title, description, className }: NavCardProps) {
+function NavCard({ to, icon: Icon, title, description, className, index = 0 }: NavCardProps) {
   const navigate = useNavigate()
 
   return (
     <button
       onClick={() => navigate(to)}
       className={cn(
-        'group flex flex-col items-center justify-center gap-2 rounded-xl border bg-card p-4 text-center transition-all duration-200 hover:border-primary/50 hover:bg-accent hover:shadow-md',
+        'group flex flex-col items-center justify-center gap-2 rounded-xl border bg-card p-4 text-center transition-all duration-200 hover:border-primary/50 hover:bg-accent/50 hover:shadow-theme-md animate-fade-in-up',
         className
       )}
+      style={{ animationDelay: `${(index + 3) * 75}ms` }}
     >
       <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center transition-all duration-200 group-hover:bg-primary/20 group-hover:scale-110">
         <Icon className="h-5 w-5 text-primary" />
@@ -231,7 +252,7 @@ function RecentActivityCard({ items, isLoading, className }: RecentActivityCardP
         }
       case 'surgery':
         return {
-          dot: 'bg-green-500',
+          dot: 'bg-emerald-500',
           icon: Stethoscope,
           label: `Surgery ${actionLabel}`
         }
@@ -243,7 +264,7 @@ function RecentActivityCard({ items, isLoading, className }: RecentActivityCardP
         }
       case 'doctor':
         return {
-          dot: 'bg-purple-500',
+          dot: 'bg-violet-500',
           icon: UserCog,
           label: `Doctor ${actionLabel}`
         }
@@ -261,10 +282,12 @@ function RecentActivityCard({ items, isLoading, className }: RecentActivityCardP
   }
 
   return (
-    <Card className={cn('flex flex-col overflow-hidden', className)}>
+    <Card className={cn('flex flex-col overflow-hidden animate-slide-in-right', className)} style={{ animationDelay: '150ms' }}>
       <CardHeader className="pb-3 flex-shrink-0">
         <CardTitle className="flex items-center gap-2 text-base">
-          <Activity className="h-4 w-4" />
+          <div className="p-1.5 rounded-lg bg-primary/10">
+            <Activity className="h-4 w-4 text-primary" />
+          </div>
           Recent Activity
         </CardTitle>
       </CardHeader>
@@ -295,10 +318,10 @@ function RecentActivityCard({ items, isLoading, className }: RecentActivityCardP
                 <button
                   key={`${item.entityType}-${item.id}`}
                   onClick={() => handleClick(item)}
-                  className="w-full flex items-start gap-3 p-2 rounded-lg text-left transition-colors hover:bg-accent group animate-stagger-fade-in"
-                  style={{ animationDelay: `${index * 50}ms` }}
+                  className="w-full flex items-start gap-3 p-2 rounded-lg text-left transition-all duration-200 hover:bg-accent group animate-fade-in-up"
+                  style={{ animationDelay: `${(index + 2) * 50}ms` }}
                 >
-                  <div className={cn('h-2 w-2 rounded-full mt-2 flex-shrink-0', styles.dot)} />
+                  <div className={cn('h-2 w-2 rounded-full mt-2 flex-shrink-0 transition-transform group-hover:scale-125', styles.dot)} />
                   <div className="flex-1 min-w-0">
                     <div className="font-medium text-sm truncate group-hover:text-primary transition-colors">
                       {item.title}
@@ -308,7 +331,7 @@ function RecentActivityCard({ items, isLoading, className }: RecentActivityCardP
                       {item.description && ` · ${item.description}`}
                     </div>
                   </div>
-                  <span className="text-xs text-muted-foreground whitespace-nowrap flex-shrink-0">
+                  <span className="text-xs text-muted-foreground whitespace-nowrap flex-shrink-0 tabular-nums">
                     {formatRelativeTime(item.createdAt)}
                   </span>
                 </button>
@@ -333,6 +356,9 @@ export default function Home() {
 
   return (
     <div className="h-full flex flex-col p-6 gap-5 overflow-hidden">
+      {/* Subtle radial gradient background */}
+      <div className="fixed inset-0 bg-gradient-radial pointer-events-none -z-10" />
+
       {/* Row 1: Greeting Header */}
       <GreetingHeader />
 
@@ -348,10 +374,10 @@ export default function Home() {
 
           {/* Quick Links - 2x2 grid */}
           <div className="grid grid-cols-2 gap-3 flex-1 content-start">
-            <NavCard to="/patients" icon={Users} title="Patients" description="Browse all" />
-            <NavCard to="/surgeries" icon={Stethoscope} title="Surgeries" description="View records" />
-            <NavCard to="/doctors" icon={UserCog} title="Doctors" description="Manage list" />
-            <NavCard to="/surgeries/add" icon={Plus} title="Add Surgery" description="New record" />
+            <NavCard to="/patients" icon={Users} title="Patients" description="Browse all" index={0} />
+            <NavCard to="/surgeries" icon={Stethoscope} title="Surgeries" description="View records" index={1} />
+            <NavCard to="/doctors" icon={UserCog} title="Doctors" description="Manage list" index={2} />
+            <NavCard to="/surgeries/add" icon={Plus} title="Add Surgery" description="New record" index={3} />
           </div>
         </div>
 
