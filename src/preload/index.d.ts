@@ -3,6 +3,7 @@ import type { ApiType } from '../main/api'
 import { PrintDialogArgs, UpdateStatusPayload } from './interfaces'
 
 type ElectronApi = ElectronAPI & {
+  platform: NodeJS.Platform
   getAppVersion: () => Promise<string>
   boot: () => Promise<boolean>
   openPrintDialog: (options: PrintDialogArgs) => Promise<void>

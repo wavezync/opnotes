@@ -6,6 +6,7 @@ import {
   DialogTitle
 } from '@renderer/components/ui/dialog'
 import { keyboardShortcuts } from '@renderer/hooks/useKeyboardShortcuts'
+import { modKey } from '@renderer/lib/platform'
 
 interface KeyboardShortcutsHelpProps {
   open: boolean
@@ -62,7 +63,7 @@ export function KeyboardShortcutsHelp({ open, onOpenChange }: KeyboardShortcutsH
         </div>
 
         <div className="text-xs text-muted-foreground text-center pt-2 border-t">
-          Press <Kbd>⌘</Kbd> + <Kbd>/</Kbd> to toggle this help
+          Press <Kbd>{modKey}</Kbd> + <Kbd>/</Kbd> to toggle this help
         </div>
       </DialogContent>
     </Dialog>

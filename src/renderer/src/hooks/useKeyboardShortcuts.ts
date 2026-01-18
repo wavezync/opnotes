@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
+import { modKey } from '@renderer/lib/platform'
 
 interface KeyboardShortcutsOptions {
   onOpenCommandPalette?: () => void
@@ -126,9 +127,9 @@ export const keyboardShortcuts = [
   {
     category: 'General',
     shortcuts: [
-      { keys: ['⌘', 'K'], description: 'Open command palette' },
-      { keys: ['⌘', '/'], description: 'Show keyboard shortcuts' },
-      { keys: ['⌘', 'N'], description: 'New item (context-aware)' },
+      { keys: [modKey, 'K'], description: 'Open command palette' },
+      { keys: [modKey, '/'], description: 'Show keyboard shortcuts' },
+      { keys: [modKey, 'N'], description: 'New item (context-aware)' },
       { keys: ['Esc'], description: 'Close dialog / Cancel' }
     ]
   },

@@ -1,17 +1,18 @@
-import { Sparkles, Search, Printer, Users, CalendarCheck, Keyboard, Command } from 'lucide-react'
+import { Sparkles, Search, Printer, Users, CalendarCheck, Keyboard } from 'lucide-react'
+import { modKey } from '@renderer/lib/platform'
 
 const tips = [
   {
     icon: Search,
     title: 'Powerful Search',
     description: 'Find patients and surgeries instantly by name, BHT, diagnosis, or procedure',
-    shortcut: '⌘ + K'
+    shortcut: `${modKey} + K`
   },
   {
     icon: Printer,
     title: 'Print Documents',
     description: 'Generate professional surgical notes and reports with one click',
-    shortcut: '⌘ + P'
+    shortcut: `${modKey} + P`
   },
   {
     icon: Users,
@@ -83,8 +84,8 @@ export const QuickTipsStep = () => {
       >
         <div className="flex items-center justify-center gap-3">
           <div className="flex items-center gap-1.5">
-            <div className="h-7 w-7 rounded-md bg-card border border-border flex items-center justify-center">
-              <Command className="h-3.5 w-3.5 text-muted-foreground" />
+            <div className="h-7 min-w-7 px-1.5 rounded-md bg-card border border-border flex items-center justify-center">
+              <span className="text-xs font-mono text-muted-foreground">{modKey}</span>
             </div>
             <span className="text-xs text-muted-foreground">+</span>
             <div className="h-7 w-7 rounded-md bg-card border border-border flex items-center justify-center">

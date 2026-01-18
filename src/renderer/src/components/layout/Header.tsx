@@ -4,6 +4,7 @@ import { useSettings } from '@renderer/contexts/SettingsContext'
 import { UpdateIndicator } from '@renderer/components/update/UpdateIndicator'
 import { ThemeDropdown } from '@renderer/components/theme/ThemeDropdown'
 import { ModeToggle } from '@renderer/components/theme/ModeToggle'
+import { modKey } from '@renderer/lib/platform'
 
 interface HeaderProps {
   onSearchClick?: () => void
@@ -43,7 +44,7 @@ export function Header({ onSearchClick }: HeaderProps) {
         <Search className="mr-2 h-4 w-4" />
         <span className="text-sm">Search patients, surgeries...</span>
         <kbd className="pointer-events-none ml-auto inline-flex h-5 select-none items-center gap-1 rounded bg-background border border-border px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
-          <span className="text-xs">⌘</span>K
+          <span className="text-xs">{modKey}</span>K
         </kbd>
       </Button>
 
