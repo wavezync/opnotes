@@ -6,10 +6,32 @@ import { SurgeryFilter } from '../../shared/types/api'
 import { SurgeryModel } from '../../shared/models/SurgeryModel'
 import { DoctorModel } from '../../shared/models/DoctorModel'
 import { FollowupModel } from '../../shared/models/FollowupModel'
+import { logActivity } from './activity'
 
 export const createNewSurgery = async (surgery: NewWithoutTimestamps<NewSurgery>) => {
   const data = addTimestamps(surgery)
-  return await db.insertInto('surgeries').values(data).returningAll().executeTakeFirst()
+  const result = await db.insertInto('surgeries').values(data).returningAll().executeTakeFirst()
+
+  if (result) {
+    // Get patient name for the activity log
+    const patient = await db
+      .selectFrom('patients')
+      .where('id', '=', result.patient_id)
+      .select('name')
+      .executeTakeFirst()
+
+    await logActivity({
+      entityType: 'surgery',
+      entityId: result.id,
+      action: 'created',
+      title: result.title || `BHT: ${result.bht}`,
+      description: patient?.name ? `Patient: ${patient.name}` : undefined,
+      patientId: result.patient_id,
+      surgeryId: result.id
+    })
+  }
+
+  return result
 }
 
 export const updateSurgery = async (
@@ -21,12 +43,33 @@ export const updateSurgery = async (
     updatedAt: true
   })
 
-  return await db
+  const result = await db
     .updateTable('surgeries')
     .set(data)
     .where('id', '=', id)
     .returningAll()
     .executeTakeFirst()
+
+  if (result) {
+    // Get patient name for the activity log
+    const patient = await db
+      .selectFrom('patients')
+      .where('id', '=', result.patient_id)
+      .select('name')
+      .executeTakeFirst()
+
+    await logActivity({
+      entityType: 'surgery',
+      entityId: result.id,
+      action: 'updated',
+      title: result.title || `BHT: ${result.bht}`,
+      description: patient?.name ? `Patient: ${patient.name}` : undefined,
+      patientId: result.patient_id,
+      surgeryId: result.id
+    })
+  }
+
+  return result
 }
 
 export const updateSurgeryDoctorsDoneBy = async (surgeryId: number, doctorIds: number[]) => {
@@ -140,6 +183,31 @@ export const createNewFollowUp = async (surgeryId: number, notes: string) => {
     return null
   }
 
+  // Get surgery and patient info for activity log
+  const surgeryInfo = await db
+    .selectFrom('surgeries')
+    .innerJoin('patients', 'patients.id', 'surgeries.patient_id')
+    .where('surgeries.id', '=', surgeryId)
+    .select(['surgeries.title', 'surgeries.patient_id', 'patients.name as patient_name'])
+    .executeTakeFirst()
+
+  if (surgeryInfo) {
+    // Extract preview from notes (strip HTML and truncate)
+    const notesPreview = notes.replace(/<[^>]*>/g, '').trim().slice(0, 50)
+
+    await logActivity({
+      entityType: 'followup',
+      entityId: result.id,
+      action: 'created',
+      title: surgeryInfo.patient_name,
+      description: surgeryInfo.title
+        ? `${surgeryInfo.title}: ${notesPreview}${notesPreview.length >= 50 ? '...' : ''}`
+        : notesPreview,
+      patientId: surgeryInfo.patient_id,
+      surgeryId: surgeryId
+    })
+  }
+
   return new FollowupModel(result)
 }
 
@@ -161,6 +229,30 @@ export const updateFollowUp = async (id: number, notes: string) => {
 
   if (!result) {
     return null
+  }
+
+  // Get surgery and patient info for activity log
+  const surgeryInfo = await db
+    .selectFrom('surgeries')
+    .innerJoin('patients', 'patients.id', 'surgeries.patient_id')
+    .where('surgeries.id', '=', result.surgery_id)
+    .select(['surgeries.title', 'surgeries.patient_id', 'patients.name as patient_name'])
+    .executeTakeFirst()
+
+  if (surgeryInfo) {
+    const notesPreview = notes.replace(/<[^>]*>/g, '').trim().slice(0, 50)
+
+    await logActivity({
+      entityType: 'followup',
+      entityId: result.id,
+      action: 'updated',
+      title: surgeryInfo.patient_name,
+      description: surgeryInfo.title
+        ? `${surgeryInfo.title}: ${notesPreview}${notesPreview.length >= 50 ? '...' : ''}`
+        : notesPreview,
+      patientId: surgeryInfo.patient_id,
+      surgeryId: result.surgery_id
+    })
   }
 
   return new FollowupModel(result)

@@ -118,6 +118,19 @@
       transform: scale(1);
     }
   }
+
+  @keyframes stagger-fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  --animate-stagger-fade-in: stagger-fade-in 0.3s ease-out both;
 }
 
 /* Base semantic colors using CSS custom properties */
@@ -442,6 +455,10 @@
   animation-duration: 300ms;
 }
 
+@utility animate-stagger-fade-in {
+  animation: stagger-fade-in 0.3s ease-out both;
+}
+
 @keyframes enter {
   from {
     opacity: var(--tw-enter-opacity, 1);
@@ -551,6 +568,22 @@
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-sans);
+  }
+
+  /* Hand cursor for all clickable elements */
+  button,
+  [role="button"],
+  [type="button"],
+  [type="submit"],
+  [type="reset"],
+  a,
+  select,
+  summary,
+  [tabindex]:not([tabindex="-1"]),
+  input[type="checkbox"],
+  input[type="radio"],
+  label[for] {
+    cursor: pointer;
   }
 
   /* Scrollbar */

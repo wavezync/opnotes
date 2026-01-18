@@ -92,7 +92,7 @@ export const queries = createQueryKeyStore({
     },
     recentActivity: (limit: number = 10) => ({
       queryKey: [limit],
-      queryFn: () => unwrapResult(window.api.invoke('getRecentActivity', limit))
+      queryFn: () => unwrapResult(window.api.invoke('getRecentActivities', limit))
     })
   }
 })

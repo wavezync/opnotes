@@ -4,10 +4,24 @@ import { db } from '../db'
 import { NewWithoutTimestamps, addTimestamps } from '../utils/sql'
 import { PatientModel } from '../../shared/models/PatientModel'
 import { PatientFilter } from '../../shared/types/api'
+import { logActivity } from './activity'
 
 export const createNewPatient = async (patient: NewWithoutTimestamps<NewPatient>) => {
   const data = addTimestamps(patient)
-  return await db.insertInto('patients').values(data).returningAll().executeTakeFirst()
+  const result = await db.insertInto('patients').values(data).returningAll().executeTakeFirst()
+
+  if (result) {
+    await logActivity({
+      entityType: 'patient',
+      entityId: result.id,
+      action: 'created',
+      title: result.name,
+      description: `PHN: ${result.phn}`,
+      patientId: result.id
+    })
+  }
+
+  return result
 }
 
 export const getPatientById = async (id: number) => {
@@ -45,6 +59,15 @@ export const updatePatientById = async (id: number, patient: PatientUpdate) => {
     .executeTakeFirst()
 
   if (result) {
+    await logActivity({
+      entityType: 'patient',
+      entityId: result.id,
+      action: 'updated',
+      title: result.name,
+      description: `PHN: ${result.phn}`,
+      patientId: result.id
+    })
+
     return new PatientModel(result)
   }
 
