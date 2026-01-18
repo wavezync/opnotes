@@ -61,14 +61,22 @@ export const queries = createQueryKeyStore({
       queryKey: [id],
       queryFn: () => unwrapResult(window.api.invoke('getSurgeryTemplateById', id))
     }),
-    forEditor: (search?: string, doctorId?: number) => ({
-      queryKey: [search, doctorId],
-      queryFn: () =>
-        unwrapResult(window.api.invoke('searchTemplatesForEditor', { search, doctorId }))
+    forEditor: (params: {
+      search?: string
+      doctorId?: number
+      category?: string
+      tag?: string
+    }) => ({
+      queryKey: [params],
+      queryFn: () => unwrapResult(window.api.invoke('searchTemplatesForEditor', params))
     }),
     categories: {
       queryKey: null,
       queryFn: () => unwrapResult(window.api.invoke('getTemplateCategories'))
+    },
+    tags: {
+      queryKey: null,
+      queryFn: () => unwrapResult(window.api.invoke('getTemplateTags'))
     }
   }
 })

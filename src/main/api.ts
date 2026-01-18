@@ -41,7 +41,8 @@ import {
   deleteSurgeryTemplateById,
   listSurgeryTemplates,
   searchTemplatesForEditor,
-  getTemplateCategories
+  getTemplateCategories,
+  getTemplateTags
 } from './repository/surgery-template'
 
 // Custom APIs for renderer
@@ -83,7 +84,8 @@ export const api = {
   deleteSurgeryTemplateById,
   listSurgeryTemplates,
   searchTemplatesForEditor,
-  getTemplateCategories
+  getTemplateCategories,
+  getTemplateTags
 }
 
 export type ApiType = typeof api

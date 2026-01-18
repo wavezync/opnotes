@@ -187,6 +187,7 @@ const MenuBar = ({ editor, showTemplateButton = true, onTemplateClick }: MenuBar
         <div className="p-1 w-fit flex space-x-1">
           <ToolbarButton onClick={onTemplateClick} title="Insert template">
             <FileText className="h-4 w-4" />
+            <span className="ml-1 text-xs">Templates</span>
           </ToolbarButton>
         </div>
       )}
