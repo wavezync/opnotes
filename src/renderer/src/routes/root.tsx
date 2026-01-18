@@ -3,6 +3,7 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import { queries } from '@renderer/lib/queries'
 import opnotesLogo from '../assets/opnotes-logo.png?asset'
 import wavezyncLogoDark from '../../../../resources/wavezync-dark.png?asset'
+import wavezyncLogoLight from '../../../../resources/wavezync-light.png?asset'
 
 import { AlertCircle } from 'lucide-react'
 import { useEffect } from 'react'
@@ -59,6 +60,9 @@ const SplashScreen = ({ error }: { error?: string }) => {
     ...queries.app.version
   })
   const hasError = !!error
+  // Use system preference for splash since ThemeProvider isn't available yet
+  const isSystemDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? true
+  const wavezyncLogo = isSystemDark ? wavezyncLogoDark : wavezyncLogoLight
 
   return (
     <div className="relative flex flex-col items-center justify-center h-screen w-full overflow-hidden">
@@ -186,7 +190,7 @@ const SplashScreen = ({ error }: { error?: string }) => {
           rel="noreferrer"
           className="opacity-70 hover:opacity-100 transition-opacity"
         >
-          <img src={wavezyncLogoDark} alt="WaveZync" className="h-5" />
+          <img src={wavezyncLogo} alt="WaveZync" className="h-5" />
         </a>
       </div>
     </div>

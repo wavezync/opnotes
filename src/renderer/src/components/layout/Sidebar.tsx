@@ -9,7 +9,9 @@ import {
 } from 'lucide-react'
 import opNotesLogo from '@renderer/assets/opnotes-logo.png'
 import wavezyncLogoDark from '../../../../../resources/wavezync-dark.png?asset'
+import wavezyncLogoLight from '../../../../../resources/wavezync-light.png?asset'
 import { useSettings } from '@renderer/contexts/SettingsContext'
+import { useTheme } from '@renderer/contexts/ThemeContext'
 
 interface NavItemProps {
   to: string
@@ -52,6 +54,8 @@ function NavItem({ to, icon, label, end, index = 0 }: NavItemProps) {
 
 export function Sidebar() {
   const { appVersion } = useSettings()
+  const { theme } = useTheme()
+  const wavezyncLogo = theme.mode === 'light' ? wavezyncLogoLight : wavezyncLogoDark
 
   const mainNavItems = [
     { to: '/', icon: <LayoutDashboard className="h-5 w-5" />, label: 'Home', end: true },
@@ -114,7 +118,7 @@ export function Sidebar() {
         className="group flex flex-col items-center gap-1 py-3 px-2 border-t border-sidebar-border/50 transition-all duration-300 hover:bg-sidebar-accent/30"
       >
         <img
-          src={wavezyncLogoDark}
+          src={wavezyncLogo}
           alt="WaveZync"
           className="h-4 opacity-40 grayscale transition-all duration-300 group-hover:opacity-80 group-hover:grayscale-0"
         />
