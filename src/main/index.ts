@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, ipcMain, Menu, MenuItem } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, Menu, MenuItem, dialog } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -6,6 +6,7 @@ import icon from '../../resources/icon.png?asset'
 import { db, migrateToLatest } from './db'
 import { registerApi } from './api'
 import { setupAutoUpdater, registerUpdaterIpcHandlers } from './updater'
+import { initBackupScheduler, stopBackupScheduler, exportBackupToPath } from './backup'
 
 import { PrintDialogArgs } from '../preload/interfaces'
 
@@ -142,8 +143,70 @@ app.whenReady().then(() => {
 
   ipcMain.handle('boot', async () => {
     await migrateToLatest(db)
+    await initBackupScheduler()
 
     return true
+  })
+
+  ipcMain.handle('selectBackupFolder', async () => {
+    const result = await dialog.showOpenDialog({
+      properties: ['openDirectory', 'createDirectory'],
+      title: 'Select Backup Folder'
+    })
+
+    if (result.canceled || result.filePaths.length === 0) {
+      return null
+    }
+
+    return result.filePaths[0]
+  })
+
+  ipcMain.handle('selectBackupFile', async () => {
+    const result = await dialog.showOpenDialog({
+      properties: ['openFile'],
+      title: 'Select Backup File to Restore',
+      filters: [{ name: 'SQLite Database', extensions: ['db'] }]
+    })
+
+    if (result.canceled || result.filePaths.length === 0) {
+      return null
+    }
+
+    return result.filePaths[0]
+  })
+
+  ipcMain.handle('saveBackupAs', async (_event, sourcePath?: string, defaultFilename?: string) => {
+    const filename =
+      defaultFilename ||
+      `opnotes_backup_${new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19)}.db`
+
+    const result = await dialog.showSaveDialog({
+      title: 'Save Backup As',
+      defaultPath: filename,
+      filters: [{ name: 'SQLite Database', extensions: ['db'] }]
+    })
+
+    if (result.canceled || !result.filePath) {
+      return { success: false, canceled: true }
+    }
+
+    // If sourcePath is provided, copy that file; otherwise export current DB
+    if (sourcePath) {
+      const { copyFile } = await import('fs/promises')
+      try {
+        await copyFile(sourcePath, result.filePath)
+        return { success: true, path: result.filePath }
+      } catch (error) {
+        return { success: false, error: error instanceof Error ? error.message : 'Unknown error' }
+      }
+    }
+
+    return await exportBackupToPath(result.filePath)
+  })
+
+  ipcMain.handle('restartApp', () => {
+    app.relaunch()
+    app.quit()
   })
 
   ipcMain.handle('printDialog', async (event, options: PrintDialogArgs) => {
@@ -161,6 +224,11 @@ app.whenReady().then(() => {
       }
     })
   })
+})
+
+// Stop backup scheduler before quitting
+app.on('before-quit', () => {
+  stopBackupScheduler()
 })
 
 // Quit when all windows are closed, except on macOS. There, it's common

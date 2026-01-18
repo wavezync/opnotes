@@ -49,6 +49,30 @@ const onUpdateStatus = (callback: (payload: UpdateStatusPayload) => void) => {
   }
 }
 
+const selectBackupFolder = async (): Promise<string | null> => {
+  return await ipcRenderer.invoke('selectBackupFolder')
+}
+
+const selectBackupFile = async (): Promise<string | null> => {
+  return await ipcRenderer.invoke('selectBackupFile')
+}
+
+const saveBackupAs = async (
+  sourcePath?: string,
+  defaultFilename?: string
+): Promise<{
+  success: boolean
+  path?: string
+  canceled?: boolean
+  error?: string
+}> => {
+  return await ipcRenderer.invoke('saveBackupAs', sourcePath, defaultFilename)
+}
+
+const restartApp = async (): Promise<void> => {
+  return await ipcRenderer.invoke('restartApp')
+}
+
 const electronApi = {
   ...electronAPI,
   getAppVersion,
@@ -58,7 +82,11 @@ const electronApi = {
   checkForUpdates,
   downloadUpdate,
   quitAndInstall,
-  onUpdateStatus
+  onUpdateStatus,
+  selectBackupFolder,
+  selectBackupFile,
+  saveBackupAs,
+  restartApp
 }
 
 if (process.contextIsolated) {

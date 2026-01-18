@@ -78,5 +78,11 @@ export const queries = createQueryKeyStore({
       queryKey: null,
       queryFn: () => unwrapResult(window.api.invoke('getTemplateTags'))
     }
+  },
+  backup: {
+    list: {
+      queryKey: null,
+      queryFn: () => unwrapResult(window.api.invoke('listBackups'))
+    }
   }
 })

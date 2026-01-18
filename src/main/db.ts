@@ -7,7 +7,7 @@ import { MemoryMigrationProvider } from './db/memory-migration-provider'
 import { app } from 'electron'
 import log from 'electron-log'
 
-const DB_PATH = join(app.getPath('userData'), 'data.db')
+export const DB_PATH = join(app.getPath('userData'), 'data.db')
 log.info('DB_PATH:', DB_PATH)
 
 const dialect = new SqliteDialect({

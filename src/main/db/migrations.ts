@@ -3,11 +3,13 @@ import * as m_001_app_settings from './migrations/001_app_settings'
 import * as m_002_telephone_setting from './migrations/002_telephone_setting'
 import * as m_003_doa_dod from './migrations/003_doa_dod'
 import * as m_004_surgery_templates from './migrations/004_surgery_templates'
+import * as m_005_backup_settings from './migrations/005_backup_settings'
 
 export default {
   '000_init': m_000_init,
   '001_app_settings': m_001_app_settings,
   '002_telephone_setting': m_002_telephone_setting,
   '003_doa_dod': m_003_doa_dod,
-  '004_surgery_templates': m_004_surgery_templates
+  '004_surgery_templates': m_004_surgery_templates,
+  '005_backup_settings': m_005_backup_settings
 }
