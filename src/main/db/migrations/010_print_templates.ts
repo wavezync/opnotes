@@ -34,32 +34,12 @@ const defaultSurgeryTemplate = {
           { label: 'BHT', field: 'surgery.bht' },
           { label: 'Date', field: 'surgery.date' },
           { label: 'Age/Sex', field: 'patient.age_gender' },
-          { label: 'Ward', field: 'surgery.ward' }
+          { label: 'Ward', field: 'surgery.ward' },
+          { label: 'DoA', field: 'surgery.doa' },
+          { label: 'DoD', field: 'surgery.dod' }
         ],
         showBorders: true
       }
-    },
-    {
-      id: 'conditional-doa-dod',
-      type: 'conditional',
-      props: {
-        field: 'surgery.doa',
-        condition: 'exists'
-      },
-      children: [
-        {
-          id: 'table-doa-dod',
-          type: 'data-table',
-          props: {
-            columns: 4,
-            rows: [
-              { label: 'DoA', field: 'surgery.doa' },
-              { label: 'DoD', field: 'surgery.dod' }
-            ],
-            showBorders: true
-          }
-        }
-      ]
     },
     {
       id: 'spacer-1',
@@ -175,32 +155,12 @@ const defaultFollowupTemplate = {
           { label: 'BHT', field: 'surgery.bht' },
           { label: 'Date', field: 'surgery.date' },
           { label: 'Age/Sex', field: 'patient.age_gender' },
-          { label: 'Ward', field: 'surgery.ward' }
+          { label: 'Ward', field: 'surgery.ward' },
+          { label: 'DoA', field: 'surgery.doa' },
+          { label: 'DoD', field: 'surgery.dod' }
         ],
         showBorders: true
       }
-    },
-    {
-      id: 'conditional-doa-dod',
-      type: 'conditional',
-      props: {
-        field: 'surgery.doa',
-        condition: 'exists'
-      },
-      children: [
-        {
-          id: 'table-doa-dod',
-          type: 'data-table',
-          props: {
-            columns: 4,
-            rows: [
-              { label: 'DoA', field: 'surgery.doa' },
-              { label: 'DoD', field: 'surgery.dod' }
-            ],
-            showBorders: true
-          }
-        }
-      ]
     },
     {
       id: 'spacer-1',

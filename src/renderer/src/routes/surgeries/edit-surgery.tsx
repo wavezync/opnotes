@@ -60,7 +60,14 @@ export const EditSurgery = () => {
           <div>
             <h1 className="text-2xl font-bold tracking-tight">Edit Surgery</h1>
             <p className="text-sm text-muted-foreground">
-              Editing <span className="font-medium text-foreground font-mono">{surgeryName}</span> for{' '}
+              Editing{' '}
+              <Link
+                to={`/patients/${patient?.id}/surgeries/${surgery?.id}`}
+                className="font-medium text-foreground font-mono hover:text-primary hover:underline transition-colors"
+              >
+                {surgeryName}
+              </Link>{' '}
+              for{' '}
               <Link
                 to={`/patients/${patient?.id}`}
                 className="font-medium text-foreground hover:text-primary hover:underline transition-colors"
