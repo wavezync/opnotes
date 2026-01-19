@@ -489,10 +489,44 @@ export const AddOrEditSurgery = forwardRef<AddOrEditSurgeryRef, AddOrEditSurgery
             </CardContent>
           </Card>
 
-          {/* Inward Management Card */}
+          {/* Post-Op Notes Card */}
           <Card
             className="bg-gradient-to-br from-card to-card/80 animate-fade-in-up"
             style={{ animationDelay: '375ms' }}
+          >
+            <CardHeader className="pb-3 pt-4">
+              <div className="flex items-center gap-2.5">
+                <div className="h-8 w-8 rounded-lg bg-rose-500/10 flex items-center justify-center">
+                  <ClipboardPlus className="h-4 w-4 text-rose-500" />
+                </div>
+                <CardTitle className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  Post-Operative Care
+                </CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <FormField
+                control={form.control}
+                name="post_op_notes"
+                render={({ field: { value, ...field } }) => (
+                  <FormItem>
+                    <FormControl>
+                      <RichTextEditor
+                        initialContent={value || undefined}
+                        onUpdate={field.onChange}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+
+          {/* Inward Management Card */}
+          <Card
+            className="bg-gradient-to-br from-card to-card/80 animate-fade-in-up"
+            style={{ animationDelay: '450ms' }}
           >
             <CardHeader className="pb-3 pt-4">
               <div className="flex items-center gap-2.5">
@@ -513,40 +547,6 @@ export const AddOrEditSurgery = forwardRef<AddOrEditSurgeryRef, AddOrEditSurgery
                     <FormDescription className="text-xs mb-2">
                       Record IV drugs and medications given during admission
                     </FormDescription>
-                    <FormControl>
-                      <RichTextEditor
-                        initialContent={value || undefined}
-                        onUpdate={field.onChange}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </CardContent>
-          </Card>
-
-          {/* Post-Op Notes Card */}
-          <Card
-            className="bg-gradient-to-br from-card to-card/80 animate-fade-in-up"
-            style={{ animationDelay: '450ms' }}
-          >
-            <CardHeader className="pb-3 pt-4">
-              <div className="flex items-center gap-2.5">
-                <div className="h-8 w-8 rounded-lg bg-rose-500/10 flex items-center justify-center">
-                  <ClipboardPlus className="h-4 w-4 text-rose-500" />
-                </div>
-                <CardTitle className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                  Post-Operative Care
-                </CardTitle>
-              </div>
-            </CardHeader>
-            <CardContent className="pt-0">
-              <FormField
-                control={form.control}
-                name="post_op_notes"
-                render={({ field: { value, ...field } }) => (
-                  <FormItem>
                     <FormControl>
                       <RichTextEditor
                         initialContent={value || undefined}

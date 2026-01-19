@@ -429,29 +429,6 @@ export const ViewSurgery = () => {
               </CardContent>
             </Card>
 
-            {/* Inward Management Card */}
-            <Card className="bg-gradient-to-br from-card to-card/80">
-              <CardHeader className="pb-3 pt-4">
-                <div className="flex items-center gap-2.5">
-                  <div className="h-8 w-8 rounded-lg bg-purple-500/10 flex items-center justify-center">
-                    <Pill className="h-4 w-4 text-purple-500" />
-                  </div>
-                  <CardTitle className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                    Inward Management
-                  </CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent className="pt-0">
-                {!isEmptyHtml(surgery.inward_management) ? (
-                  <div className="p-4 rounded-lg bg-accent/30">
-                    <RichTextContent content={surgery.inward_management!} />
-                  </div>
-                ) : (
-                  <EmptyState message="No inward management recorded" icon={Pill} />
-                )}
-              </CardContent>
-            </Card>
-
             {/* Post-Op Notes Card */}
             <Card className="bg-gradient-to-br from-card to-card/80">
               <CardHeader className="pb-3 pt-4">
@@ -471,6 +448,29 @@ export const ViewSurgery = () => {
                   </div>
                 ) : (
                   <EmptyState message="No post-operative notes recorded" icon={ClipboardPlus} />
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Inward Management Card */}
+            <Card className="bg-gradient-to-br from-card to-card/80">
+              <CardHeader className="pb-3 pt-4">
+                <div className="flex items-center gap-2.5">
+                  <div className="h-8 w-8 rounded-lg bg-purple-500/10 flex items-center justify-center">
+                    <Pill className="h-4 w-4 text-purple-500" />
+                  </div>
+                  <CardTitle className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                    Inward Management
+                  </CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-0">
+                {!isEmptyHtml(surgery.inward_management) ? (
+                  <div className="p-4 rounded-lg bg-accent/30">
+                    <RichTextContent content={surgery.inward_management!} />
+                  </div>
+                ) : (
+                  <EmptyState message="No inward management recorded" icon={Pill} />
                 )}
               </CardContent>
             </Card>
