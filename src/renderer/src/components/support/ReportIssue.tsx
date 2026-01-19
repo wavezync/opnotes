@@ -129,7 +129,7 @@ export const ReportIssue = () => {
           <MessageCircle className="h-3 w-3 inline-block mr-1" />
           Prefer chat? Join our{' '}
           <button
-            onClick={() => window.open('https://chat.whatsapp.com/YOUR_INVITE_LINK', '_blank')}
+            onClick={() => window.open('https://chat.whatsapp.com/L4LMwxsbjPk514I1ToRris', '_blank')}
             className="text-green-500 hover:underline"
           >
             WhatsApp Community

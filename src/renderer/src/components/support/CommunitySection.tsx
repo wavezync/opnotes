@@ -61,7 +61,7 @@ export const CommunitySection = () => {
             </p>
             <Button
               className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white"
-              onClick={() => window.open('https://chat.whatsapp.com/YOUR_INVITE_LINK', '_blank')}
+              onClick={() => window.open('https://chat.whatsapp.com/L4LMwxsbjPk514I1ToRris', '_blank')}
             >
               <MessageCircle className="h-4 w-4 mr-2" />
               Join WhatsApp Community
