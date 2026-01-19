@@ -56,13 +56,10 @@ describe('Dashboard Repository', () => {
       // Create test data
       for (let i = 1; i <= 5; i++) {
         await patientRepo.createNewPatient({
-          bht: `BHT_DASH_${i}`,
+          phn: `PHN_DASH_${i}`,
           name: `Patient ${i}`,
-          age: 30 + i,
-          sex: i % 2 === 0 ? 'Male' : 'Female',
-          ward: 'Ward A',
-          date_of_admission: '2024-01-15',
-          diagnosis: 'Test'
+          birth_year: 1970 + i,
+          gender: i % 2 === 0 ? 'M' : 'F'
         })
       }
 
@@ -82,21 +79,19 @@ describe('Dashboard Repository', () => {
     it('should count this month surgeries correctly', async () => {
       // Create a patient first
       const patient = await patientRepo.createNewPatient({
-        bht: 'BHT_MONTH_TEST',
+        phn: 'PHN_MONTH_TEST',
         name: 'Month Test Patient',
-        age: 40,
-        sex: 'Male',
-        ward: 'Ward A',
-        date_of_admission: new Date().toISOString().split('T')[0],
-        diagnosis: 'Test'
+        birth_year: 1985,
+        gender: 'M'
       })
 
       // Create a surgery for this month
       await surgeryRepo.createNewSurgery({
-        patient_id: patient.id,
-        date: new Date().toISOString().split('T')[0],
-        procedure: 'This Month Surgery',
-        ward: 'Ward A'
+        patient_id: patient!.id,
+        title: 'This Month Surgery',
+        bht: 'BHT001',
+        ward: 'Ward A',
+        date: Date.now()
       })
 
       const stats = await dashboardRepo.getDashboardStats()
@@ -114,13 +109,10 @@ describe('Dashboard Repository', () => {
 
     it('should return recent patients', async () => {
       await patientRepo.createNewPatient({
-        bht: 'BHT_RECENT_1',
+        phn: 'PHN_RECENT_1',
         name: 'Recent Patient',
-        age: 35,
-        sex: 'Male',
-        ward: 'Ward A',
-        date_of_admission: new Date().toISOString().split('T')[0],
-        diagnosis: 'Test Diagnosis'
+        birth_year: 1990,
+        gender: 'M'
       })
 
       const activity = await dashboardRepo.getRecentActivity(10)
@@ -133,68 +125,62 @@ describe('Dashboard Repository', () => {
 
     it('should return recent surgeries', async () => {
       const patient = await patientRepo.createNewPatient({
-        bht: 'BHT_SURG_ACT',
+        phn: 'PHN_SURG_ACT',
         name: 'Surgery Activity Patient',
-        age: 40,
-        sex: 'Female',
-        ward: 'Ward B',
-        date_of_admission: new Date().toISOString().split('T')[0],
-        diagnosis: 'Surgery Test'
+        birth_year: 1985,
+        gender: 'F'
       })
 
       await surgeryRepo.createNewSurgery({
-        patient_id: patient.id,
-        date: new Date().toISOString().split('T')[0],
-        procedure: 'Recent Procedure',
-        ward: 'Ward B'
+        patient_id: patient!.id,
+        title: 'Recent Procedure',
+        bht: 'BHT002',
+        ward: 'Ward B',
+        date: Date.now()
       })
 
       const activity = await dashboardRepo.getRecentActivity(10)
 
       const surgeryActivity = activity.find((a) => a.type === 'surgery')
       expect(surgeryActivity).toBeDefined()
-      expect(surgeryActivity?.title).toBe('Recent Procedure')
-      expect(surgeryActivity?.subtitle).toBe('Surgery Activity Patient')
+      // Surgery title is the patient name in recentSurgeries mapping
+      expect(surgeryActivity?.title).toBe('Surgery Activity Patient')
+      expect(surgeryActivity?.subtitle).toBe('Recent Procedure')
     })
 
     it('should return recent followups', async () => {
       const patient = await patientRepo.createNewPatient({
-        bht: 'BHT_FU_ACT',
+        phn: 'PHN_FU_ACT',
         name: 'Followup Patient',
-        age: 45,
-        sex: 'Male',
-        ward: 'Ward C',
-        date_of_admission: new Date().toISOString().split('T')[0],
-        diagnosis: 'Followup Test'
+        birth_year: 1980,
+        gender: 'M'
       })
 
       const surgery = await surgeryRepo.createNewSurgery({
-        patient_id: patient.id,
-        date: new Date().toISOString().split('T')[0],
-        procedure: 'Followup Procedure',
-        ward: 'Ward C'
+        patient_id: patient!.id,
+        title: 'Followup Procedure',
+        bht: 'BHT003',
+        ward: 'Ward C',
+        date: Date.now()
       })
 
-      await surgeryRepo.createNewFollowUp(surgery.id, 'Recent followup notes')
+      await surgeryRepo.createNewFollowUp(surgery!.id, 'Recent followup notes')
 
       const activity = await dashboardRepo.getRecentActivity(10)
 
       const followupActivity = activity.find((a) => a.type === 'followup')
       expect(followupActivity).toBeDefined()
-      expect(followupActivity?.title).toContain('Recent followup')
+      expect(followupActivity?.title).toBe('Followup Patient')
     })
 
     it('should respect limit parameter', async () => {
       // Create multiple patients
       for (let i = 1; i <= 10; i++) {
         await patientRepo.createNewPatient({
-          bht: `BHT_LIMIT_${i}`,
+          phn: `PHN_LIMIT_${i}`,
           name: `Patient ${i}`,
-          age: 30,
-          sex: 'Male',
-          ward: 'Ward A',
-          date_of_admission: new Date().toISOString().split('T')[0],
-          diagnosis: 'Test'
+          birth_year: 1995,
+          gender: 'M'
         })
       }
 
@@ -206,25 +192,23 @@ describe('Dashboard Repository', () => {
     it('should return mixed activity types sorted by date', async () => {
       // Create patient
       const patient = await patientRepo.createNewPatient({
-        bht: 'BHT_MIXED',
+        phn: 'PHN_MIXED',
         name: 'Mixed Activity Patient',
-        age: 35,
-        sex: 'Female',
-        ward: 'Ward A',
-        date_of_admission: new Date().toISOString().split('T')[0],
-        diagnosis: 'Mixed Test'
+        birth_year: 1990,
+        gender: 'F'
       })
 
       // Create surgery
       const surgery = await surgeryRepo.createNewSurgery({
-        patient_id: patient.id,
-        date: new Date().toISOString().split('T')[0],
-        procedure: 'Mixed Procedure',
-        ward: 'Ward A'
+        patient_id: patient!.id,
+        title: 'Mixed Procedure',
+        bht: 'BHT004',
+        ward: 'Ward A',
+        date: Date.now()
       })
 
       // Create followup
-      await surgeryRepo.createNewFollowUp(surgery.id, 'Mixed followup')
+      await surgeryRepo.createNewFollowUp(surgery!.id, 'Mixed followup')
 
       const activity = await dashboardRepo.getRecentActivity(10)
 

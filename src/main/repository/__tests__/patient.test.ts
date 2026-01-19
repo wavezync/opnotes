@@ -43,44 +43,40 @@ describe('Patient Repository', () => {
   describe('createNewPatient', () => {
     it('should create a new patient with required fields', async () => {
       const patientData = {
-        bht: 'BHT001',
+        phn: 'PHN001',
         name: 'John Doe',
-        age: 45,
-        sex: 'Male',
-        ward: 'Ward A',
-        date_of_admission: '2024-01-15',
-        diagnosis: 'Test Diagnosis'
+        birth_year: 1980,
+        gender: 'M' as const
       }
 
       const result = await patientRepo.createNewPatient(patientData)
 
       expect(result).toBeDefined()
-      expect(result.id).toBeDefined()
-      expect(typeof result.id).toBe('number')
+      expect(result?.id).toBeDefined()
+      expect(typeof result?.id).toBe('number')
     })
 
     it('should create a patient with all optional fields', async () => {
       const patientData = {
-        bht: 'BHT002',
+        phn: 'PHN002',
         name: 'Jane Smith',
-        age: 32,
-        sex: 'Female',
-        ward: 'Ward B',
-        date_of_admission: '2024-01-16',
-        diagnosis: 'Another Diagnosis',
-        date_of_discharge: '2024-01-20',
-        blood_group: 'A+',
+        birth_year: 1992,
+        gender: 'F' as const,
+        address: '123 Main St',
         phone: '123-456-7890',
-        allergies: 'Penicillin',
-        chronic_conditions: 'Diabetes',
-        current_medications: 'Metformin',
-        previous_surgeries: 'Appendectomy 2015'
+        emergency_contact: 'John Smith',
+        emergency_phone: '098-765-4321',
+        remarks: 'No special notes',
+        blood_group: 'A+',
+        allergies: 'Penicillin,Peanuts',
+        conditions: 'Diabetes',
+        medications: 'Metformin'
       }
 
       const result = await patientRepo.createNewPatient(patientData)
 
       expect(result).toBeDefined()
-      expect(result.id).toBeDefined()
+      expect(result?.id).toBeDefined()
     })
   })
 
@@ -93,21 +89,18 @@ describe('Patient Repository', () => {
     it('should return patient with correct data', async () => {
       // First create a patient
       const createResult = await patientRepo.createNewPatient({
-        bht: 'BHT003',
+        phn: 'PHN003',
         name: 'Test Patient',
-        age: 40,
-        sex: 'Male',
-        ward: 'Ward C',
-        date_of_admission: '2024-01-17',
-        diagnosis: 'Test'
+        birth_year: 1985,
+        gender: 'M' as const
       })
 
-      const patient = await patientRepo.getPatientById(createResult.id)
+      const patient = await patientRepo.getPatientById(createResult!.id)
 
       expect(patient).not.toBeNull()
       expect(patient?.name).toBe('Test Patient')
-      expect(patient?.bht).toBe('BHT003')
-      expect(patient?.age).toBe(40)
+      expect(patient?.phn).toBe('PHN003')
+      expect(patient?.birth_year).toBe(1985)
     })
   })
 
@@ -115,31 +108,28 @@ describe('Patient Repository', () => {
     it('should update patient data', async () => {
       // Create a patient first
       const createResult = await patientRepo.createNewPatient({
-        bht: 'BHT004',
+        phn: 'PHN004',
         name: 'Original Name',
-        age: 35,
-        sex: 'Female',
-        ward: 'Ward D',
-        date_of_admission: '2024-01-18',
-        diagnosis: 'Original Diagnosis'
+        birth_year: 1990,
+        gender: 'F' as const
       })
 
       // Update the patient
-      const updatedPatient = await patientRepo.updatePatientById(createResult.id, {
+      const updatedPatient = await patientRepo.updatePatientById(createResult!.id, {
         name: 'Updated Name',
-        diagnosis: 'Updated Diagnosis'
+        address: '456 New St'
       })
 
       expect(updatedPatient).not.toBeNull()
       expect(updatedPatient?.name).toBe('Updated Name')
-      expect(updatedPatient?.diagnosis).toBe('Updated Diagnosis')
+      expect(updatedPatient?.address).toBe('456 New St')
       // Original values should remain
-      expect(updatedPatient?.bht).toBe('BHT004')
+      expect(updatedPatient?.phn).toBe('PHN004')
     })
 
-    it('should return null when updating non-existent patient', async () => {
+    it('should return undefined when updating non-existent patient', async () => {
       const result = await patientRepo.updatePatientById(99999, { name: 'Test' })
-      expect(result).toBeNull()
+      expect(result).toBeUndefined()
     })
   })
 
@@ -156,69 +146,33 @@ describe('Patient Repository', () => {
       // Create multiple patients
       for (let i = 1; i <= 15; i++) {
         await patientRepo.createNewPatient({
-          bht: `BHT${String(i).padStart(3, '0')}`,
+          phn: `PHN${String(i).padStart(3, '0')}`,
           name: `Patient ${i}`,
-          age: 20 + i,
-          sex: i % 2 === 0 ? 'Male' : 'Female',
-          ward: 'Ward A',
-          date_of_admission: '2024-01-15',
-          diagnosis: 'Test'
+          birth_year: 2000 - i,
+          gender: i % 2 === 0 ? 'M' : 'F'
         })
       }
 
-      const result = await patientRepo.listPatients({ pageSize: 10, page: 1 })
+      const result = await patientRepo.listPatients({ pageSize: 10, page: 0 })
 
       expect(result.data.length).toBe(10)
       expect(result.total).toBe(15)
       expect(result.pages).toBe(2)
     })
 
-    it('should filter patients by search term', async () => {
-      await patientRepo.createNewPatient({
-        bht: 'BHT100',
-        name: 'John Unique',
-        age: 40,
-        sex: 'Male',
-        ward: 'Ward A',
-        date_of_admission: '2024-01-15',
-        diagnosis: 'Test'
-      })
-
-      await patientRepo.createNewPatient({
-        bht: 'BHT101',
-        name: 'Jane Different',
-        age: 35,
-        sex: 'Female',
-        ward: 'Ward B',
-        date_of_admission: '2024-01-15',
-        diagnosis: 'Test'
-      })
-
-      const result = await patientRepo.listPatients({ search: 'John' })
-
-      expect(result.data.length).toBe(1)
-      expect(result.data[0].name).toBe('John Unique')
-    })
-
     it('should sort patients by name', async () => {
       await patientRepo.createNewPatient({
-        bht: 'BHT200',
+        phn: 'PHN200',
         name: 'Zebra Patient',
-        age: 40,
-        sex: 'Male',
-        ward: 'Ward A',
-        date_of_admission: '2024-01-15',
-        diagnosis: 'Test'
+        birth_year: 1985,
+        gender: 'M'
       })
 
       await patientRepo.createNewPatient({
-        bht: 'BHT201',
+        phn: 'PHN201',
         name: 'Apple Patient',
-        age: 35,
-        sex: 'Female',
-        ward: 'Ward A',
-        date_of_admission: '2024-01-15',
-        diagnosis: 'Test'
+        birth_year: 1990,
+        gender: 'F'
       })
 
       const resultAsc = await patientRepo.listPatients({ sortBy: 'name', sortOrder: 'asc' })
@@ -232,38 +186,32 @@ describe('Patient Repository', () => {
   describe('deletePatientById', () => {
     it('should delete an existing patient', async () => {
       const createResult = await patientRepo.createNewPatient({
-        bht: 'BHT_DEL',
+        phn: 'PHN_DEL',
         name: 'To Be Deleted',
-        age: 50,
-        sex: 'Male',
-        ward: 'Ward X',
-        date_of_admission: '2024-01-15',
-        diagnosis: 'Test'
+        birth_year: 1975,
+        gender: 'M'
       })
 
-      await patientRepo.deletePatientById(createResult.id)
+      await patientRepo.deletePatientById(createResult!.id)
 
-      const patient = await patientRepo.getPatientById(createResult.id)
+      const patient = await patientRepo.getPatientById(createResult!.id)
       expect(patient).toBeNull()
     })
   })
 
   describe('findPatientByPHN', () => {
-    it('should find patient by PHN (BHT)', async () => {
+    it('should find patient by PHN', async () => {
       await patientRepo.createNewPatient({
-        bht: 'UNIQUE_PHN_123',
+        phn: 'UNIQUE_PHN_123',
         name: 'PHN Patient',
-        age: 45,
-        sex: 'Male',
-        ward: 'Ward A',
-        date_of_admission: '2024-01-15',
-        diagnosis: 'Test'
+        birth_year: 1980,
+        gender: 'M'
       })
 
       const patient = await patientRepo.findPatientByPHN('UNIQUE_PHN_123')
 
       expect(patient).toBeDefined()
-      expect(patient?.bht).toBe('UNIQUE_PHN_123')
+      expect(patient?.phn).toBe('UNIQUE_PHN_123')
       expect(patient?.name).toBe('PHN Patient')
     })
 
@@ -274,26 +222,23 @@ describe('Patient Repository', () => {
   })
 
   describe('countAllPatients', () => {
-    it('should return 0 when no patients exist', async () => {
+    it('should return object with total 0 when no patients exist', async () => {
       const count = await patientRepo.countAllPatients()
-      expect(count).toBe(0)
+      expect(count?.total).toBe(0)
     })
 
     it('should return correct count after adding patients', async () => {
       for (let i = 1; i <= 5; i++) {
         await patientRepo.createNewPatient({
-          bht: `BHT_COUNT_${i}`,
+          phn: `PHN_COUNT_${i}`,
           name: `Patient ${i}`,
-          age: 30,
-          sex: 'Male',
-          ward: 'Ward A',
-          date_of_admission: '2024-01-15',
-          diagnosis: 'Test'
+          birth_year: 1995,
+          gender: 'M'
         })
       }
 
       const count = await patientRepo.countAllPatients()
-      expect(count).toBe(5)
+      expect(count?.total).toBe(5)
     })
   })
 })

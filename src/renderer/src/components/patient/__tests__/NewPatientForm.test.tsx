@@ -152,7 +152,7 @@ describe('NewPatientForm', () => {
 
   describe('Form Submission', () => {
     it('should call createNewPatient API on submit for new patient', async () => {
-      const user = userEvent.setup({ pointerEventsCheck: false })
+      const user = userEvent.setup({ pointerEventsCheck: 0 })
       const onRecordUpdated = vi.fn()
       const ref = createRef<NewPatientFormRef>()
 
@@ -191,8 +191,8 @@ describe('NewPatientForm', () => {
         allergies: null,
         conditions: null,
         medications: null,
-        created_at: '2024-01-01',
-        updated_at: '2024-01-01'
+        created_at: new Date('2024-01-01'),
+        updated_at: new Date('2024-01-01')
       }
 
       const onRecordUpdated = vi.fn()
@@ -257,8 +257,8 @@ describe('NewPatientForm', () => {
         allergies: 'Penicillin,Peanuts',
         conditions: null,
         medications: null,
-        created_at: '2024-01-01',
-        updated_at: '2024-01-01'
+        created_at: new Date('2024-01-01'),
+        updated_at: new Date('2024-01-01')
       }
 
       render(<NewPatientForm values={existingPatient} />)
@@ -297,8 +297,8 @@ describe('NewPatientForm', () => {
         allergies: null,
         conditions: null,
         medications: null,
-        created_at: '2024-01-01',
-        updated_at: '2024-01-01'
+        created_at: new Date('2024-01-01'),
+        updated_at: new Date('2024-01-01')
       }
 
       render(<NewPatientForm ref={ref} values={existingPatient} />)

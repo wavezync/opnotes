@@ -43,7 +43,7 @@ describe('Activity Repository', () => {
       await activityRepo.logActivity({
         entityType: 'patient',
         entityId: 1,
-        action: 'create',
+        action: 'created',
         title: 'Patient Created',
         description: 'New patient John Doe created',
         patientId: 1
@@ -52,8 +52,8 @@ describe('Activity Repository', () => {
       const activities = await activityRepo.getRecentActivities(10)
 
       expect(activities.length).toBe(1)
-      expect(activities[0].entity_type).toBe('patient')
-      expect(activities[0].action).toBe('create')
+      expect(activities[0].entityType).toBe('patient')
+      expect(activities[0].action).toBe('created')
       expect(activities[0].title).toBe('Patient Created')
     })
 
@@ -61,7 +61,7 @@ describe('Activity Repository', () => {
       await activityRepo.logActivity({
         entityType: 'surgery',
         entityId: 5,
-        action: 'update',
+        action: 'updated',
         title: 'Surgery Updated',
         description: 'Surgery details modified',
         patientId: 1,
@@ -71,15 +71,15 @@ describe('Activity Repository', () => {
       const activities = await activityRepo.getRecentActivities(10)
 
       expect(activities.length).toBe(1)
-      expect(activities[0].entity_type).toBe('surgery')
-      expect(activities[0].surgery_id).toBe(5)
+      expect(activities[0].entityType).toBe('surgery')
+      expect(activities[0].surgeryId).toBe(5)
     })
 
     it('should log a followup activity', async () => {
       await activityRepo.logActivity({
         entityType: 'followup',
         entityId: 10,
-        action: 'create',
+        action: 'created',
         title: 'Followup Added',
         description: 'New followup note added',
         patientId: 1,
@@ -88,7 +88,7 @@ describe('Activity Repository', () => {
 
       const activities = await activityRepo.getRecentActivities(10)
 
-      expect(activities[0].entity_type).toBe('followup')
+      expect(activities[0].entityType).toBe('followup')
     })
   })
 
@@ -104,7 +104,7 @@ describe('Activity Repository', () => {
         await activityRepo.logActivity({
           entityType: 'patient',
           entityId: i,
-          action: 'create',
+          action: 'created',
           title: `Activity ${i}`,
           description: `Description ${i}`,
           patientId: i
@@ -120,7 +120,7 @@ describe('Activity Repository', () => {
       await activityRepo.logActivity({
         entityType: 'patient',
         entityId: 1,
-        action: 'create',
+        action: 'created',
         title: 'First',
         description: 'First activity',
         patientId: 1
@@ -132,7 +132,7 @@ describe('Activity Repository', () => {
       await activityRepo.logActivity({
         entityType: 'patient',
         entityId: 2,
-        action: 'create',
+        action: 'created',
         title: 'Second',
         description: 'Second activity',
         patientId: 2
@@ -151,7 +151,7 @@ describe('Activity Repository', () => {
       await activityRepo.logActivity({
         entityType: 'patient',
         entityId: 1,
-        action: 'create',
+        action: 'created',
         title: 'Patient 1 Created',
         description: 'Patient 1',
         patientId: 1
@@ -160,7 +160,7 @@ describe('Activity Repository', () => {
       await activityRepo.logActivity({
         entityType: 'patient',
         entityId: 2,
-        action: 'create',
+        action: 'created',
         title: 'Patient 2 Created',
         description: 'Patient 2',
         patientId: 2
@@ -169,7 +169,7 @@ describe('Activity Repository', () => {
       await activityRepo.logActivity({
         entityType: 'patient',
         entityId: 1,
-        action: 'update',
+        action: 'updated',
         title: 'Patient 1 Updated',
         description: 'Patient 1 update',
         patientId: 1
@@ -178,14 +178,14 @@ describe('Activity Repository', () => {
       const activities = await activityRepo.getActivitiesForEntity('patient', 1)
 
       expect(activities.length).toBe(2)
-      expect(activities.every((a) => a.entity_id === 1)).toBe(true)
+      expect(activities.every((a) => a.entityId === 1)).toBe(true)
     })
 
     it('should filter by entity type and id', async () => {
       await activityRepo.logActivity({
         entityType: 'patient',
         entityId: 1,
-        action: 'create',
+        action: 'created',
         title: 'Patient Activity',
         description: 'Patient',
         patientId: 1
@@ -194,7 +194,7 @@ describe('Activity Repository', () => {
       await activityRepo.logActivity({
         entityType: 'surgery',
         entityId: 1,
-        action: 'create',
+        action: 'created',
         title: 'Surgery Activity',
         description: 'Surgery',
         patientId: 1,
@@ -218,7 +218,7 @@ describe('Activity Repository', () => {
       await activityRepo.logActivity({
         entityType: 'patient',
         entityId: 1,
-        action: 'create',
+        action: 'created',
         title: 'Patient Created',
         description: 'New patient',
         patientId: 1
@@ -227,7 +227,7 @@ describe('Activity Repository', () => {
       await activityRepo.logActivity({
         entityType: 'surgery',
         entityId: 1,
-        action: 'create',
+        action: 'created',
         title: 'Surgery Created',
         description: 'New surgery',
         patientId: 1,
@@ -237,7 +237,7 @@ describe('Activity Repository', () => {
       await activityRepo.logActivity({
         entityType: 'patient',
         entityId: 1,
-        action: 'update',
+        action: 'updated',
         title: 'Patient Updated',
         description: 'Patient modified',
         patientId: 1
@@ -255,14 +255,14 @@ describe('Activity Repository', () => {
       const result = await activityRepo.listActivityLog({ entityType: 'patient' })
 
       expect(result.data.length).toBe(2)
-      expect(result.data.every((a) => a.entity_type === 'patient')).toBe(true)
+      expect(result.data.every((a) => a.entityType === 'patient')).toBe(true)
     })
 
     it('should filter by action', async () => {
-      const result = await activityRepo.listActivityLog({ action: 'create' })
+      const result = await activityRepo.listActivityLog({ action: 'created' })
 
       expect(result.data.length).toBe(2)
-      expect(result.data.every((a) => a.action === 'create')).toBe(true)
+      expect(result.data.every((a) => a.action === 'created')).toBe(true)
     })
 
     it('should filter by search term', async () => {

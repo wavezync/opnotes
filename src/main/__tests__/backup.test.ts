@@ -210,7 +210,7 @@ describe('Backup Module', () => {
     })
 
     it('should delete oldest backups when over limit', async () => {
-      const files = []
+      const files: string[] = []
       for (let i = 1; i <= 15; i++) {
         files.push(`data_2024-01-${String(i).padStart(2, '0')}_10-00-00.db`)
       }

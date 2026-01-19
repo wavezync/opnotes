@@ -63,8 +63,8 @@ describe('App Settings Repository', () => {
       const result = await settingsRepo.updateSetting('hospital_name', 'Test Hospital')
 
       expect(result).toBeDefined()
-      expect(result.key).toBe('hospital_name')
-      expect(result.value).toBe('Test Hospital')
+      expect(result!.key).toBe('hospital_name')
+      expect(result!.value).toBe('Test Hospital')
     })
 
     it('should allow setting a null value', async () => {
@@ -74,7 +74,7 @@ describe('App Settings Repository', () => {
       // Then set it to null
       const result = await settingsRepo.updateSetting('hospital_name', null)
 
-      expect(result.value).toBeNull()
+      expect(result!.value).toBeNull()
     })
 
     it('should update the same setting multiple times', async () => {
@@ -82,7 +82,7 @@ describe('App Settings Repository', () => {
       await settingsRepo.updateSetting('unit_name', 'Unit B')
       const result = await settingsRepo.updateSetting('unit_name', 'Unit C')
 
-      expect(result.value).toBe('Unit C')
+      expect(result!.value).toBe('Unit C')
     })
   })
 
