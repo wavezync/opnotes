@@ -32,8 +32,14 @@ import {
   MapPin,
   Phone,
   FileText,
-  Calendar
+  Calendar,
+  HeartPulse,
+  Droplets,
+  AlertTriangle,
+  ClipboardList,
+  Pill
 } from 'lucide-react'
+import { TagsInput } from '../ui/tags-input'
 
 export interface CreatePatientFormProps {
   onRecordUpdated?: (patient: Patient) => void
@@ -77,6 +83,17 @@ const birthYearFromAge = (birth_year: number) => {
   return currentYear - birth_year
 }
 
+const BLOOD_GROUPS = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'] as const
+
+// Helper functions to convert between arrays and comma-separated strings
+const tagsToString = (tags: string[]): string | null => {
+  return tags.length > 0 ? tags.join(',') : null
+}
+
+const stringToTags = (str: string | null): string[] => {
+  return str ? str.split(',').filter((tag) => tag.trim()) : []
+}
+
 const patientSchema = z.object({
   phn: z.string().min(1, {
     message: 'PHN is required'
@@ -94,7 +111,12 @@ const patientSchema = z.object({
     .regex(AGE_PATTERN, 'Age must be in the format(year, year month or month) ie: 20y, 10y 6m, 5m'),
   gender: z.enum(['M', 'F'], {
     message: 'Select Gender'
-  })
+  }),
+  // Medical history fields
+  blood_group: z.enum(BLOOD_GROUPS).optional().nullable(),
+  allergies: z.array(z.string()).optional().default([]),
+  conditions: z.array(z.string()).optional().default([]),
+  medications: z.array(z.string()).optional().default([])
 })
 
 type FormSchema = z.infer<typeof patientSchema>
@@ -117,7 +139,12 @@ export const NewPatientForm = forwardRef<NewPatientFormRef, CreatePatientFormPro
         emergency_contact: values?.emergency_contact || '',
         emergency_phone: values?.emergency_phone || '',
         gender: values?.gender || ('' as any),
-        age: values && values.birth_year ? `${birthYearFromAge(values.birth_year)}y` : ''
+        age: values && values.birth_year ? `${birthYearFromAge(values.birth_year)}y` : '',
+        // Medical history fields
+        blood_group: values?.blood_group as typeof BLOOD_GROUPS[number] | null || null,
+        allergies: stringToTags(values?.allergies || null),
+        conditions: stringToTags(values?.conditions || null),
+        medications: stringToTags(values?.medications || null)
       }
     })
     const isUpdate = values && !!values.id
@@ -130,7 +157,11 @@ export const NewPatientForm = forwardRef<NewPatientFormRef, CreatePatientFormPro
       if (isUpdate) {
         form.reset({
           ...values,
-          age: values && values.birth_year ? `${birthYearFromAge(values.birth_year)}y` : ''
+          age: values && values.birth_year ? `${birthYearFromAge(values.birth_year)}y` : '',
+          blood_group: values?.blood_group as typeof BLOOD_GROUPS[number] | null || null,
+          allergies: stringToTags(values?.allergies || null),
+          conditions: stringToTags(values?.conditions || null),
+          medications: stringToTags(values?.medications || null)
         })
 
         return
@@ -145,8 +176,11 @@ export const NewPatientForm = forwardRef<NewPatientFormRef, CreatePatientFormPro
         emergency_contact: '',
         emergency_phone: '',
         remarks: '',
-
-        gender: '' as any
+        gender: '' as any,
+        blood_group: null,
+        allergies: [],
+        conditions: [],
+        medications: []
       })
     }, [form, isUpdate, values])
 
@@ -163,7 +197,11 @@ export const NewPatientForm = forwardRef<NewPatientFormRef, CreatePatientFormPro
         phone: data.phone,
         emergency_contact: data.emergency_contact,
         emergency_phone: data.emergency_phone,
-        remarks: data.remarks
+        remarks: data.remarks,
+        blood_group: data.blood_group || null,
+        allergies: tagsToString(data.allergies || []),
+        conditions: tagsToString(data.conditions || []),
+        medications: tagsToString(data.medications || [])
       })
 
       if (error) {
@@ -199,7 +237,11 @@ export const NewPatientForm = forwardRef<NewPatientFormRef, CreatePatientFormPro
         phone: data.phone,
         emergency_contact: data.emergency_contact,
         emergency_phone: data.emergency_phone,
-        remarks: data.remarks
+        remarks: data.remarks,
+        blood_group: data.blood_group || null,
+        allergies: tagsToString(data.allergies || []),
+        conditions: tagsToString(data.conditions || []),
+        medications: tagsToString(data.medications || [])
       })
 
       if (error) {
@@ -505,10 +547,134 @@ export const NewPatientForm = forwardRef<NewPatientFormRef, CreatePatientFormPro
             </CardContent>
           </Card>
 
-          {/* Row 4: Notes */}
+          {/* Row 4: Medical History */}
           <Card
             className="bg-gradient-to-br from-card to-card/80 animate-fade-in-up"
             style={{ animationDelay: '300ms' }}
+          >
+            <CardHeader className="pb-3 pt-4">
+              <div className="flex items-center gap-2.5">
+                <div className="h-8 w-8 rounded-lg bg-rose-500/10 flex items-center justify-center">
+                  <HeartPulse className="h-4 w-4 text-rose-500" />
+                </div>
+                <CardTitle className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  Medical History
+                </CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent className="pt-0 space-y-4">
+              {/* Blood Group Field */}
+              <FormField
+                control={form.control}
+                name="blood_group"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <div className="h-6 w-6 rounded-md bg-red-500/10 flex items-center justify-center">
+                        <Droplets className="h-3.5 w-3.5 text-red-500" />
+                      </div>
+                      <FormLabel className="text-sm font-medium">Blood Group</FormLabel>
+                    </div>
+                    <Select onValueChange={field.onChange} value={field.value || ''}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select blood group..." />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {BLOOD_GROUPS.map((group) => (
+                          <SelectItem key={group} value={group}>
+                            {group}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Allergies Field */}
+              <FormField
+                control={form.control}
+                name="allergies"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <div className="h-6 w-6 rounded-md bg-amber-500/10 flex items-center justify-center">
+                        <AlertTriangle className="h-3.5 w-3.5 text-amber-500" />
+                      </div>
+                      <FormLabel className="text-sm font-medium">Known Allergies</FormLabel>
+                    </div>
+                    <FormControl>
+                      <TagsInput
+                        value={field.value || []}
+                        onChange={field.onChange}
+                        placeholder="Add allergy..."
+                      />
+                    </FormControl>
+                    <FormDescription className="text-xs">
+                      Drug allergies, food allergies, environmental triggers
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Pre-existing Conditions Field */}
+              <FormField
+                control={form.control}
+                name="conditions"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <div className="h-6 w-6 rounded-md bg-violet-500/10 flex items-center justify-center">
+                        <ClipboardList className="h-3.5 w-3.5 text-violet-500" />
+                      </div>
+                      <FormLabel className="text-sm font-medium">Pre-existing Conditions</FormLabel>
+                    </div>
+                    <FormControl>
+                      <TagsInput
+                        value={field.value || []}
+                        onChange={field.onChange}
+                        placeholder="Add condition..."
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Current Medications Field */}
+              <FormField
+                control={form.control}
+                name="medications"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <div className="h-6 w-6 rounded-md bg-emerald-500/10 flex items-center justify-center">
+                        <Pill className="h-3.5 w-3.5 text-emerald-500" />
+                      </div>
+                      <FormLabel className="text-sm font-medium">Current Medications</FormLabel>
+                    </div>
+                    <FormControl>
+                      <TagsInput
+                        value={field.value || []}
+                        onChange={field.onChange}
+                        placeholder="Add medication..."
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+
+          {/* Row 5: Notes */}
+          <Card
+            className="bg-gradient-to-br from-card to-card/80 animate-fade-in-up"
+            style={{ animationDelay: '375ms' }}
           >
             <CardHeader className="pb-3 pt-4">
               <div className="flex items-center gap-2.5">

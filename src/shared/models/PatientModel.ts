@@ -10,6 +10,10 @@ export class PatientModel implements Patient {
   emergency_contact: string | null
   emergency_phone: string | null
   remarks: string | null
+  blood_group: string | null
+  allergies: string | null
+  conditions: string | null
+  medications: string | null
   created_at: Date
   updated_at: Date
   age: number
@@ -26,6 +30,10 @@ export class PatientModel implements Patient {
     this.emergency_contact = data.emergency_contact
     this.emergency_phone = data.emergency_phone
     this.remarks = data.remarks
+    this.blood_group = data.blood_group
+    this.allergies = data.allergies
+    this.conditions = data.conditions
+    this.medications = data.medications
     this.created_at = new Date(data.created_at)
     this.updated_at = new Date(data.updated_at)
     this.ward = data.ward

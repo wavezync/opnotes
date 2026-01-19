@@ -57,7 +57,14 @@ export const EditPatient = () => {
           <div>
             <h1 className="text-2xl font-bold tracking-tight">Edit Patient</h1>
             <p className="text-sm text-muted-foreground">
-              Update details for {data?.name || data?.phn || 'patient'}
+              Update details for{' '}
+              {data ? (
+                <Link to={`/patients/${data.id}`} className="text-primary hover:underline">
+                  {data.name || data.phn}
+                </Link>
+              ) : (
+                'patient'
+              )}
             </p>
           </div>
         </div>

@@ -18,7 +18,12 @@ import {
   Hash,
   User,
   Building2,
-  Cake
+  Cake,
+  HeartPulse,
+  Droplets,
+  AlertTriangle,
+  ClipboardList,
+  Pill
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link, LoaderFunctionArgs, useLoaderData, useNavigate } from 'react-router-dom'
@@ -70,9 +75,20 @@ interface PatientSidebarProps {
   onEdit: () => void
 }
 
+// Helper to parse comma-separated tags
+const parseTags = (str: string | null): string[] => {
+  return str ? str.split(',').filter((tag) => tag.trim()) : []
+}
+
 const PatientSidebar = ({ patient, onEdit }: PatientSidebarProps) => {
   const genderColor = patient.gender === 'M' ? 'bg-blue-500' : 'bg-pink-500'
   const hasRemarks = !!patient.remarks
+
+  // Parse medical history fields
+  const allergies = parseTags(patient.allergies)
+  const conditions = parseTags(patient.conditions)
+  const medications = parseTags(patient.medications)
+  const hasMedicalHistory = patient.blood_group || allergies.length > 0 || conditions.length > 0 || medications.length > 0
 
   // Demographics items
   const demographicItems = [
@@ -212,6 +228,97 @@ const PatientSidebar = ({ patient, onEdit }: PatientSidebarProps) => {
             </div>
           ))}
         </CardContent>
+      )}
+
+      {/* Medical History */}
+      {hasMedicalHistory && (
+        <div className="border-t">
+          <Accordion type="single" collapsible defaultValue="medical-history">
+            <AccordionItem value="medical-history" className="border-b-0">
+              <AccordionTrigger className="px-4 py-3 hover:no-underline">
+                <div className="flex items-center gap-2">
+                  <div className="h-7 w-7 rounded-md bg-rose-500/10 flex items-center justify-center">
+                    <HeartPulse className="h-3.5 w-3.5 text-rose-500" />
+                  </div>
+                  <span className="text-sm font-medium">Medical History</span>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="px-4 pb-3 space-y-3">
+                  {/* Blood Group */}
+                  {patient.blood_group && (
+                    <div className="flex items-center gap-2.5">
+                      <div className="h-7 w-7 rounded-md bg-red-500/10 flex items-center justify-center flex-shrink-0">
+                        <Droplets className="h-3.5 w-3.5 text-red-500" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[10px] text-muted-foreground leading-none mb-0.5">Blood Group</p>
+                        <p className="text-sm font-medium">{patient.blood_group}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Allergies */}
+                  {allergies.length > 0 && (
+                    <div className="space-y-1.5">
+                      <div className="flex items-center gap-2">
+                        <div className="h-6 w-6 rounded-md bg-amber-500/10 flex items-center justify-center flex-shrink-0">
+                          <AlertTriangle className="h-3 w-3 text-amber-500" />
+                        </div>
+                        <p className="text-[10px] text-muted-foreground">Allergies</p>
+                      </div>
+                      <div className="flex flex-wrap gap-1 pl-8">
+                        {allergies.map((allergy) => (
+                          <Badge key={allergy} variant="destructive" className="text-xs">
+                            {allergy}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Pre-existing Conditions */}
+                  {conditions.length > 0 && (
+                    <div className="space-y-1.5">
+                      <div className="flex items-center gap-2">
+                        <div className="h-6 w-6 rounded-md bg-violet-500/10 flex items-center justify-center flex-shrink-0">
+                          <ClipboardList className="h-3 w-3 text-violet-500" />
+                        </div>
+                        <p className="text-[10px] text-muted-foreground">Conditions</p>
+                      </div>
+                      <div className="flex flex-wrap gap-1 pl-8">
+                        {conditions.map((condition) => (
+                          <Badge key={condition} variant="secondary" className="text-xs">
+                            {condition}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Current Medications */}
+                  {medications.length > 0 && (
+                    <div className="space-y-1.5">
+                      <div className="flex items-center gap-2">
+                        <div className="h-6 w-6 rounded-md bg-emerald-500/10 flex items-center justify-center flex-shrink-0">
+                          <Pill className="h-3 w-3 text-emerald-500" />
+                        </div>
+                        <p className="text-[10px] text-muted-foreground">Medications</p>
+                      </div>
+                      <div className="flex flex-wrap gap-1 pl-8">
+                        {medications.map((medication) => (
+                          <Badge key={medication} variant="outline" className="text-xs">
+                            {medication}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        </div>
       )}
 
       {/* Remarks */}

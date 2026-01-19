@@ -12,6 +12,12 @@ export interface PatientTable {
   emergency_phone: string | null
   remarks: string | null
 
+  // Medical history fields
+  blood_group: string | null // 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-'
+  allergies: string | null // Comma-separated: "penicillin,latex,peanuts"
+  conditions: string | null // Comma-separated: "diabetes,hypertension"
+  medications: string | null // Comma-separated: "metformin,lisinopril"
+
   created_at: ColumnType<Date, number, never>
   updated_at: ColumnType<Date, number, number>
 }

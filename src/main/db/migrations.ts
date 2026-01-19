@@ -7,6 +7,7 @@ import * as m_005_backup_settings from './migrations/005_backup_settings'
 import * as m_006_onboarding_setting from './migrations/006_onboarding_setting'
 import * as m_007_activity_log from './migrations/007_activity_log'
 import * as m_008_backup_frequency from './migrations/008_backup_frequency'
+import * as m_009_patient_medical_history from './migrations/009_patient_medical_history'
 
 export default {
   '000_init': m_000_init,
@@ -17,5 +18,6 @@ export default {
   '005_backup_settings': m_005_backup_settings,
   '006_onboarding_setting': m_006_onboarding_setting,
   '007_activity_log': m_007_activity_log,
-  '008_backup_frequency': m_008_backup_frequency
+  '008_backup_frequency': m_008_backup_frequency,
+  '009_patient_medical_history': m_009_patient_medical_history
 }
