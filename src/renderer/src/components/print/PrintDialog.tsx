@@ -10,8 +10,7 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
-  DialogTrigger
+  DialogTitle
 } from '@renderer/components/ui/dialog'
 import {
   DropdownMenu,
@@ -39,14 +38,12 @@ export const PrintDialog = ({
   const [selectedTemplate, setSelectedTemplate] = useState<PrintTemplate | null>(null)
   const [isPrinting, setIsPrinting] = useState(false)
 
-  // Fetch all templates of this type
-  const { data: templatesData } = useQuery({
-    ...queries.printTemplates.list({ type: templateType }),
-    enabled: open
+  // Always fetch templates so we know the count before user clicks
+  const { data: templatesData, isLoading } = useQuery({
+    ...queries.printTemplates.list({ type: templateType })
   })
 
   const templates = useMemo(() => templatesData?.data || [], [templatesData?.data])
-  const hasMultipleTemplates = templates.length > 1
 
   // Set default template when templates load
   useEffect(() => {
@@ -56,14 +53,12 @@ export const PrintDialog = ({
     }
   }, [templates, selectedTemplate])
 
-  const handlePrint = async () => {
-    if (!selectedTemplate) return
-
+  const printWithTemplate = async (template: PrintTemplate) => {
     setIsPrinting(true)
     try {
       await window.electronApi.openPrintDialog({
         title,
-        templateStructure: selectedTemplate.structure,
+        templateStructure: template.structure,
         templateContext: context
       })
       onPrint?.()
@@ -73,33 +68,29 @@ export const PrintDialog = ({
     }
   }
 
-  // If there's only one template (or none), print directly without dialog
+  const handlePrint = async () => {
+    if (!selectedTemplate) return
+    await printWithTemplate(selectedTemplate)
+  }
+
   const handleTriggerClick = async () => {
-    // Query templates first if not loaded
-    if (!templatesData) {
+    // If still loading, open dialog to show loading state
+    if (isLoading) {
       setOpen(true)
       return
     }
 
+    // If only one template (or none), print directly
     if (templates.length <= 1) {
-      // Direct print without dialog
       const template = templates[0]
       if (template) {
-        setIsPrinting(true)
-        try {
-          await window.electronApi.openPrintDialog({
-            title,
-            templateStructure: template.structure,
-            templateContext: context
-          })
-          onPrint?.()
-        } finally {
-          setIsPrinting(false)
-        }
+        await printWithTemplate(template)
       }
-    } else {
-      setOpen(true)
+      return
     }
+
+    // Multiple templates - show dialog
+    setOpen(true)
   }
 
   const defaultTrigger = (
@@ -109,31 +100,24 @@ export const PrintDialog = ({
     </Button>
   )
 
-  // If we haven't loaded templates yet, show dialog to load them
-  // Otherwise, only show dialog if multiple templates exist
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild onClick={(e) => {
-        e.preventDefault()
-        handleTriggerClick()
-      }}>
+    <>
+      <div onClick={handleTriggerClick}>
         {trigger || defaultTrigger}
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Printer className="h-5 w-5" />
-            Print {templateType === 'surgery' ? 'Surgery Note' : 'Follow-up Note'}
-          </DialogTitle>
-          <DialogDescription>
-            {hasMultipleTemplates
-              ? 'Select a template for printing this record.'
-              : 'Click Print to generate the document.'}
-          </DialogDescription>
-        </DialogHeader>
+      </div>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Printer className="h-5 w-5" />
+              Print {templateType === 'surgery' ? 'Surgery Note' : 'Follow-up Note'}
+            </DialogTitle>
+            <DialogDescription>
+              Select a template for printing this record.
+            </DialogDescription>
+          </DialogHeader>
 
-        <div className="py-4">
-          {hasMultipleTemplates && (
+          <div className="py-4">
             <div className="space-y-2">
               <label className="text-sm font-medium text-muted-foreground">
                 Template
@@ -186,42 +170,22 @@ export const PrintDialog = ({
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
-          )}
+          </div>
 
-          {!hasMultipleTemplates && templates.length === 1 && (
-            <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
-              <FileText className="h-5 w-5 text-muted-foreground" />
-              <div>
-                <p className="text-sm font-medium">{templates[0].name}</p>
-                {templates[0].description && (
-                  <p className="text-xs text-muted-foreground">{templates[0].description}</p>
-                )}
-              </div>
-            </div>
-          )}
-
-          {templates.length === 0 && (
-            <div className="text-center py-6 text-muted-foreground">
-              <FileText className="h-8 w-8 mx-auto mb-2 opacity-50" />
-              <p className="text-sm">No templates available for this type.</p>
-              <p className="text-xs">Create a template in Settings → Print Templates.</p>
-            </div>
-          )}
-        </div>
-
-        <DialogFooter>
-          <Button variant="outline" onClick={() => setOpen(false)}>
-            Cancel
-          </Button>
-          <Button
-            onClick={handlePrint}
-            disabled={!selectedTemplate || isPrinting}
-          >
-            <Printer className="h-4 w-4 mr-2" />
-            {isPrinting ? 'Printing...' : 'Print'}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={handlePrint}
+              disabled={!selectedTemplate || isPrinting}
+            >
+              <Printer className="h-4 w-4 mr-2" />
+              {isPrinting ? 'Printing...' : 'Print'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }
