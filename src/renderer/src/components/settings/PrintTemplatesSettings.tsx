@@ -16,11 +16,7 @@ import {
 import { cn } from '../../lib/utils'
 import { queries } from '../../lib/queries'
 import { unwrapResult } from '../../lib/utils'
-import {
-  PrintTemplate,
-  DefaultPrintTemplate,
-  TemplateType
-} from '../../../../shared/types/template-blocks'
+import { PrintTemplate, TemplateType } from '../../../../shared/types/template-blocks'
 import { Button } from '../../components/ui/button'
 import { Card, CardDescription, CardHeader, CardTitle } from '../../components/ui/card'
 import {
@@ -40,30 +36,17 @@ import {
   AlertDialogHeader,
   AlertDialogTitle
 } from '../../components/ui/alert-dialog'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle
-} from '../../components/ui/dialog'
 import { toast } from 'sonner'
 import { Badge } from '../../components/ui/badge'
-import { Checkbox } from '../../components/ui/checkbox'
-import { Label } from '../../components/ui/label'
 
 export const PrintTemplatesSettings = () => {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [templateToDelete, setTemplateToDelete] = useState<PrintTemplate | null>(null)
-  const [restoreDialogOpen, setRestoreDialogOpen] = useState(false)
-  const [selectedDefault, setSelectedDefault] = useState<DefaultPrintTemplate | null>(null)
-  const [setAsDefault, setSetAsDefault] = useState(false)
+  const [resetDialogOpen, setResetDialogOpen] = useState(false)
 
   const { data: templatesData, isLoading } = useQuery(queries.printTemplates.list({}))
-  const { data: defaultTemplates } = useQuery(queries.printTemplates.defaults())
 
   const deleteMutation = useMutation({
     mutationFn: (id: number) => unwrapResult(window.api.invoke('deletePrintTemplateById', id)),
@@ -105,21 +88,15 @@ export const PrintTemplatesSettings = () => {
     }
   })
 
-  const restoreMutation = useMutation({
-    mutationFn: ({ key, setAsDefault }: { key: string; setAsDefault: boolean }) =>
-      unwrapResult(window.api.invoke('restorePrintTemplateFromDefault', key, { setAsDefault })),
-    onSuccess: (result) => {
+  const resetMutation = useMutation({
+    mutationFn: () => unwrapResult(window.api.invoke('resetPrintTemplatesToDefaults')),
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queries.printTemplates.list({}).queryKey })
-      toast.success('Template restored from default')
-      setRestoreDialogOpen(false)
-      setSelectedDefault(null)
-      setSetAsDefault(false)
-      if (result) {
-        navigate(`/settings/print-templates/${result.id}`)
-      }
+      toast.success('Templates reset to defaults')
+      setResetDialogOpen(false)
     },
     onError: () => {
-      toast.error('Failed to restore template')
+      toast.error('Failed to reset templates')
     }
   })
 
@@ -142,16 +119,12 @@ export const PrintTemplatesSettings = () => {
     setDefaultMutation.mutate({ id: template.id, type: template.type })
   }
 
-  const handleRestore = (defaultTemplate: DefaultPrintTemplate) => {
-    setSelectedDefault(defaultTemplate)
-    setSetAsDefault(false)
-    setRestoreDialogOpen(true)
+  const handleReset = () => {
+    setResetDialogOpen(true)
   }
 
-  const confirmRestore = () => {
-    if (selectedDefault) {
-      restoreMutation.mutate({ key: selectedDefault.key, setAsDefault })
-    }
+  const confirmReset = () => {
+    resetMutation.mutate()
   }
 
   const TemplateCard = ({ template }: { template: PrintTemplate }) => (
@@ -317,24 +290,10 @@ export const PrintTemplatesSettings = () => {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              {defaultTemplates && defaultTemplates.length > 0 && (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm">
-                      <RotateCcw className="h-4 w-4 mr-2" />
-                      Restore Default
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    {defaultTemplates.map((dt) => (
-                      <DropdownMenuItem key={dt.key} onClick={() => handleRestore(dt)}>
-                        <FileText className="h-4 w-4 mr-2" />
-                        {dt.name}
-                      </DropdownMenuItem>
-                    ))}
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              )}
+              <Button variant="outline" size="sm" onClick={handleReset}>
+                <RotateCcw className="h-4 w-4 mr-2" />
+                Reset to Defaults
+              </Button>
               {hasTemplates && (
                 <Button size="sm" onClick={() => navigate('/settings/print-templates/new')}>
                   <Plus className="h-4 w-4 mr-2" />
@@ -403,38 +362,27 @@ export const PrintTemplatesSettings = () => {
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Restore Default Dialog */}
-      <Dialog open={restoreDialogOpen} onOpenChange={setRestoreDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Restore Default Template</DialogTitle>
-            <DialogDescription>
-              This will create a new template based on the default &ldquo;{selectedDefault?.name}
-              &rdquo;.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="py-4">
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="setAsDefault"
-                checked={setAsDefault}
-                onCheckedChange={(checked) => setSetAsDefault(checked === true)}
-              />
-              <Label htmlFor="setAsDefault" className="text-sm font-normal">
-                Set as default template for {selectedDefault?.type} notes
-              </Label>
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setRestoreDialogOpen(false)}>
-              Cancel
-            </Button>
-            <Button onClick={confirmRestore} disabled={restoreMutation.isPending}>
-              {restoreMutation.isPending ? 'Restoring...' : 'Restore Template'}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      {/* Reset to Defaults Confirmation Dialog */}
+      <AlertDialog open={resetDialogOpen} onOpenChange={setResetDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Reset to Default Templates</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will delete all your custom templates and restore the original default templates.
+              This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmReset}
+              disabled={resetMutation.isPending}
+            >
+              {resetMutation.isPending ? 'Resetting...' : 'Reset Templates'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

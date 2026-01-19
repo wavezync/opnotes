@@ -59,7 +59,8 @@ import {
   setDefaultPrintTemplate,
   listDefaultPrintTemplates,
   getDefaultPrintTemplateByKey,
-  restorePrintTemplateFromDefault
+  restorePrintTemplateFromDefault,
+  resetPrintTemplatesToDefaults
 } from './repository/print-template'
 
 // Custom APIs for renderer
@@ -124,7 +125,8 @@ export const api = {
   setDefaultPrintTemplate,
   listDefaultPrintTemplates,
   getDefaultPrintTemplateByKey,
-  restorePrintTemplateFromDefault
+  restorePrintTemplateFromDefault,
+  resetPrintTemplatesToDefaults
 }
 
 export type ApiType = typeof api

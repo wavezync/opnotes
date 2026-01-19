@@ -281,3 +281,36 @@ export const restorePrintTemplateFromDefault = async (
     isDefault: options.setAsDefault ?? false
   })
 }
+
+// Reset all print templates to defaults
+// Deletes ALL existing templates and recreates from default templates
+export const resetPrintTemplatesToDefaults = async (): Promise<PrintTemplate[]> => {
+  // Delete all existing print templates
+  await db.deleteFrom('print_templates').execute()
+
+  // Get all default templates
+  const defaults = await listDefaultPrintTemplates()
+
+  // Track which types we've seen to set first of each type as default
+  const seenTypes = new Set<TemplateType>()
+
+  // Create templates from each default
+  const created: PrintTemplate[] = []
+  for (const defaultTemplate of defaults) {
+    const isFirstOfType = !seenTypes.has(defaultTemplate.type)
+    seenTypes.add(defaultTemplate.type)
+
+    const template = await createPrintTemplate({
+      name: defaultTemplate.name,
+      type: defaultTemplate.type,
+      description: defaultTemplate.description,
+      structure: defaultTemplate.structure,
+      pageSettings: defaultTemplate.pageSettings,
+      isDefault: isFirstOfType
+    })
+
+    created.push(template)
+  }
+
+  return created
+}

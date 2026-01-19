@@ -148,15 +148,26 @@ export const PrintTemplateEditorPage = () => {
             <ArrowLeft className="h-4 w-4" />
           </Button>
           <div className="flex items-center gap-3">
-            <Input
-              value={name}
-              onChange={(e) => {
-                setName(e.target.value)
-                setIsDirty(true)
-              }}
-              placeholder="Template name"
-              className="w-64 h-8 text-sm font-medium"
-            />
+            <div className="flex flex-col gap-1">
+              <Input
+                value={name}
+                onChange={(e) => {
+                  setName(e.target.value)
+                  setIsDirty(true)
+                }}
+                placeholder="Template name"
+                className="w-64 h-8 text-sm font-medium"
+              />
+              <Input
+                value={description}
+                onChange={(e) => {
+                  setDescription(e.target.value)
+                  setIsDirty(true)
+                }}
+                placeholder="Description (optional)"
+                className="w-64 h-7 text-xs text-muted-foreground"
+              />
+            </div>
             {isNew && (
               <Select
                 value={templateType}
