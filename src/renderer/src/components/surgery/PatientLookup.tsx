@@ -120,6 +120,34 @@ export function PatientLookup({
             <p className="text-sm text-muted-foreground text-center max-w-sm">
               Enter the patient&apos;s PHN, BHT number, or name to find their record
             </p>
+
+            {/* Divider with "or" */}
+            <div className="flex items-center gap-3 w-full max-w-xs my-6">
+              <div className="flex-1 h-px bg-border" />
+              <span className="text-xs text-muted-foreground uppercase">or</span>
+              <div className="flex-1 h-px bg-border" />
+            </div>
+
+            {/* Create New Patient Button */}
+            <button
+              type="button"
+              onClick={onCreatePatient}
+              className="group rounded-xl border-2 border-dashed border-muted-foreground/25 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all duration-200 p-6 w-full max-w-xs"
+            >
+              <div className="flex flex-col items-center gap-3">
+                <div className="h-11 w-11 rounded-lg bg-emerald-500 flex items-center justify-center">
+                  <UserPlus className="h-5 w-5 text-white" />
+                </div>
+                <div className="text-center">
+                  <p className="font-semibold text-foreground">
+                    Create New Patient
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Add a new patient record
+                  </p>
+                </div>
+              </div>
+            </button>
           </div>
         )}
       </div>
