@@ -1,5 +1,12 @@
 # Op Notes
 
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/wavezync/opnotes/releases)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Electron](https://img.shields.io/badge/electron-33-47848F.svg?logo=electron&logoColor=white)](https://www.electronjs.org/)
+[![TypeScript](https://img.shields.io/badge/typescript-5.7-3178C6.svg?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![React](https://img.shields.io/badge/react-18-61DAFB.svg?logo=react&logoColor=black)](https://react.dev/)
+[![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg)](https://github.com/wavezync/opnotes/releases)
+
 A cross-platform desktop application for managing surgical notes in hospitals. Built with Electron, React, and SQLite.
 
 ## Features
