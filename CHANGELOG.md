@@ -2,6 +2,76 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0-alpha] - 2026-01-19
+
+### 🚀 Features
+
+- Add telephone setting for print header
+- Redesign surgery op-note print template
+- Add Date of Admission and Date of Discharge fields to surgeries
+- Update indicator
+- Add surgery templates feature
+- Add WaveZync branding footer
+- Enhance template selector with filters and preview
+- Add follow-up print functionality
+- Add database backup and restore functionality
+- Add onboarding wizard for first-time setup
+- Refresh UI with new sidebar, header, and improved dialogs
+- Redesign dashboard with activity log and modern UI
+- Overhaul theme system with 9 themes and bundled fonts
+- Redesign patient view with sidebar layout
+- Redesign patient edit form with card-based layout
+- Redesign patients list with card layout and sorting
+- Redesign doctors list with card layout and sorting
+- Redesign surgeries list with card layout and sorting
+- Redesign surgery form with card layout and prominent shortcut hint
+- Make patient name clickable in surgery add/edit pages
+- Redesign view surgery page and update sheet components
+- Add quick add surgery workflow with patient lookup
+- Redesign doctor add/edit pages with two-column layout
+- Redesign patient pages with modern header and two-column layout
+- Redesign update indicator with polished animations and theme integration
+- Replace react-hot-toast with sonner for themed toasts
+- Redesign onboarding wizard with split layout and polished UI
+- Enhance retro theme with CRT effects and improved colors
+- Add ember, frost, and sakura themes
+- Move version to sidebar with GitHub release link
+- Add configurable backup frequency with daily/weekly options
+- Use light WaveZync logo for light themes
+- Show Ctrl instead of ⌘ for keyboard shortcuts on Windows/Linux
+- Add paginated activity log page with filters
+- Increase default window size and add minimum constraints
+- Add Support section with community and documentation pages
+- Add navigation links to entity names across screens
+- Add doctor view page with surgery history (#15)
+- Add patient medical history fields
+- Add comprehensive test suite with Vitest and Playwright (#16)
+- Add create patient button to patient lookup empty state
+- Visual print template builder (#17)
+- Add update channel selection for alpha/beta/stable releases
+
+### 🚜 Refactor
+
+- Simplify print button with custom styling
+
+### 📚 Documentation
+
+- Add CLAUDE.md for Claude Code guidance
+- Enhance README with features, tech stack, and project structure
+- Add onboarding section to CLAUDE.md
+
+### 🎨 Styling
+
+- Format migration file
+
+### ⚙️ Miscellaneous Tasks
+
+- Update CHANGELOG.md for v0.0.11 [skip ci]
+- Upgrade actions
+- Upgrade ESLint to v9 with flat config
+- Bump version to 1.0.0 and update README badges
+- Update git-cliff-action to v4
+
 ## [0.0.11] - 2024-06-14
 
 ### 🐛 Bug Fixes
