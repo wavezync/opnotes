@@ -5,7 +5,7 @@ import { useBreadcrumbs } from '@renderer/contexts/BreadcrumbContext'
 import { useKeyboardEvent } from '@renderer/hooks/useKeyboardEvent'
 import { queries } from '@renderer/lib/queries'
 import { useQueryClient } from '@tanstack/react-query'
-import { Save, UserPlus, UserCog, Briefcase, Award, Lightbulb } from 'lucide-react'
+import { ArrowLeft, Save, UserPlus, UserCog, Briefcase, Award, Lightbulb } from 'lucide-react'
 import { useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { DoctorModel } from 'src/shared/models/DoctorModel'
@@ -37,6 +37,9 @@ export const AddNewDoctor = () => {
       {/* Header Section */}
       <div className="flex items-center justify-between mb-6 animate-fade-in-up">
         <div className="flex items-center gap-3">
+          <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
           <div className="h-12 w-12 rounded-xl bg-violet-500/10 flex items-center justify-center">
             <UserPlus className="h-6 w-6 text-violet-500" />
           </div>

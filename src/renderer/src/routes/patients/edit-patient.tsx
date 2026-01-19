@@ -7,10 +7,10 @@ import { queries } from '@renderer/lib/queries'
 import { cn } from '@renderer/lib/utils'
 import { queryOptions, useQuery, useQueryClient } from '@tanstack/react-query'
 import { format } from 'date-fns'
-import { Save, UserCog, Hash, Cake, User, Building2, Calendar, Eye } from 'lucide-react'
+import { ArrowLeft, Save, UserCog, Hash, Cake, User, Building2, Calendar, Eye } from 'lucide-react'
 import { useEffect, useRef } from 'react'
 import { toast } from '@renderer/components/ui/sonner'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { Patient } from 'src/shared/types/db'
 import womenIcon from '../../../../../resources/woman.png?asset'
 import manIcon from '../../../../../resources/man.png?asset'
@@ -22,6 +22,7 @@ export const getPatientByIdQuery = (id: number) =>
 
 export const EditPatient = () => {
   const { id } = useParams()
+  const navigate = useNavigate()
   const ref = useRef<NewPatientFormRef>(null)
   const queryClient = useQueryClient()
   const { setBreadcrumbs } = useBreadcrumbs()
@@ -51,6 +52,9 @@ export const EditPatient = () => {
       {/* Header Section */}
       <div className="flex items-center justify-between mb-6 animate-fade-in-up">
         <div className="flex items-center gap-3">
+          <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
           <div className="h-12 w-12 rounded-xl bg-emerald-500/10 flex items-center justify-center">
             <UserCog className="h-6 w-6 text-emerald-500" />
           </div>

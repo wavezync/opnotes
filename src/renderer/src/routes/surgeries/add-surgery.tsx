@@ -1,7 +1,7 @@
 import { Button } from '@renderer/components/ui/button'
 import { useBreadcrumbs } from '@renderer/contexts/BreadcrumbContext'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { Save, Stethoscope } from 'lucide-react'
+import { ArrowLeft, Save, Stethoscope } from 'lucide-react'
 import { useEffect, useMemo, useRef } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { getPatientByIdQuery } from '../patients/edit-patient'
@@ -45,6 +45,9 @@ export const AddNewSurgery = () => {
       {/* Header Section */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
+          <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
           <div className="h-12 w-12 rounded-xl bg-emerald-500/10 flex items-center justify-center">
             <Stethoscope className="h-6 w-6 text-emerald-500" />
           </div>
