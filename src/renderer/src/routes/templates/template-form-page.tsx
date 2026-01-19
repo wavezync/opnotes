@@ -17,14 +17,13 @@ export const AddTemplatePage = () => {
 
   useEffect(() => {
     setBreadcrumbs([
-      { label: 'Settings', to: '/settings' },
-      { label: 'Templates', to: '/settings?tab=templates' },
+      { label: 'Templates', to: '/templates' },
       { label: 'Add Template' }
     ])
   }, [setBreadcrumbs])
 
   const handleSuccess = () => {
-    navigate('/settings?tab=templates')
+    navigate('/templates')
   }
 
   const handleCancel = () => {
@@ -146,14 +145,13 @@ export const EditTemplatePage = () => {
 
   useEffect(() => {
     setBreadcrumbs([
-      { label: 'Settings', to: '/settings' },
-      { label: 'Templates', to: '/settings?tab=templates' },
+      { label: 'Templates', to: '/templates' },
       { label: template?.title || 'Edit Template' }
     ])
   }, [setBreadcrumbs, template])
 
   const handleSuccess = () => {
-    navigate('/settings?tab=templates')
+    navigate('/templates')
   }
 
   const handleCancel = () => {

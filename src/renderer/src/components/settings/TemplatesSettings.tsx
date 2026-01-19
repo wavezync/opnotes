@@ -103,11 +103,11 @@ export const TemplatesSettings = () => {
   })
 
   const handleAddNew = () => {
-    navigate('/settings/templates/add')
+    navigate('/templates/add')
   }
 
   const handleEdit = (template: SurgeryTemplate) => {
-    navigate(`/settings/templates/${template.id}/edit`)
+    navigate(`/templates/${template.id}/edit`)
   }
 
   const handleDelete = (template: SurgeryTemplate) => {

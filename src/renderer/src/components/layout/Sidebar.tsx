@@ -6,6 +6,7 @@ import {
   Stethoscope,
   UserCog,
   ScrollText,
+  FileStack,
   HeartHandshake,
   Settings
 } from 'lucide-react'
@@ -64,6 +65,7 @@ export function Sidebar() {
     { to: '/patients', icon: <Users className="h-5 w-5" />, label: 'Patients' },
     { to: '/surgeries', icon: <Stethoscope className="h-5 w-5" />, label: 'Surgeries' },
     { to: '/doctors', icon: <UserCog className="h-5 w-5" />, label: 'Doctors' },
+    { to: '/templates', icon: <FileStack className="h-5 w-5" />, label: 'Templates' },
     { to: '/activity', icon: <ScrollText className="h-5 w-5" />, label: 'Activity' }
   ]
 

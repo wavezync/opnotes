@@ -1,15 +1,14 @@
 import { useBreadcrumbs } from '@renderer/contexts/BreadcrumbContext'
 import { useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { Settings, FileText, HardDrive, Building2, Printer } from 'lucide-react'
+import { Settings, HardDrive, Building2, Printer } from 'lucide-react'
 import { cn } from '@renderer/lib/utils'
 import { GeneralSettings } from '@renderer/components/settings/GeneralSettings'
-import { TemplatesSettings } from '@renderer/components/settings/TemplatesSettings'
 import { BackupSettings } from '@renderer/components/settings/BackupSettings'
 import { PrintTemplatesSettings } from '@renderer/components/settings/PrintTemplatesSettings'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@renderer/components/ui/tabs'
 
-type SettingsSection = 'general' | 'templates' | 'backup' | 'print-templates'
+type SettingsSection = 'general' | 'backup' | 'print-templates'
 
 interface NavItemProps {
   icon: React.ReactNode
@@ -58,13 +57,11 @@ export const SettingsIndex = () => {
 
   const tabParam = searchParams.get('tab')
   const activeSection: SettingsSection =
-    tabParam === 'templates'
-      ? 'templates'
-      : tabParam === 'backup'
-        ? 'backup'
-        : tabParam === 'print-templates'
-          ? 'print-templates'
-          : 'general'
+    tabParam === 'backup'
+      ? 'backup'
+      : tabParam === 'print-templates'
+        ? 'print-templates'
+        : 'general'
 
   const setActiveSection = (section: SettingsSection) => {
     setSearchParams(section === 'general' ? {} : { tab: section })
@@ -105,14 +102,6 @@ export const SettingsIndex = () => {
               color="bg-blue-500"
             />
             <NavItem
-              icon={<FileText className="h-4 w-4" />}
-              label="Templates"
-              description="Surgery templates"
-              isActive={activeSection === 'templates'}
-              onClick={() => setActiveSection('templates')}
-              color="bg-violet-500"
-            />
-            <NavItem
               icon={<HardDrive className="h-4 w-4" />}
               label="Backup"
               description="Data backup"
@@ -135,7 +124,6 @@ export const SettingsIndex = () => {
           style={{ animationDelay: '100ms' }}
         >
           {activeSection === 'general' && <GeneralSettings />}
-          {activeSection === 'templates' && <TemplatesSettings />}
           {activeSection === 'backup' && <BackupSettings />}
           {activeSection === 'print-templates' && <PrintTemplatesSettings />}
         </div>
@@ -147,12 +135,9 @@ export const SettingsIndex = () => {
           value={activeSection}
           onValueChange={(value) => setActiveSection(value as SettingsSection)}
         >
-          <TabsList className="w-full grid grid-cols-4">
+          <TabsList className="w-full grid grid-cols-3">
             <TabsTrigger value="general">
               <Building2 className="h-4 w-4" />
-            </TabsTrigger>
-            <TabsTrigger value="templates">
-              <FileText className="h-4 w-4" />
             </TabsTrigger>
             <TabsTrigger value="backup">
               <HardDrive className="h-4 w-4" />
@@ -163,9 +148,6 @@ export const SettingsIndex = () => {
           </TabsList>
           <TabsContent value="general">
             <GeneralSettings />
-          </TabsContent>
-          <TabsContent value="templates">
-            <TemplatesSettings />
           </TabsContent>
           <TabsContent value="backup">
             <BackupSettings />

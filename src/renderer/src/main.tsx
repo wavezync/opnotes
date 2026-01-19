@@ -26,7 +26,8 @@ import { SurgierisIndex } from './routes/surgeries/list-surgeries'
 import { QuickAddSurgery } from './routes/surgeries/quick-add-surgery'
 import { SupportIndex } from './routes/support/support-index'
 import { SettingsIndex } from './routes/settings/settings-index'
-import { AddTemplatePage, EditTemplatePage } from './routes/settings/template-form-page'
+import { TemplatesIndex } from './routes/templates/templates-index'
+import { AddTemplatePage, EditTemplatePage } from './routes/templates/template-form-page'
 import { PrintTemplateEditorPage } from './routes/settings/print-template-editor'
 import { Navigate } from 'react-router-dom'
 import { ActivityIndex } from './routes/activity/activity-index'
@@ -116,16 +117,21 @@ const router = createHashRouter([
         element: <SettingsIndex />
       },
       {
-        path: '/settings/templates/add',
+        path: '/settings/print-templates',
+        element: <Navigate to="/settings?tab=print-templates" replace />
+      },
+
+      {
+        path: '/templates',
+        element: <TemplatesIndex />
+      },
+      {
+        path: '/templates/add',
         element: <AddTemplatePage />
       },
       {
-        path: '/settings/templates/:id/edit',
+        path: '/templates/:id/edit',
         element: <EditTemplatePage />
-      },
-      {
-        path: '/settings/print-templates',
-        element: <Navigate to="/settings?tab=print-templates" replace />
       },
       {
         path: '/settings/print-templates/:id',
