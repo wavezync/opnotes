@@ -39,5 +39,6 @@ linux:
 appImage:
   artifactName: ${name}-${version}.${ext}
 npmRebuild: false
+generateUpdatesFilesForAllChannels: true
 publish:
   provider: github

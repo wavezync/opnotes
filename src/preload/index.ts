@@ -41,6 +41,14 @@ const quitAndInstall = () => {
   return ipcRenderer.invoke('quitAndInstall')
 }
 
+const getUpdateChannel = async (): Promise<'stable' | 'beta' | 'alpha'> => {
+  return await ipcRenderer.invoke('getUpdateChannel')
+}
+
+const setUpdateChannel = async (channel: 'stable' | 'beta' | 'alpha'): Promise<string> => {
+  return await ipcRenderer.invoke('setUpdateChannel', channel)
+}
+
 const onUpdateStatus = (callback: (payload: UpdateStatusPayload) => void) => {
   const handler = (_: Electron.IpcRendererEvent, payload: UpdateStatusPayload) => callback(payload)
   ipcRenderer.on('update-status', handler)
@@ -84,6 +92,8 @@ const electronApi = {
   downloadUpdate,
   quitAndInstall,
   onUpdateStatus,
+  getUpdateChannel,
+  setUpdateChannel,
   selectBackupFolder,
   selectBackupFile,
   saveBackupAs,

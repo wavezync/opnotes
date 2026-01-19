@@ -1,6 +1,9 @@
 import { BrowserWindow, ipcMain } from 'electron'
 import electronUpdater, { type AppUpdater, type UpdateInfo } from 'electron-updater'
 import { createBackup } from './backup'
+import { getAllSettings, updateSetting } from './repository/app-settings'
+
+export type UpdateChannel = 'stable' | 'beta' | 'alpha'
 
 export type UpdateStatus =
   | 'idle'
@@ -24,6 +27,34 @@ export interface UpdateStatusPayload {
 }
 
 let autoUpdater: AppUpdater | null = null
+
+async function getUpdateChannelFromSettings(): Promise<UpdateChannel> {
+  try {
+    const settings = await getAllSettings()
+    const channelSetting = settings.find((s) => s.key === 'update_channel')
+    const channel = channelSetting?.value as UpdateChannel
+    if (channel && ['stable', 'beta', 'alpha'].includes(channel)) {
+      return channel
+    }
+  } catch (e) {
+    console.error('Failed to get update channel from settings:', e)
+  }
+  return 'stable' // default to stable
+}
+
+async function applyUpdateChannel(): Promise<void> {
+  if (!autoUpdater) return
+  const channel = await getUpdateChannelFromSettings()
+  // For stable, we use 'latest' which is the default
+  // For beta/alpha, we set allowPrerelease and the channel
+  if (channel === 'stable') {
+    autoUpdater.channel = 'latest'
+    autoUpdater.allowPrerelease = false
+  } else {
+    autoUpdater.channel = channel
+    autoUpdater.allowPrerelease = true
+  }
+}
 
 function getMainWindow(): BrowserWindow | null {
   const windows = BrowserWindow.getAllWindows()
@@ -88,7 +119,22 @@ export function registerUpdaterIpcHandlers(): void {
     if (!autoUpdater) {
       throw new Error('Auto updater not initialized')
     }
+    // Apply channel settings before checking
+    await applyUpdateChannel()
     return await autoUpdater.checkForUpdates()
+  })
+
+  ipcMain.handle('getUpdateChannel', async () => {
+    return await getUpdateChannelFromSettings()
+  })
+
+  ipcMain.handle('setUpdateChannel', async (_event, channel: UpdateChannel) => {
+    if (!['stable', 'beta', 'alpha'].includes(channel)) {
+      throw new Error('Invalid update channel')
+    }
+    await updateSetting('update_channel', channel)
+    await applyUpdateChannel()
+    return channel
   })
 
   ipcMain.handle('downloadUpdate', async () => {

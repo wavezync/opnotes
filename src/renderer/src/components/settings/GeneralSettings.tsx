@@ -10,15 +10,24 @@ import {
 import { Input } from '@renderer/components/ui/input'
 import { Button } from '@renderer/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@renderer/components/ui/card'
-import { Save, RotateCcw, Building2, Phone, Building, Wand2 } from 'lucide-react'
+import { Save, RotateCcw, Building2, Phone, Building, Wand2, RefreshCw } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useSettings } from '@renderer/contexts/SettingsContext'
 import { queries } from '@renderer/lib/queries'
 import { useEffect } from 'react'
 import { toast } from '@renderer/components/ui/sonner'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@renderer/components/ui/select'
+
+type UpdateChannel = 'stable' | 'beta' | 'alpha'
 
 const formSchema = z.object({
   hospital: z.string(),
@@ -37,6 +46,22 @@ export const GeneralSettings = () => {
       hospital: '',
       unit: '',
       telephone: ''
+    }
+  })
+
+  const { data: updateChannel = 'stable' } = useQuery({
+    queryKey: ['updateChannel'],
+    queryFn: () => window.electronApi.getUpdateChannel()
+  })
+
+  const updateChannelMutation = useMutation({
+    mutationFn: (channel: UpdateChannel) => window.electronApi.setUpdateChannel(channel),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['updateChannel'] })
+      toast.success('Update channel changed')
+    },
+    onError: (error: Error) => {
+      toast.error(error.message)
     }
   })
 
@@ -193,10 +218,78 @@ export const GeneralSettings = () => {
         </CardContent>
       </Card>
 
+      {/* Update Channel Card */}
+      <Card
+        className="bg-gradient-to-br from-card to-card/80 animate-fade-in-up overflow-hidden"
+        style={{ animationDelay: '75ms' }}
+      >
+        <CardHeader className="pb-4 pt-5 relative">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl" />
+          <div className="flex items-center gap-3 relative">
+            <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-green-500/20 to-green-600/20 flex items-center justify-center border border-green-500/20">
+              <RefreshCw className="h-5 w-5 text-green-500" />
+            </div>
+            <div>
+              <CardTitle className="text-base font-semibold">Update Channel</CardTitle>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Choose which updates you receive
+              </p>
+            </div>
+          </div>
+        </CardHeader>
+
+        <CardContent className="pt-0">
+          <div className="space-y-4">
+            <div>
+              <label className="text-sm font-medium mb-2 block">Release Channel</label>
+              <Select
+                value={updateChannel}
+                onValueChange={(value: UpdateChannel) => updateChannelMutation.mutate(value)}
+                disabled={updateChannelMutation.isPending}
+              >
+                <SelectTrigger className="w-full md:w-64 h-11">
+                  <SelectValue placeholder="Select channel" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="stable">
+                    <div className="flex flex-col items-start">
+                      <span className="font-medium">Stable</span>
+                      <span className="text-xs text-muted-foreground">
+                        Recommended for most users
+                      </span>
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="beta">
+                    <div className="flex flex-col items-start">
+                      <span className="font-medium">Beta</span>
+                      <span className="text-xs text-muted-foreground">
+                        Preview upcoming features
+                      </span>
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="alpha">
+                    <div className="flex flex-col items-start">
+                      <span className="font-medium">Alpha</span>
+                      <span className="text-xs text-muted-foreground">
+                        Bleeding edge, may be unstable
+                      </span>
+                    </div>
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground mt-2">
+                Stable releases are thoroughly tested. Beta and alpha channels receive updates
+                earlier but may contain bugs.
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Setup Wizard Card */}
       <Card
         className="bg-gradient-to-br from-amber-500/5 to-amber-600/5 border-amber-500/20 animate-fade-in-up"
-        style={{ animationDelay: '75ms' }}
+        style={{ animationDelay: '150ms' }}
       >
         <CardHeader className="pb-3 pt-4">
           <div className="flex items-center gap-2.5">

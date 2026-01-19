@@ -12,6 +12,8 @@ type ElectronApi = ElectronAPI & {
   downloadUpdate: () => Promise<void>
   quitAndInstall: () => Promise<void>
   onUpdateStatus: (callback: (payload: UpdateStatusPayload) => void) => () => void
+  getUpdateChannel: () => Promise<'stable' | 'beta' | 'alpha'>
+  setUpdateChannel: (channel: 'stable' | 'beta' | 'alpha') => Promise<string>
   selectBackupFolder: () => Promise<string | null>
   selectBackupFile: () => Promise<string | null>
   saveBackupAs: (
