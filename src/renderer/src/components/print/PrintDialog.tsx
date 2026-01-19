@@ -36,7 +36,6 @@ export const PrintDialog = ({
 }: PrintDialogProps) => {
   const [open, setOpen] = useState(false)
   const [selectedTemplate, setSelectedTemplate] = useState<PrintTemplate | null>(null)
-  const [isPrinting, setIsPrinting] = useState(false)
 
   // Always fetch templates so we know the count before user clicks
   const { data: templatesData, isLoading } = useQuery({
@@ -54,18 +53,13 @@ export const PrintDialog = ({
   }, [templates, selectedTemplate])
 
   const printWithTemplate = async (template: PrintTemplate) => {
-    setIsPrinting(true)
-    try {
-      await window.electronApi.openPrintDialog({
-        title,
-        templateStructure: template.structure,
-        templateContext: context
-      })
-      onPrint?.()
-      setOpen(false)
-    } finally {
-      setIsPrinting(false)
-    }
+    await window.electronApi.openPrintDialog({
+      title,
+      templateStructure: template.structure,
+      templateContext: context
+    })
+    onPrint?.()
+    setOpen(false)
   }
 
   const handlePrint = async () => {
@@ -94,9 +88,9 @@ export const PrintDialog = ({
   }
 
   const defaultTrigger = (
-    <Button variant="outline" disabled={isPrinting}>
+    <Button variant="outline">
       <Printer className="h-4 w-4 mr-2" />
-      {isPrinting ? 'Printing...' : 'Print'}
+      Print
     </Button>
   )
 
@@ -178,10 +172,10 @@ export const PrintDialog = ({
             </Button>
             <Button
               onClick={handlePrint}
-              disabled={!selectedTemplate || isPrinting}
+              disabled={!selectedTemplate}
             >
               <Printer className="h-4 w-4 mr-2" />
-              {isPrinting ? 'Printing...' : 'Print'}
+              Print
             </Button>
           </DialogFooter>
         </DialogContent>
