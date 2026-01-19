@@ -1,6 +1,11 @@
+import { TemplateStructure, TemplateContext } from '../shared/types/template-blocks'
+
 export interface PrintDialogArgs {
   title?: string
   data?: object
+  // New template builder fields
+  templateStructure?: TemplateStructure
+  templateContext?: TemplateContext
 }
 
 export type UpdateStatus =

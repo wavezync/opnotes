@@ -5,7 +5,9 @@ import {
   DoctorSurgeryFilter,
   PatientFilter,
   SurgeryFilter,
-  SurgeryTemplateFilter
+  SurgeryTemplateFilter,
+  PrintTemplateFilter,
+  TemplateType
 } from 'src/shared/types/api'
 import { unwrapResult } from './utils'
 
@@ -105,6 +107,24 @@ export const queries = createQueryKeyStore({
     list: (filter: ActivityLogFilter) => ({
       queryKey: [filter],
       queryFn: () => unwrapResult(window.api.invoke('listActivityLog', filter))
+    })
+  },
+  printTemplates: {
+    list: (filter: PrintTemplateFilter = {}) => ({
+      queryKey: [filter],
+      queryFn: () => unwrapResult(window.api.invoke('listPrintTemplates', filter))
+    }),
+    get: (id: number) => ({
+      queryKey: [id],
+      queryFn: () => unwrapResult(window.api.invoke('getPrintTemplateById', id))
+    }),
+    getDefault: (type: TemplateType) => ({
+      queryKey: [type],
+      queryFn: () => unwrapResult(window.api.invoke('getDefaultPrintTemplate', type))
+    }),
+    defaults: (type?: TemplateType) => ({
+      queryKey: ['defaults', type],
+      queryFn: () => unwrapResult(window.api.invoke('listDefaultPrintTemplates', type))
     })
   }
 })

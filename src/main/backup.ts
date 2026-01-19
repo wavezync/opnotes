@@ -4,6 +4,7 @@ import { copyFile, mkdir, readdir, stat, unlink } from 'fs/promises'
 import log from 'electron-log'
 import { DB_PATH, db } from './db'
 import { BackupFrequency, BackupInfo, BackupReason, BackupResult } from '../shared/types/backup'
+import { sql } from 'kysely'
 
 const DEFAULT_BACKUP_FOLDER = join(app.getPath('userData'), 'backups')
 const MAX_BACKUPS = 10
@@ -44,6 +45,15 @@ async function updateLastBackupTime(): Promise<void> {
 export async function createBackup(reason: BackupReason): Promise<BackupResult> {
   try {
     log.info(`Creating backup (reason: ${reason})`)
+
+    // Checkpoint WAL to ensure all data is written to the main database file
+    // This ensures the backup contains all committed transactions
+    try {
+      await sql`PRAGMA wal_checkpoint(TRUNCATE)`.execute(db)
+    } catch (walError) {
+      log.warn('WAL checkpoint failed (may not be in WAL mode):', walError)
+    }
+
     const folder = await ensureBackupFolder()
     const timestamp = formatDate(new Date())
     const filename = `data_${timestamp}.db`
@@ -320,6 +330,14 @@ export async function restartBackupScheduler(): Promise<void> {
 export async function exportBackupToPath(destinationPath: string): Promise<BackupResult> {
   try {
     log.info(`Exporting backup to: ${destinationPath}`)
+
+    // Checkpoint WAL to ensure all data is written to the main database file
+    try {
+      await sql`PRAGMA wal_checkpoint(TRUNCATE)`.execute(db)
+    } catch (walError) {
+      log.warn('WAL checkpoint failed (may not be in WAL mode):', walError)
+    }
+
     await copyFile(DB_PATH, destinationPath)
     log.info(`Backup exported successfully: ${destinationPath}`)
     return { success: true, path: destinationPath }
@@ -341,7 +359,16 @@ export async function restoreBackup(backupPath: string): Promise<BackupResult> {
       return { success: false, error: 'Backup file does not exist' }
     }
 
-    // 2. Create safety backup of current DB before restore
+    // 2. Checkpoint WAL to ensure all data is written to the main database file
+    // This is important when using WAL mode
+    try {
+      log.info('Checkpointing WAL before backup...')
+      await sql`PRAGMA wal_checkpoint(TRUNCATE)`.execute(db)
+    } catch (walError) {
+      log.warn('WAL checkpoint failed (may not be in WAL mode):', walError)
+    }
+
+    // 3. Create safety backup of current DB before restore
     const folder = await ensureBackupFolder()
     const timestamp = formatDate(new Date())
     const safetyFilename = `data_pre_restore_${timestamp}.db`
@@ -350,7 +377,23 @@ export async function restoreBackup(backupPath: string): Promise<BackupResult> {
     await copyFile(DB_PATH, safetyPath)
     log.info(`Safety backup created: ${safetyPath}`)
 
-    // 3. Copy backup file to DB_PATH (overwrite)
+    // 4. Delete WAL files if they exist (they can cause issues after restore)
+    const walPath = `${DB_PATH}-wal`
+    const shmPath = `${DB_PATH}-shm`
+    try {
+      await unlink(walPath)
+      log.info('Deleted WAL file')
+    } catch {
+      // WAL file doesn't exist, that's fine
+    }
+    try {
+      await unlink(shmPath)
+      log.info('Deleted SHM file')
+    } catch {
+      // SHM file doesn't exist, that's fine
+    }
+
+    // 5. Copy backup file to DB_PATH (overwrite)
     await copyFile(backupPath, DB_PATH)
     log.info(`Database restored from: ${backupPath}`)
 

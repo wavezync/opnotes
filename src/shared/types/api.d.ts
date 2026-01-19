@@ -52,3 +52,6 @@ export interface ActivityLogFilter {
 export interface DoctorSurgeryFilter extends SurgeryFilter {
   role?: 'done_by' | 'assisted_by' | 'all'
 }
+
+// Re-export from template-blocks for convenience
+export type { PrintTemplateFilter, TemplateType } from './template-blocks'

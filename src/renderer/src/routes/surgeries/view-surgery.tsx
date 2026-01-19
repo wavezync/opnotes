@@ -41,8 +41,9 @@ import {
 } from '@renderer/components/ui/alert-dialog'
 import { DoctorModel } from '@shared/models/DoctorModel'
 import { useSettings } from '@renderer/contexts/SettingsContext'
-import { surgeryPrintData, followupPrintData } from '@renderer/lib/print'
+import { createSurgeryContext, createFollowupContext } from '@renderer/lib/print'
 import { useKeyboardEvent } from '@renderer/hooks/useKeyboardEvent'
+import { PrintTemplate } from 'src/shared/types/template-blocks'
 
 const getSurgeryByIdQuery = (id: number) => queries.surgeries.get(id)
 const getSurgeryFollowupsQuery = (surgeryId: number) => queries.surgeries.getFollowups(surgeryId)
@@ -142,9 +143,10 @@ interface FollowupCardProps {
   patient: PatientModel
   surgery: SurgeryModel
   settings?: Record<string, string | null>
+  followupTemplate?: PrintTemplate | null
 }
 
-const FollowupCard = ({ followup, patient, surgery, settings }: FollowupCardProps) => {
+const FollowupCard = ({ followup, patient, surgery, settings, followupTemplate }: FollowupCardProps) => {
   const queryClient = useQueryClient()
   const deleteFollowupMutation = useMutation({
     mutationFn: () => unwrapResult(window.api.invoke('deleteFollowUp', followup.id)),
@@ -156,10 +158,15 @@ const FollowupCard = ({ followup, patient, surgery, settings }: FollowupCardProp
   })
 
   const handlePrintFollowup = async () => {
-    const printData = followupPrintData(patient, surgery, followup, settings)
+    if (!followupTemplate) {
+      console.warn('No followup template available')
+      return
+    }
+    const context = createFollowupContext(patient, surgery, followup, settings)
     await window.electronApi.openPrintDialog({
       title: `${patient.name || 'Patient'} - Follow-up`,
-      data: printData
+      templateStructure: followupTemplate.structure,
+      templateContext: context
     })
   }
 
@@ -256,6 +263,15 @@ export const ViewSurgery = () => {
     enabled: !!surgeryId
   })
 
+  // Fetch default print templates
+  const { data: surgeryTemplate } = useQuery({
+    ...queries.printTemplates.getDefault('surgery')
+  })
+
+  const { data: followupTemplate } = useQuery({
+    ...queries.printTemplates.getDefault('followup')
+  })
+
   const ptName = useMemo(
     () => patient?.name || patient?.phn || 'Patient',
     [patient?.name, patient?.phn]
@@ -271,12 +287,13 @@ export const ViewSurgery = () => {
   }, [setBreadcrumbs])
 
   const handlePrint = async () => {
-    if (!patient || !surgery) return
+    if (!patient || !surgery || !surgeryTemplate) return
 
-    const printData = surgeryPrintData(patient, surgery, settings)
+    const context = createSurgeryContext(patient, surgery, settings)
     await window.electronApi.openPrintDialog({
       title: `${ptName} - ${surgeryName}`,
-      data: printData
+      templateStructure: surgeryTemplate.structure,
+      templateContext: context
     })
   }
 
@@ -507,6 +524,7 @@ export const ViewSurgery = () => {
                       patient={patient}
                       surgery={surgery}
                       settings={settings}
+                      followupTemplate={followupTemplate}
                     />
                   ))}
                 </div>

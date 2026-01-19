@@ -1,7 +1,8 @@
 import { useBreadcrumbs } from '@renderer/contexts/BreadcrumbContext'
 import { useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { Settings, FileText, HardDrive, Building2 } from 'lucide-react'
+import { Settings, FileText, HardDrive, Building2, Printer } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import { cn } from '@renderer/lib/utils'
 import { GeneralSettings } from '@renderer/components/settings/GeneralSettings'
 import { TemplatesSettings } from '@renderer/components/settings/TemplatesSettings'
@@ -54,6 +55,7 @@ const NavItem = ({ icon, label, description, isActive, onClick, color }: NavItem
 export const SettingsIndex = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const { setBreadcrumbs } = useBreadcrumbs()
+  const navigate = useNavigate()
 
   const tabParam = searchParams.get('tab')
   const activeSection: SettingsSection =
@@ -112,6 +114,14 @@ export const SettingsIndex = () => {
               isActive={activeSection === 'backup'}
               onClick={() => setActiveSection('backup')}
               color="bg-emerald-500"
+            />
+            <NavItem
+              icon={<Printer className="h-4 w-4" />}
+              label="Print Templates"
+              description="Print layouts"
+              isActive={false}
+              onClick={() => navigate('/settings/print-templates')}
+              color="bg-orange-500"
             />
           </div>
         </nav>
