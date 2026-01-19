@@ -8,7 +8,8 @@ import {
   Users,
   GitBranch,
   Columns2,
-  Image
+  Image,
+  SeparatorHorizontal
 } from 'lucide-react'
 import { TemplateBlock } from '../../../../shared/types/template-blocks'
 import { cn } from '../../lib/utils'
@@ -186,6 +187,15 @@ export const BlockPreview = ({ block }: BlockPreviewProps) => {
               className="h-8 w-8 object-contain rounded"
             />
           )}
+        </div>
+      )
+
+    case 'page-break':
+      return (
+        <div className="flex items-center gap-2 text-sm">
+          <SeparatorHorizontal className="h-4 w-4 text-muted-foreground" />
+          <span className="font-medium">Page Break</span>
+          <span className="text-muted-foreground text-xs">(prints on new page)</span>
         </div>
       )
 

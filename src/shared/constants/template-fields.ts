@@ -154,11 +154,27 @@ export const TEMPLATE_FIELDS: FieldDefinition[] = [
     isHtml: true
   },
   {
+    path: 'surgery.inward_management',
+    label: 'Inward Management',
+    category: 'surgery',
+    description: 'IV drugs and medications during admission (HTML content)',
+    example: '<p>IV Ceftriaxone 1g BD, IV Metronidazole...</p>',
+    isHtml: true
+  },
+  {
     path: 'surgery.post_op_notes',
     label: 'Post-Op Notes',
     category: 'surgery',
     description: 'Post-operative notes (HTML content)',
     example: '<p>Patient recovered well...</p>',
+    isHtml: true
+  },
+  {
+    path: 'surgery.referral',
+    label: 'Referral Letter',
+    category: 'surgery',
+    description: 'Referral for wound management or follow-up care (HTML content)',
+    example: '<p>Please review for wound management...</p>',
     isHtml: true
   },
   {
@@ -364,6 +380,14 @@ export const BLOCK_DEFINITIONS: BlockDefinition[] = [
       alignment: 'center',
       altText: ''
     }
+  },
+  {
+    type: 'page-break',
+    label: 'Page Break',
+    icon: 'SeparatorHorizontal',
+    category: 'structure',
+    description: 'Force content after this to print on a new page',
+    defaultProps: {}
   }
 ]
 

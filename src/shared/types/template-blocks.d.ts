@@ -146,6 +146,11 @@ export interface ImageBlock extends BaseBlock {
   props: ImageBlockProps
 }
 
+export interface PageBreakBlock extends BaseBlock {
+  type: 'page-break'
+  props: Record<string, never>
+}
+
 // Union type of all block types
 export type TemplateBlock =
   | HeaderBlock
@@ -159,6 +164,7 @@ export type TemplateBlock =
   | ConditionalBlock
   | TwoColumnBlock
   | ImageBlock
+  | PageBreakBlock
 
 // Block type string literals
 export type BlockType = TemplateBlock['type']
@@ -278,7 +284,9 @@ export interface TemplateContext {
     doa: string | null
     dod: string | null
     notes: string | null
+    inward_management: string | null
     post_op_notes: string | null
+    referral: string | null
     doneByAsString: string
     assistedByAsString: string
     doneBy: Array<{ name: string; designation: string | null }>

@@ -19,7 +19,9 @@ export class SurgeryModel implements Surgery {
   doa: Date | null
   dod: Date | null
   notes: string | null
+  inward_management: string | null
   post_op_notes: string | null
+  referral: string | null
   patient_id: number
 
   patient?: PatientModel
@@ -37,7 +39,9 @@ export class SurgeryModel implements Surgery {
     this.doa = toValidDate(data.doa)
     this.dod = toValidDate(data.dod)
     this.notes = data.notes
+    this.inward_management = data.inward_management
     this.post_op_notes = data.post_op_notes
+    this.referral = data.referral
     this.patient_id = data.patient_id
   }
 }

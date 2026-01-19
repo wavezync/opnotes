@@ -10,6 +10,8 @@ import * as m_008_backup_frequency from './migrations/008_backup_frequency'
 import * as m_009_patient_medical_history from './migrations/009_patient_medical_history'
 import * as m_010_print_templates from './migrations/010_print_templates'
 import * as m_011_default_print_templates from './migrations/011_default_print_templates'
+import * as m_012_surgery_inward_referral from './migrations/012_surgery_inward_referral'
+import * as m_013_update_default_templates_inward_referral from './migrations/013_update_default_templates_inward_referral'
 
 export default {
   '000_init': m_000_init,
@@ -23,5 +25,7 @@ export default {
   '008_backup_frequency': m_008_backup_frequency,
   '009_patient_medical_history': m_009_patient_medical_history,
   '010_print_templates': m_010_print_templates,
-  '011_default_print_templates': m_011_default_print_templates
+  '011_default_print_templates': m_011_default_print_templates,
+  '012_surgery_inward_referral': m_012_surgery_inward_referral,
+  '013_update_default_templates_inward_referral': m_013_update_default_templates_inward_referral
 }

@@ -14,7 +14,9 @@ import {
   FileText,
   ClipboardPlus,
   Clock,
-  ChevronRight
+  ChevronRight,
+  Pill,
+  FileOutput
 } from 'lucide-react'
 import { useEffect, useMemo } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
@@ -403,7 +405,7 @@ export const ViewSurgery = () => {
           </div>
 
           {/* Notes Row */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 2xl:grid-cols-3 gap-4">
             {/* Operative Notes Card */}
             <Card className="bg-gradient-to-br from-card to-card/80">
               <CardHeader className="pb-3 pt-4">
@@ -423,6 +425,29 @@ export const ViewSurgery = () => {
                   </div>
                 ) : (
                   <EmptyState message="No operative notes recorded" icon={FileText} />
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Inward Management Card */}
+            <Card className="bg-gradient-to-br from-card to-card/80">
+              <CardHeader className="pb-3 pt-4">
+                <div className="flex items-center gap-2.5">
+                  <div className="h-8 w-8 rounded-lg bg-purple-500/10 flex items-center justify-center">
+                    <Pill className="h-4 w-4 text-purple-500" />
+                  </div>
+                  <CardTitle className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                    Inward Management
+                  </CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-0">
+                {!isEmptyHtml(surgery.inward_management) ? (
+                  <div className="p-4 rounded-lg bg-accent/30">
+                    <RichTextContent content={surgery.inward_management!} />
+                  </div>
+                ) : (
+                  <EmptyState message="No inward management recorded" icon={Pill} />
                 )}
               </CardContent>
             </Card>
@@ -450,6 +475,27 @@ export const ViewSurgery = () => {
               </CardContent>
             </Card>
           </div>
+
+          {/* Referral Card - only show if content exists */}
+          {!isEmptyHtml(surgery.referral) && (
+            <Card className="bg-gradient-to-br from-card to-card/80">
+              <CardHeader className="pb-3 pt-4">
+                <div className="flex items-center gap-2.5">
+                  <div className="h-8 w-8 rounded-lg bg-teal-500/10 flex items-center justify-center">
+                    <FileOutput className="h-4 w-4 text-teal-500" />
+                  </div>
+                  <CardTitle className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                    Referral
+                  </CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <div className="p-4 rounded-lg bg-accent/30">
+                  <RichTextContent content={surgery.referral!} />
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Follow-ups Card */}
           <Card className="bg-gradient-to-br from-card to-card/80">

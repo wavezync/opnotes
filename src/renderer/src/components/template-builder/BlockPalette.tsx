@@ -12,7 +12,8 @@ import {
   GitBranch,
   Columns2,
   Image,
-  ChevronDown
+  ChevronDown,
+  SeparatorHorizontal
 } from 'lucide-react'
 import { BlockDefinition, BlockType } from '../../../../shared/types/template-blocks'
 import { BLOCKS_BY_CATEGORY, CATEGORY_LABELS } from '../../../../shared/constants/template-fields'
@@ -36,7 +37,8 @@ const blockIcons: Record<string, React.ElementType> = {
   Users,
   GitBranch,
   Columns2,
-  Image
+  Image,
+  SeparatorHorizontal
 }
 
 interface DraggableBlockProps {

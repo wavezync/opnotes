@@ -31,7 +31,9 @@ export interface SurgeryTable {
   doa: ColumnType<Date, number, number> | null
   dod: ColumnType<Date, number, number> | null
   notes: string | null
+  inward_management: string | null
   post_op_notes: string | null
+  referral: string | null
 
   created_at: ColumnType<Date, number, never>
   updated_at: ColumnType<Date, number, number>

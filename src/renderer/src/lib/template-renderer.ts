@@ -12,7 +12,8 @@ import {
   DoctorsListBlock,
   ConditionalBlock,
   TwoColumnBlock,
-  ImageBlock
+  ImageBlock,
+  PageBreakBlock
 } from '../../../shared/types/template-blocks'
 
 // Get a nested value from an object using dot notation
@@ -337,6 +338,11 @@ const renderImage = (block: ImageBlock): string => {
   `
 }
 
+// Render page break block
+const renderPageBreak = (_block: PageBreakBlock): string => {
+  return '<div class="page-break" style="page-break-before: always"></div>'
+}
+
 // Render a single block
 const renderBlock = (
   block: TemplateBlock,
@@ -366,6 +372,8 @@ const renderBlock = (
       return renderTwoColumn(block, context, renderBlocks)
     case 'image':
       return renderImage(block)
+    case 'page-break':
+      return renderPageBreak(block)
     default:
       console.warn(`Unknown block type: ${(block as TemplateBlock).type}`)
       return ''

@@ -28,7 +28,9 @@ import {
   Users,
   Hash,
   Lightbulb,
-  ClipboardPlus
+  ClipboardPlus,
+  Pill,
+  FileOutput
 } from 'lucide-react'
 
 const toValidDate = (date?: Date | null): Date | null => {
@@ -46,7 +48,9 @@ const surgerySchema = z.object({
   doneBy: z.array(z.number()),
   assistedBy: z.array(z.number()),
   notes: z.string().optional(),
-  post_op_notes: z.string().optional()
+  inward_management: z.string().optional(),
+  post_op_notes: z.string().optional(),
+  referral: z.string().optional()
 })
 
 type SurgeryFormSchema = z.infer<typeof surgerySchema>
@@ -76,7 +80,9 @@ export const AddOrEditSurgery = forwardRef<AddOrEditSurgeryRef, AddOrEditSurgery
         assistedBy: surgery?.assistedBy?.map((ab) => ab.id) || [],
         doneBy: surgery?.doneBy?.map((db) => db.id) || [],
         notes: surgery?.notes || '',
-        post_op_notes: surgery?.post_op_notes || ''
+        inward_management: surgery?.inward_management || '',
+        post_op_notes: surgery?.post_op_notes || '',
+        referral: surgery?.referral || ''
       }
     })
 
@@ -483,10 +489,47 @@ export const AddOrEditSurgery = forwardRef<AddOrEditSurgeryRef, AddOrEditSurgery
             </CardContent>
           </Card>
 
-          {/* Post-Op Notes Card */}
+          {/* Inward Management Card */}
           <Card
             className="bg-gradient-to-br from-card to-card/80 animate-fade-in-up"
             style={{ animationDelay: '375ms' }}
+          >
+            <CardHeader className="pb-3 pt-4">
+              <div className="flex items-center gap-2.5">
+                <div className="h-8 w-8 rounded-lg bg-purple-500/10 flex items-center justify-center">
+                  <Pill className="h-4 w-4 text-purple-500" />
+                </div>
+                <CardTitle className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  Inward Management
+                </CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <FormField
+                control={form.control}
+                name="inward_management"
+                render={({ field: { value, ...field } }) => (
+                  <FormItem>
+                    <FormDescription className="text-xs mb-2">
+                      Record IV drugs and medications given during admission
+                    </FormDescription>
+                    <FormControl>
+                      <RichTextEditor
+                        initialContent={value || undefined}
+                        onUpdate={field.onChange}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+
+          {/* Post-Op Notes Card */}
+          <Card
+            className="bg-gradient-to-br from-card to-card/80 animate-fade-in-up"
+            style={{ animationDelay: '450ms' }}
           >
             <CardHeader className="pb-3 pt-4">
               <div className="flex items-center gap-2.5">
@@ -504,6 +547,43 @@ export const AddOrEditSurgery = forwardRef<AddOrEditSurgeryRef, AddOrEditSurgery
                 name="post_op_notes"
                 render={({ field: { value, ...field } }) => (
                   <FormItem>
+                    <FormControl>
+                      <RichTextEditor
+                        initialContent={value || undefined}
+                        onUpdate={field.onChange}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+
+          {/* Referral Letter Card */}
+          <Card
+            className="bg-gradient-to-br from-card to-card/80 animate-fade-in-up"
+            style={{ animationDelay: '525ms' }}
+          >
+            <CardHeader className="pb-3 pt-4">
+              <div className="flex items-center gap-2.5">
+                <div className="h-8 w-8 rounded-lg bg-teal-500/10 flex items-center justify-center">
+                  <FileOutput className="h-4 w-4 text-teal-500" />
+                </div>
+                <CardTitle className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  Referral
+                </CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <FormField
+                control={form.control}
+                name="referral"
+                render={({ field: { value, ...field } }) => (
+                  <FormItem>
+                    <FormDescription className="text-xs mb-2">
+                      Write a referral for wound management or follow-up care (optional)
+                    </FormDescription>
                     <FormControl>
                       <RichTextEditor
                         initialContent={value || undefined}

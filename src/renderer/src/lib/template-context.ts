@@ -35,6 +35,13 @@ export const getSampleContext = (type: TemplateType): TemplateContext => {
 <li>No bile duct stones</li>
 </ul>
 <p>Estimated blood loss: 20ml. No complications.</p>`,
+      inward_management: `<p><strong>IV Medications:</strong></p>
+<ul>
+<li>IV Ceftriaxone 1g BD</li>
+<li>IV Metronidazole 500mg TDS</li>
+<li>IV Paracetamol 1g QID PRN</li>
+<li>IV Normal Saline 1L over 8 hours</li>
+</ul>`,
       post_op_notes: `<p><strong>Post-operative instructions:</strong></p>
 <ul>
 <li>Clear fluids for 6 hours, then progress to regular diet as tolerated</li>
@@ -43,6 +50,7 @@ export const getSampleContext = (type: TemplateType): TemplateContext => {
 <li>Wound care: Keep dry for 48 hours</li>
 </ul>
 <p>Follow-up in 2 weeks.</p>`,
+      referral: null,
       doneByAsString: 'Dr. Sarah Smith (Consultant Surgeon), Dr. Michael Jones (Senior Registrar)',
       assistedByAsString: 'Dr. Emily Brown (Registrar)',
       doneBy: [
@@ -106,7 +114,9 @@ export interface CreateContextParams {
     doa?: Date | null
     dod?: Date | null
     notes?: string | null
+    inward_management?: string | null
     post_op_notes?: string | null
+    referral?: string | null
     doneBy?: Array<{ name: string; designation: string | null }>
     assistedBy?: Array<{ name: string; designation: string | null }>
   }
@@ -175,7 +185,9 @@ export const createTemplateContext = (params: CreateContextParams): TemplateCont
       doa: formatDate(params.surgery.doa),
       dod: formatDate(params.surgery.dod),
       notes: params.surgery.notes || null,
+      inward_management: params.surgery.inward_management || null,
       post_op_notes: params.surgery.post_op_notes || null,
+      referral: params.surgery.referral || null,
       doneBy: params.surgery.doneBy || [],
       assistedBy: params.surgery.assistedBy || [],
       doneByAsString: formatDoctorsToString(params.surgery.doneBy),

@@ -33,7 +33,9 @@ export const surgeryPrintData = (
     doa: surgery?.doa ? formatDate(surgery?.doa) : null,
     dod: surgery?.dod ? formatDate(surgery?.dod) : null,
     notes: isEmptyHtml(surgery?.notes) ? null : surgery?.notes,
-    post_op_notes: isEmptyHtml(surgery?.post_op_notes) ? null : surgery?.post_op_notes
+    inward_management: isEmptyHtml(surgery?.inward_management) ? null : surgery?.inward_management,
+    post_op_notes: isEmptyHtml(surgery?.post_op_notes) ? null : surgery?.post_op_notes,
+    referral: isEmptyHtml(surgery?.referral) ? null : surgery?.referral
   },
   settings: {
     hospital: settings?.hospital || '',
@@ -102,7 +104,9 @@ export const createSurgeryContext = (
     doa: surgery?.doa ? formatDate(surgery.doa) : null,
     dod: surgery?.dod ? formatDate(surgery.dod) : null,
     notes: isEmptyHtml(surgery?.notes) ? null : surgery?.notes || null,
+    inward_management: isEmptyHtml(surgery?.inward_management) ? null : surgery?.inward_management || null,
     post_op_notes: isEmptyHtml(surgery?.post_op_notes) ? null : surgery?.post_op_notes || null,
+    referral: isEmptyHtml(surgery?.referral) ? null : surgery?.referral || null,
     doneBy:
       surgery?.doneBy?.map((d) => ({
         name: d.name,
