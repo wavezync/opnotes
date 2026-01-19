@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.1-alpha] - 2026-01-19
+
+### 🚀 Features
+
+- Add inward management and referral fields to surgeries
+
+### ⚙️ Miscellaneous Tasks
+
+- Update CHANGELOG.md for v1.0.0-alpha [skip ci]
+- Bump version to 1.0.1-alpha
+
 ## [1.0.0-alpha] - 2026-01-19
 
 ### 🚀 Features
