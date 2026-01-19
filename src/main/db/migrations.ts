@@ -8,6 +8,8 @@ import * as m_006_onboarding_setting from './migrations/006_onboarding_setting'
 import * as m_007_activity_log from './migrations/007_activity_log'
 import * as m_008_backup_frequency from './migrations/008_backup_frequency'
 import * as m_009_patient_medical_history from './migrations/009_patient_medical_history'
+import * as m_010_print_templates from './migrations/010_print_templates'
+import * as m_011_default_print_templates from './migrations/011_default_print_templates'
 
 export default {
   '000_init': m_000_init,
@@ -19,5 +21,7 @@ export default {
   '006_onboarding_setting': m_006_onboarding_setting,
   '007_activity_log': m_007_activity_log,
   '008_backup_frequency': m_008_backup_frequency,
-  '009_patient_medical_history': m_009_patient_medical_history
+  '009_patient_medical_history': m_009_patient_medical_history,
+  '010_print_templates': m_010_print_templates,
+  '011_default_print_templates': m_011_default_print_templates
 }

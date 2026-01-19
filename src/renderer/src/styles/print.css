@@ -1,4 +1,5 @@
 @media print {
+  /* Prevent page breaks inside small elements */
   .prose h1,
   .prose h2,
   .prose h3,
@@ -21,6 +22,19 @@
   .page-break {
     display: block;
     page-break-before: always;
+  }
+
+  /* Keep small sections together */
+  .doctors-section {
+    page-break-inside: avoid;
+  }
+
+  .info-table {
+    page-break-inside: avoid;
+  }
+
+  .header-section {
+    page-break-inside: avoid;
   }
 
   @page {

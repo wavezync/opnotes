@@ -125,6 +125,28 @@ export interface ActivityLogTable {
   created_at: ColumnType<Date, number, never>
 }
 
+export interface PrintTemplateTable {
+  id: Generated<number>
+  name: string
+  type: 'surgery' | 'followup'
+  description: string | null
+  structure: string // JSON blob of template blocks
+  page_settings: string | null // JSON: margins, orientation, paper size
+  is_default: number // SQLite uses integer for boolean (0 or 1)
+  created_at: ColumnType<Date, number, never>
+  updated_at: ColumnType<Date, number, number>
+}
+
+export interface DefaultPrintTemplateTable {
+  id: Generated<number>
+  key: string // unique identifier like 'surgery-standard'
+  name: string
+  type: 'surgery' | 'followup'
+  description: string | null
+  structure: string // JSON blob of template blocks
+  page_settings: string | null // JSON: margins, orientation, paper size
+}
+
 export interface Database {
   patients: PatientTable
   surgeries: SurgeryTable
@@ -134,6 +156,8 @@ export interface Database {
   surgery_followups: SurgeryFollowUpTable
   surgery_templates: SurgeryTemplateTable
   activity_log: ActivityLogTable
+  print_templates: PrintTemplateTable
+  default_print_templates: DefaultPrintTemplateTable
 
   patients_fts: PatientsFTS
   surgeries_fts: SurgeriesFTS
@@ -169,3 +193,9 @@ export type SurgeryTemplateUpdate = Updateable<SurgeryTemplateTable>
 
 export type ActivityLog = Selectable<ActivityLogTable>
 export type NewActivityLog = Insertable<ActivityLogTable>
+
+export type PrintTemplateRow = Selectable<PrintTemplateTable>
+export type NewPrintTemplateRow = Insertable<PrintTemplateTable>
+export type PrintTemplateRowUpdate = Updateable<PrintTemplateTable>
+
+export type DefaultPrintTemplateRow = Selectable<DefaultPrintTemplateTable>

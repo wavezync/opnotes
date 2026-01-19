@@ -41,8 +41,8 @@ import {
 } from '@renderer/components/ui/alert-dialog'
 import { DoctorModel } from '@shared/models/DoctorModel'
 import { useSettings } from '@renderer/contexts/SettingsContext'
-import { surgeryPrintData, followupPrintData } from '@renderer/lib/print'
-import { useKeyboardEvent } from '@renderer/hooks/useKeyboardEvent'
+import { createSurgeryContext, createFollowupContext } from '@renderer/lib/print'
+import { PrintDialog } from '@renderer/components/print/PrintDialog'
 
 const getSurgeryByIdQuery = (id: number) => queries.surgeries.get(id)
 const getSurgeryFollowupsQuery = (surgeryId: number) => queries.surgeries.getFollowups(surgeryId)
@@ -155,13 +155,7 @@ const FollowupCard = ({ followup, patient, surgery, settings }: FollowupCardProp
     }
   })
 
-  const handlePrintFollowup = async () => {
-    const printData = followupPrintData(patient, surgery, followup, settings)
-    await window.electronApi.openPrintDialog({
-      title: `${patient.name || 'Patient'} - Follow-up`,
-      data: printData
-    })
-  }
+  const followupContext = createFollowupContext(patient, surgery, followup, settings)
 
   return (
     <div className="group relative p-4 rounded-xl border bg-card hover:bg-accent/30 transition-colors">
@@ -172,9 +166,16 @@ const FollowupCard = ({ followup, patient, surgery, settings }: FollowupCardProp
           <span>{formatDateTime(followup.created_at)}</span>
         </div>
         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={handlePrintFollowup}>
-            <Printer className="h-3.5 w-3.5" />
-          </Button>
+          <PrintDialog
+            templateType="followup"
+            title={`${patient.name || 'Patient'} - Follow-up`}
+            context={followupContext}
+            trigger={
+              <Button variant="ghost" size="icon" className="h-7 w-7">
+                <Printer className="h-3.5 w-3.5" />
+              </Button>
+            }
+          />
           <AddOrEditFollowup
             trigger={
               <Button variant="ghost" size="icon" className="h-7 w-7">
@@ -270,21 +271,7 @@ export const ViewSurgery = () => {
     setBreadcrumbs([{ label: 'Surgeries', to: '/surgeries' }])
   }, [setBreadcrumbs])
 
-  const handlePrint = async () => {
-    if (!patient || !surgery) return
-
-    const printData = surgeryPrintData(patient, surgery, settings)
-    await window.electronApi.openPrintDialog({
-      title: `${ptName} - ${surgeryName}`,
-      data: printData
-    })
-  }
-
-  useKeyboardEvent({
-    key: 'p',
-    ctrlKey: true,
-    onKeyDown: handlePrint
-  })
+  const surgeryContext = patient && surgery ? createSurgeryContext(patient, surgery, settings) : null
 
   const noFollowups = !isFollowupLoading && followups && followups.length === 0
 
@@ -310,10 +297,13 @@ export const ViewSurgery = () => {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={handlePrint}>
-            <Printer className="h-4 w-4 mr-2" />
-            Print
-          </Button>
+          {surgeryContext && (
+            <PrintDialog
+              templateType="surgery"
+              title={`${ptName} - ${surgeryName}`}
+              context={surgeryContext}
+            />
+          )}
           <Button
             variant="gradient"
             onClick={() => navigate(`/patients/${patientId}/surgeries/${surgeryId}/edit`)}

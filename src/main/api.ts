@@ -48,6 +48,20 @@ import {
 import { createBackup, listBackups, deleteBackup, restoreBackup } from './backup'
 import { getDashboardStats } from './repository/dashboard'
 import { getRecentActivities, listActivityLog } from './repository/activity'
+import {
+  createPrintTemplate,
+  getPrintTemplateById,
+  getDefaultPrintTemplate,
+  updatePrintTemplateById,
+  deletePrintTemplateById,
+  listPrintTemplates,
+  duplicatePrintTemplate,
+  setDefaultPrintTemplate,
+  listDefaultPrintTemplates,
+  getDefaultPrintTemplateByKey,
+  restorePrintTemplateFromDefault,
+  resetPrintTemplatesToDefaults
+} from './repository/print-template'
 
 // Custom APIs for renderer
 export const api = {
@@ -99,7 +113,20 @@ export const api = {
 
   getDashboardStats,
   getRecentActivities,
-  listActivityLog
+  listActivityLog,
+
+  createPrintTemplate,
+  getPrintTemplateById,
+  getDefaultPrintTemplate,
+  updatePrintTemplateById,
+  deletePrintTemplateById,
+  listPrintTemplates,
+  duplicatePrintTemplate,
+  setDefaultPrintTemplate,
+  listDefaultPrintTemplates,
+  getDefaultPrintTemplateByKey,
+  restorePrintTemplateFromDefault,
+  resetPrintTemplatesToDefaults
 }
 
 export type ApiType = typeof api

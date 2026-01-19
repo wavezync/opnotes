@@ -460,8 +460,7 @@ body {
 .header-section {
   text-align: center;
   padding-bottom: 8px;
-  margin-bottom: 12px;
-  border-bottom: 2px solid #000;
+  margin-bottom: 4px;
 }
 
 /* Labeled field - inline label:value display */
