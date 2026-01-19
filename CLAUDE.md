@@ -20,6 +20,39 @@ pnpm build:win        # Build Windows installer
 pnpm build:linux      # Build Linux packages
 ```
 
+## Releasing
+
+Use the release script to bump versions, create tags, and push:
+
+```bash
+./scripts/release.sh <bump-type> [channel]
+```
+
+**Bump types:**
+- `major` - Bump major version (1.0.0 → 2.0.0)
+- `minor` - Bump minor version (1.0.0 → 1.1.0)
+- `patch` - Bump patch version (1.0.0 → 1.0.1)
+
+**Channels (optional):**
+- `alpha` - Add `-alpha` suffix (pre-release)
+- `beta` - Add `-beta` suffix (pre-release)
+- `stable` - No suffix (default if omitted)
+
+**Examples:**
+```bash
+./scripts/release.sh minor alpha    # 1.0.0 → 1.1.0-alpha
+./scripts/release.sh patch beta     # 1.1.0-alpha → 1.1.1-beta
+./scripts/release.sh major          # 1.1.1-beta → 2.0.0 (stable)
+./scripts/release.sh patch stable   # 1.0.0-alpha → 1.0.1 (removes suffix)
+```
+
+The script will:
+1. Validate there are no uncommitted changes
+2. Calculate the new version
+3. Prompt for confirmation
+4. Update `package.json`
+5. Commit, tag, and push
+
 ## Architecture
 
 ### Electron Process Structure
