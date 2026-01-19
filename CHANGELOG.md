@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.2-alpha] - 2026-01-19
+
+### 🚀 Features
+
+- Redesign community section with dual connection cards
+
+### ⚙️ Miscellaneous Tasks
+
+- Update CHANGELOG.md for v1.1.1-alpha [skip ci]
+- Bump version to 1.1.2-alpha
+
 ## [1.1.1-alpha] - 2026-01-19
 
 ### 🚀 Features
