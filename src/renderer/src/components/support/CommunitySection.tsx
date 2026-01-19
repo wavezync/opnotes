@@ -1,9 +1,8 @@
 import { Card, CardContent } from '@renderer/components/ui/card'
 import { Button } from '@renderer/components/ui/button'
 import { MessageCircle, Bell, HelpCircle, Users, ExternalLink } from 'lucide-react'
+import { EXTERNAL_LINKS } from '@shared/constants/links'
 import whatsappQr from '../../../../../resources/whatsapp-qr.png?asset'
-
-const WHATSAPP_LINK = 'https://chat.whatsapp.com/L4LMwxsbjPk514I1ToRris'
 
 export const CommunitySection = () => {
   const benefits = [
@@ -74,7 +73,7 @@ export const CommunitySection = () => {
               </p>
               <Button
                 className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white"
-                onClick={() => window.open(WHATSAPP_LINK, '_blank')}
+                onClick={() => window.open(EXTERNAL_LINKS.WHATSAPP_COMMUNITY, '_blank')}
               >
                 <MessageCircle className="h-4 w-4 mr-2" />
                 Join WhatsApp Community

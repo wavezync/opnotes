@@ -14,8 +14,7 @@ import {
 } from 'lucide-react'
 import { useSettings } from '@renderer/contexts/SettingsContext'
 import { useState } from 'react'
-
-const WHATSAPP_LINK = 'https://chat.whatsapp.com/L4LMwxsbjPk514I1ToRris'
+import { EXTERNAL_LINKS } from '@shared/constants/links'
 
 export const ReportIssue = () => {
   const { appVersion } = useSettings()
@@ -131,7 +130,7 @@ export const ReportIssue = () => {
           <MessageCircle className="h-3 w-3 inline-block mr-1" />
           Prefer chat? Join our{' '}
           <button
-            onClick={() => window.open(WHATSAPP_LINK, '_blank')}
+            onClick={() => window.open(EXTERNAL_LINKS.WHATSAPP_COMMUNITY, '_blank')}
             className="text-green-500 hover:underline"
           >
             WhatsApp Community
