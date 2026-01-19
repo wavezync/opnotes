@@ -27,8 +27,8 @@ import { QuickAddSurgery } from './routes/surgeries/quick-add-surgery'
 import { SupportIndex } from './routes/support/support-index'
 import { SettingsIndex } from './routes/settings/settings-index'
 import { AddTemplatePage, EditTemplatePage } from './routes/settings/template-form-page'
-import { PrintTemplatesPage } from './routes/settings/print-templates'
 import { PrintTemplateEditorPage } from './routes/settings/print-template-editor'
+import { Navigate } from 'react-router-dom'
 import { ActivityIndex } from './routes/activity/activity-index'
 
 const queryClient = new QueryClient({
@@ -125,7 +125,7 @@ const router = createHashRouter([
       },
       {
         path: '/settings/print-templates',
-        element: <PrintTemplatesPage />
+        element: <Navigate to="/settings?tab=print-templates" replace />
       },
       {
         path: '/settings/print-templates/:id',

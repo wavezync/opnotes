@@ -2,14 +2,14 @@ import { useBreadcrumbs } from '@renderer/contexts/BreadcrumbContext'
 import { useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { Settings, FileText, HardDrive, Building2, Printer } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
 import { cn } from '@renderer/lib/utils'
 import { GeneralSettings } from '@renderer/components/settings/GeneralSettings'
 import { TemplatesSettings } from '@renderer/components/settings/TemplatesSettings'
 import { BackupSettings } from '@renderer/components/settings/BackupSettings'
+import { PrintTemplatesSettings } from '@renderer/components/settings/PrintTemplatesSettings'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@renderer/components/ui/tabs'
 
-type SettingsSection = 'general' | 'templates' | 'backup'
+type SettingsSection = 'general' | 'templates' | 'backup' | 'print-templates'
 
 interface NavItemProps {
   icon: React.ReactNode
@@ -55,11 +55,16 @@ const NavItem = ({ icon, label, description, isActive, onClick, color }: NavItem
 export const SettingsIndex = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const { setBreadcrumbs } = useBreadcrumbs()
-  const navigate = useNavigate()
 
   const tabParam = searchParams.get('tab')
   const activeSection: SettingsSection =
-    tabParam === 'templates' ? 'templates' : tabParam === 'backup' ? 'backup' : 'general'
+    tabParam === 'templates'
+      ? 'templates'
+      : tabParam === 'backup'
+        ? 'backup'
+        : tabParam === 'print-templates'
+          ? 'print-templates'
+          : 'general'
 
   const setActiveSection = (section: SettingsSection) => {
     setSearchParams(section === 'general' ? {} : { tab: section })
@@ -119,8 +124,8 @@ export const SettingsIndex = () => {
               icon={<Printer className="h-4 w-4" />}
               label="Print Templates"
               description="Print layouts"
-              isActive={false}
-              onClick={() => navigate('/settings/print-templates')}
+              isActive={activeSection === 'print-templates'}
+              onClick={() => setActiveSection('print-templates')}
               color="bg-orange-500"
             />
           </div>
@@ -132,6 +137,7 @@ export const SettingsIndex = () => {
           {activeSection === 'general' && <GeneralSettings />}
           {activeSection === 'templates' && <TemplatesSettings />}
           {activeSection === 'backup' && <BackupSettings />}
+          {activeSection === 'print-templates' && <PrintTemplatesSettings />}
         </div>
       </div>
 
@@ -141,18 +147,18 @@ export const SettingsIndex = () => {
           value={activeSection}
           onValueChange={(value) => setActiveSection(value as SettingsSection)}
         >
-          <TabsList className="w-full">
-            <TabsTrigger value="general" className="flex-1">
-              <Building2 className="h-4 w-4 mr-2" />
-              General
+          <TabsList className="w-full grid grid-cols-4">
+            <TabsTrigger value="general">
+              <Building2 className="h-4 w-4" />
             </TabsTrigger>
-            <TabsTrigger value="templates" className="flex-1">
-              <FileText className="h-4 w-4 mr-2" />
-              Templates
+            <TabsTrigger value="templates">
+              <FileText className="h-4 w-4" />
             </TabsTrigger>
-            <TabsTrigger value="backup" className="flex-1">
-              <HardDrive className="h-4 w-4 mr-2" />
-              Backup
+            <TabsTrigger value="backup">
+              <HardDrive className="h-4 w-4" />
+            </TabsTrigger>
+            <TabsTrigger value="print-templates">
+              <Printer className="h-4 w-4" />
             </TabsTrigger>
           </TabsList>
           <TabsContent value="general">
@@ -163,6 +169,9 @@ export const SettingsIndex = () => {
           </TabsContent>
           <TabsContent value="backup">
             <BackupSettings />
+          </TabsContent>
+          <TabsContent value="print-templates">
+            <PrintTemplatesSettings />
           </TabsContent>
         </Tabs>
       </div>
