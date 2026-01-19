@@ -12,6 +12,7 @@ import * as m_010_print_templates from './migrations/010_print_templates'
 import * as m_011_default_print_templates from './migrations/011_default_print_templates'
 import * as m_012_surgery_inward_referral from './migrations/012_surgery_inward_referral'
 import * as m_013_update_default_templates_inward_referral from './migrations/013_update_default_templates_inward_referral'
+import * as m_014_sync_default_templates from './migrations/014_sync_default_templates'
 
 export default {
   '000_init': m_000_init,
@@ -27,5 +28,6 @@ export default {
   '010_print_templates': m_010_print_templates,
   '011_default_print_templates': m_011_default_print_templates,
   '012_surgery_inward_referral': m_012_surgery_inward_referral,
-  '013_update_default_templates_inward_referral': m_013_update_default_templates_inward_referral
+  '013_update_default_templates_inward_referral': m_013_update_default_templates_inward_referral,
+  '014_sync_default_templates': m_014_sync_default_templates
 }

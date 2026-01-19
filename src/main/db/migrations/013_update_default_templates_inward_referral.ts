@@ -101,25 +101,6 @@ const updatedSurgeryTemplate = {
       ]
     },
     {
-      id: 'conditional-inward-management',
-      type: 'conditional',
-      props: {
-        field: 'surgery.inward_management',
-        condition: 'notEmpty'
-      },
-      children: [
-        {
-          id: 'inward-management-1',
-          type: 'rich-content',
-          props: {
-            field: 'surgery.inward_management',
-            sectionTitle: 'Inward Management',
-            showIfEmpty: false
-          }
-        }
-      ]
-    },
-    {
       id: 'conditional-post-op',
       type: 'conditional',
       props: {
@@ -133,6 +114,25 @@ const updatedSurgeryTemplate = {
           props: {
             field: 'surgery.post_op_notes',
             sectionTitle: 'Post-Op Notes',
+            showIfEmpty: false
+          }
+        }
+      ]
+    },
+    {
+      id: 'conditional-inward-management',
+      type: 'conditional',
+      props: {
+        field: 'surgery.inward_management',
+        condition: 'notEmpty'
+      },
+      children: [
+        {
+          id: 'inward-management-1',
+          type: 'rich-content',
+          props: {
+            field: 'surgery.inward_management',
+            sectionTitle: 'Inward Management',
             showIfEmpty: false
           }
         }

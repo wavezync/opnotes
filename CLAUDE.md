@@ -84,6 +84,30 @@ API methods return `{ result }` on success or `{ error }` on failure.
 
 Separate print window loads `src/renderer/print.html`. Data passed via IPC `printData` event. Templates use Handlebars in `resources/templates/`.
 
+### Default Print Templates
+
+Default templates for surgery and followup notes are stored in `default_print_templates` table.
+
+- **Source of truth**: `src/main/db/default-templates.ts` contains canonical template definitions
+- **Templates**: `defaultSurgeryTemplate`, `defaultFollowupTemplate`, `defaultPageSettings`
+
+**When updating default templates:**
+1. Edit `src/main/db/default-templates.ts` (single place to modify)
+2. Create a new migration that imports and applies the templates:
+   ```typescript
+   import { defaultSurgeryTemplate, defaultFollowupTemplate } from '../default-templates'
+
+   export async function up(db: Kysely<any>): Promise<void> {
+     await db.updateTable('default_print_templates')
+       .set({ structure: JSON.stringify(defaultSurgeryTemplate) })
+       .where('key', '=', 'surgery-standard')
+       .execute()
+   }
+   ```
+3. Register the migration in `src/main/db/migrations.ts`
+
+This approach ensures all users get template updates when they run the new migration.
+
 ### Onboarding
 
 - **Trigger**: `onboarding_completed` setting in app_settings table
