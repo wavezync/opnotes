@@ -2,6 +2,7 @@ import { createQueryKeyStore } from '@lukemorales/query-key-factory'
 import {
   ActivityLogFilter,
   DoctorFilter,
+  DoctorSurgeryFilter,
   PatientFilter,
   SurgeryFilter,
   SurgeryTemplateFilter
@@ -41,6 +42,10 @@ export const queries = createQueryKeyStore({
     get: (id: number) => ({
       queryKey: [id],
       queryFn: () => unwrapResult(window.api.invoke('getDoctorById', id))
+    }),
+    surgeries: (doctorId: number, filter: DoctorSurgeryFilter) => ({
+      queryKey: [doctorId, filter],
+      queryFn: () => unwrapResult(window.api.invoke('listSurgeriesByDoctorId', doctorId, filter))
     })
   },
   app: {

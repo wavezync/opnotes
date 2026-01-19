@@ -48,3 +48,7 @@ export interface ActivityLogFilter {
   pageSize?: number
   page?: number
 }
+
+export interface DoctorSurgeryFilter extends SurgeryFilter {
+  role?: 'done_by' | 'assisted_by' | 'all'
+}

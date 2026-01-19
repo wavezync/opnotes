@@ -150,7 +150,7 @@ function DoctorRow({
   return (
     <div
       className="group flex items-center gap-4 p-4 rounded-xl border bg-card hover:bg-accent/50 hover:border-primary/20 cursor-pointer"
-      onClick={() => onNavigate(`/doctors/${doctor.id}/edit`)}
+      onClick={() => onNavigate(`/doctors/${doctor.id}`)}
     >
       <DoctorAvatar name={doctor.name} />
 

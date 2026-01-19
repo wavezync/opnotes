@@ -1,6 +1,8 @@
 import { Card, CardContent } from '@renderer/components/ui/card'
 import { Button } from '@renderer/components/ui/button'
 import { MessageCircle, Bell, HelpCircle, Users, ExternalLink } from 'lucide-react'
+import { EXTERNAL_LINKS } from '@shared/constants/links'
+import whatsappQr from '../../../../../resources/whatsapp-qr.png?asset'
 
 export const CommunitySection = () => {
   const benefits = [
@@ -50,23 +52,34 @@ export const CommunitySection = () => {
       >
         <CardContent className="pt-8 pb-8 relative">
           <div className="absolute top-0 right-0 w-48 h-48 bg-green-500/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
-          <div className="flex flex-col items-center text-center relative">
-            <div className="h-16 w-16 rounded-2xl bg-green-500/20 flex items-center justify-center mb-4 transition-transform duration-200 hover:scale-105">
-              <MessageCircle className="h-8 w-8 text-green-500" />
+          <div className="flex flex-col md:flex-row items-center gap-6 relative">
+            {/* QR Code */}
+            <div className="flex-shrink-0">
+              <div className="p-3 bg-white rounded-xl shadow-sm">
+                <img src={whatsappQr} alt="WhatsApp QR Code" className="w-32 h-32" />
+              </div>
+              <p className="text-xs text-muted-foreground text-center mt-2">Scan to join</p>
             </div>
-            <h3 className="text-xl font-bold mb-2">WhatsApp Community</h3>
-            <p className="text-muted-foreground max-w-sm mb-6">
-              Join our active WhatsApp community to get instant support, share feedback,
-              and connect with healthcare professionals using Op Notes.
-            </p>
-            <Button
-              className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white"
-              onClick={() => window.open('https://chat.whatsapp.com/YOUR_INVITE_LINK', '_blank')}
-            >
-              <MessageCircle className="h-4 w-4 mr-2" />
-              Join WhatsApp Community
-              <ExternalLink className="h-3 w-3 ml-2" />
-            </Button>
+
+            {/* Content */}
+            <div className="flex flex-col items-center md:items-start text-center md:text-left">
+              <div className="h-12 w-12 rounded-xl bg-green-500/20 flex items-center justify-center mb-3">
+                <MessageCircle className="h-6 w-6 text-green-500" />
+              </div>
+              <h3 className="text-xl font-bold mb-2">WhatsApp Community</h3>
+              <p className="text-muted-foreground max-w-sm mb-4">
+                Join our active WhatsApp community to get instant support, share feedback,
+                and connect with healthcare professionals using Op Notes.
+              </p>
+              <Button
+                className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white"
+                onClick={() => window.open(EXTERNAL_LINKS.WHATSAPP_COMMUNITY, '_blank')}
+              >
+                <MessageCircle className="h-4 w-4 mr-2" />
+                Join WhatsApp Community
+                <ExternalLink className="h-3 w-3 ml-2" />
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>

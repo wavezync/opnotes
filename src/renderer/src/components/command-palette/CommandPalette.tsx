@@ -140,7 +140,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
                   <CommandItem
                     key={`doctor-${doctor.id}`}
                     value={`doctor ${doctor.name} ${doctor.slmc_reg_no}`}
-                    onSelect={() => runCommand(() => navigate(`/doctors/${doctor.id}/edit`))}
+                    onSelect={() => runCommand(() => navigate(`/doctors/${doctor.id}`))}
                   >
                     <UserCog className="mr-2 h-4 w-4 text-purple-500" />
                     <div className="flex flex-col">

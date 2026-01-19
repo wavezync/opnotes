@@ -14,6 +14,7 @@ import {
 } from 'lucide-react'
 import { useSettings } from '@renderer/contexts/SettingsContext'
 import { useState } from 'react'
+import { EXTERNAL_LINKS } from '@shared/constants/links'
 
 export const ReportIssue = () => {
   const { appVersion } = useSettings()
@@ -129,7 +130,7 @@ export const ReportIssue = () => {
           <MessageCircle className="h-3 w-3 inline-block mr-1" />
           Prefer chat? Join our{' '}
           <button
-            onClick={() => window.open('https://chat.whatsapp.com/YOUR_INVITE_LINK', '_blank')}
+            onClick={() => window.open(EXTERNAL_LINKS.WHATSAPP_COMMUNITY, '_blank')}
             className="text-green-500 hover:underline"
           >
             WhatsApp Community
