@@ -15,6 +15,8 @@ import {
 import { useSettings } from '@renderer/contexts/SettingsContext'
 import { useState } from 'react'
 
+const WHATSAPP_LINK = 'https://chat.whatsapp.com/L4LMwxsbjPk514I1ToRris'
+
 export const ReportIssue = () => {
   const { appVersion } = useSettings()
   const [copied, setCopied] = useState(false)
@@ -129,7 +131,7 @@ export const ReportIssue = () => {
           <MessageCircle className="h-3 w-3 inline-block mr-1" />
           Prefer chat? Join our{' '}
           <button
-            onClick={() => window.open('https://chat.whatsapp.com/L4LMwxsbjPk514I1ToRris', '_blank')}
+            onClick={() => window.open(WHATSAPP_LINK, '_blank')}
             className="text-green-500 hover:underline"
           >
             WhatsApp Community

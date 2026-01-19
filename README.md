@@ -75,6 +75,16 @@ src/
 └── shared/          # Shared types and models
 ```
 
+## Community
+
+Join our WhatsApp community to get instant support, share feedback, and connect with other users.
+
+<a href="https://chat.whatsapp.com/L4LMwxsbjPk514I1ToRris">
+  <img src="resources/whatsapp-qr.png" alt="WhatsApp Community QR Code" width="150" />
+</a>
+
+[Join WhatsApp Community](https://chat.whatsapp.com/L4LMwxsbjPk514I1ToRris)
+
 ## License
 
 MIT
