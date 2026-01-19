@@ -35,6 +35,7 @@ export const surgeryPrintData = (
     notes: isEmptyHtml(surgery?.notes) ? null : surgery?.notes,
     inward_management: isEmptyHtml(surgery?.inward_management) ? null : surgery?.inward_management,
     post_op_notes: isEmptyHtml(surgery?.post_op_notes) ? null : surgery?.post_op_notes,
+    discharge_plan: isEmptyHtml(surgery?.discharge_plan) ? null : surgery?.discharge_plan,
     referral: isEmptyHtml(surgery?.referral) ? null : surgery?.referral
   },
   settings: {
@@ -106,6 +107,7 @@ export const createSurgeryContext = (
     notes: isEmptyHtml(surgery?.notes) ? null : surgery?.notes || null,
     inward_management: isEmptyHtml(surgery?.inward_management) ? null : surgery?.inward_management || null,
     post_op_notes: isEmptyHtml(surgery?.post_op_notes) ? null : surgery?.post_op_notes || null,
+    discharge_plan: isEmptyHtml(surgery?.discharge_plan) ? null : surgery?.discharge_plan || null,
     referral: isEmptyHtml(surgery?.referral) ? null : surgery?.referral || null,
     doneBy:
       surgery?.doneBy?.map((d) => ({

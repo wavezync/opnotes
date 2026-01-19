@@ -170,6 +170,14 @@ export const TEMPLATE_FIELDS: FieldDefinition[] = [
     isHtml: true
   },
   {
+    path: 'surgery.discharge_plan',
+    label: 'Discharge Plan',
+    category: 'surgery',
+    description: 'Discharge plan and instructions (HTML content)',
+    example: '<p>Patient may resume normal activities in 2 weeks...</p>',
+    isHtml: true
+  },
+  {
     path: 'surgery.referral',
     label: 'Referral Letter',
     category: 'surgery',

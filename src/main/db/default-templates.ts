@@ -144,6 +144,25 @@ export const defaultSurgeryTemplate = {
       ]
     },
     {
+      id: 'conditional-discharge-plan',
+      type: 'conditional',
+      props: {
+        field: 'surgery.discharge_plan',
+        condition: 'notEmpty'
+      },
+      children: [
+        {
+          id: 'discharge-plan-1',
+          type: 'rich-content',
+          props: {
+            field: 'surgery.discharge_plan',
+            sectionTitle: 'Discharge Plan',
+            showIfEmpty: false
+          }
+        }
+      ]
+    },
+    {
       id: 'conditional-referral',
       type: 'conditional',
       props: {

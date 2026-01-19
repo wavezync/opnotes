@@ -33,6 +33,7 @@ export interface SurgeryTable {
   notes: string | null
   inward_management: string | null
   post_op_notes: string | null
+  discharge_plan: string | null
   referral: string | null
 
   created_at: ColumnType<Date, number, never>

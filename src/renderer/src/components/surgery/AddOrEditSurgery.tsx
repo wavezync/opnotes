@@ -30,6 +30,7 @@ import {
   Lightbulb,
   ClipboardPlus,
   Pill,
+  ClipboardList,
   FileOutput
 } from 'lucide-react'
 
@@ -50,6 +51,7 @@ const surgerySchema = z.object({
   notes: z.string().optional(),
   inward_management: z.string().optional(),
   post_op_notes: z.string().optional(),
+  discharge_plan: z.string().optional(),
   referral: z.string().optional()
 })
 
@@ -82,6 +84,7 @@ export const AddOrEditSurgery = forwardRef<AddOrEditSurgeryRef, AddOrEditSurgery
         notes: surgery?.notes || '',
         inward_management: surgery?.inward_management || '',
         post_op_notes: surgery?.post_op_notes || '',
+        discharge_plan: surgery?.discharge_plan || '',
         referral: surgery?.referral || ''
       }
     })
@@ -560,10 +563,47 @@ export const AddOrEditSurgery = forwardRef<AddOrEditSurgeryRef, AddOrEditSurgery
             </CardContent>
           </Card>
 
-          {/* Referral Letter Card */}
+          {/* Discharge Plan Card */}
           <Card
             className="bg-gradient-to-br from-card to-card/80 animate-fade-in-up"
             style={{ animationDelay: '525ms' }}
+          >
+            <CardHeader className="pb-3 pt-4">
+              <div className="flex items-center gap-2.5">
+                <div className="h-8 w-8 rounded-lg bg-cyan-500/10 flex items-center justify-center">
+                  <ClipboardList className="h-4 w-4 text-cyan-500" />
+                </div>
+                <CardTitle className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  Discharge Plan
+                </CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <FormField
+                control={form.control}
+                name="discharge_plan"
+                render={({ field: { value, ...field } }) => (
+                  <FormItem>
+                    <FormDescription className="text-xs mb-2">
+                      Record discharge instructions and follow-up plan
+                    </FormDescription>
+                    <FormControl>
+                      <RichTextEditor
+                        initialContent={value || undefined}
+                        onUpdate={field.onChange}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+
+          {/* Referral Letter Card */}
+          <Card
+            className="bg-gradient-to-br from-card to-card/80 animate-fade-in-up"
+            style={{ animationDelay: '600ms' }}
           >
             <CardHeader className="pb-3 pt-4">
               <div className="flex items-center gap-2.5">

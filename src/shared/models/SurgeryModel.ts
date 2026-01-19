@@ -21,6 +21,7 @@ export class SurgeryModel implements Surgery {
   notes: string | null
   inward_management: string | null
   post_op_notes: string | null
+  discharge_plan: string | null
   referral: string | null
   patient_id: number
 
@@ -41,6 +42,7 @@ export class SurgeryModel implements Surgery {
     this.notes = data.notes
     this.inward_management = data.inward_management
     this.post_op_notes = data.post_op_notes
+    this.discharge_plan = data.discharge_plan
     this.referral = data.referral
     this.patient_id = data.patient_id
   }

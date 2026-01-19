@@ -50,6 +50,14 @@ export const getSampleContext = (type: TemplateType): TemplateContext => {
 <li>Wound care: Keep dry for 48 hours</li>
 </ul>
 <p>Follow-up in 2 weeks.</p>`,
+      discharge_plan: `<p><strong>Discharge Instructions:</strong></p>
+<ul>
+<li>Resume normal diet</li>
+<li>Paracetamol 1g QID PRN for pain</li>
+<li>Avoid heavy lifting for 2 weeks</li>
+<li>Return to work in 1 week</li>
+</ul>
+<p>Review appointment: 2024-01-29</p>`,
       referral: null,
       doneByAsString: 'Dr. Sarah Smith (Consultant Surgeon), Dr. Michael Jones (Senior Registrar)',
       assistedByAsString: 'Dr. Emily Brown (Registrar)',
@@ -116,6 +124,7 @@ export interface CreateContextParams {
     notes?: string | null
     inward_management?: string | null
     post_op_notes?: string | null
+    discharge_plan?: string | null
     referral?: string | null
     doneBy?: Array<{ name: string; designation: string | null }>
     assistedBy?: Array<{ name: string; designation: string | null }>
@@ -187,6 +196,7 @@ export const createTemplateContext = (params: CreateContextParams): TemplateCont
       notes: params.surgery.notes || null,
       inward_management: params.surgery.inward_management || null,
       post_op_notes: params.surgery.post_op_notes || null,
+      discharge_plan: params.surgery.discharge_plan || null,
       referral: params.surgery.referral || null,
       doneBy: params.surgery.doneBy || [],
       assistedBy: params.surgery.assistedBy || [],

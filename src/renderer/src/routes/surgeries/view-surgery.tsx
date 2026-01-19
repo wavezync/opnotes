@@ -17,6 +17,7 @@ import {
   Clock,
   ChevronRight,
   Pill,
+  ClipboardList,
   FileOutput
 } from 'lucide-react'
 import { useEffect, useMemo } from 'react'
@@ -477,6 +478,27 @@ export const ViewSurgery = () => {
               </CardContent>
             </Card>
           </div>
+
+          {/* Discharge Plan Card - only show if content exists */}
+          {!isEmptyHtml(surgery.discharge_plan) && (
+            <Card className="bg-gradient-to-br from-card to-card/80">
+              <CardHeader className="pb-3 pt-4">
+                <div className="flex items-center gap-2.5">
+                  <div className="h-8 w-8 rounded-lg bg-cyan-500/10 flex items-center justify-center">
+                    <ClipboardList className="h-4 w-4 text-cyan-500" />
+                  </div>
+                  <CardTitle className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                    Discharge Plan
+                  </CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <div className="p-4 rounded-lg bg-accent/30">
+                  <RichTextContent content={surgery.discharge_plan!} />
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Referral Card - only show if content exists */}
           {!isEmptyHtml(surgery.referral) && (

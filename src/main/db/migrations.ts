@@ -13,6 +13,8 @@ import * as m_011_default_print_templates from './migrations/011_default_print_t
 import * as m_012_surgery_inward_referral from './migrations/012_surgery_inward_referral'
 import * as m_013_update_default_templates_inward_referral from './migrations/013_update_default_templates_inward_referral'
 import * as m_014_sync_default_templates from './migrations/014_sync_default_templates'
+import * as m_015_add_discharge_plan from './migrations/015_add_discharge_plan'
+import * as m_016_update_default_templates_discharge_plan from './migrations/016_update_default_templates_discharge_plan'
 
 export default {
   '000_init': m_000_init,
@@ -29,5 +31,7 @@ export default {
   '011_default_print_templates': m_011_default_print_templates,
   '012_surgery_inward_referral': m_012_surgery_inward_referral,
   '013_update_default_templates_inward_referral': m_013_update_default_templates_inward_referral,
-  '014_sync_default_templates': m_014_sync_default_templates
+  '014_sync_default_templates': m_014_sync_default_templates,
+  '015_add_discharge_plan': m_015_add_discharge_plan,
+  '016_update_default_templates_discharge_plan': m_016_update_default_templates_discharge_plan
 }

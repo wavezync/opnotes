@@ -286,6 +286,7 @@ export interface TemplateContext {
     notes: string | null
     inward_management: string | null
     post_op_notes: string | null
+    discharge_plan: string | null
     referral: string | null
     doneByAsString: string
     assistedByAsString: string
