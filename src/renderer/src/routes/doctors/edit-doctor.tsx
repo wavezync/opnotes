@@ -21,8 +21,10 @@ export const EditDoctor = () => {
   const formRef = useRef<AddOrEditDoctorRef>(null)
 
   const { setBreadcrumbs } = useBreadcrumbs()
-  const handleUpdated = (_doctor: DoctorModel) => {
-    navigate(`/doctors`)
+  const handleUpdated = (doctor: DoctorModel) => {
+    queryClient.invalidateQueries({ queryKey: queries.doctors.get(doctor.id).queryKey })
+    queryClient.invalidateQueries({ queryKey: queries.doctors.list._def })
+    navigate(`/doctors/${doctor.id}`)
   }
 
   useKeyboardEvent({
@@ -55,10 +57,7 @@ export const EditDoctor = () => {
         <Button
           variant="gradient"
           leftIcon={<Save className="h-4 w-4" />}
-          onClick={async () => {
-            formRef.current?.submit()
-            await queryClient.invalidateQueries({ queryKey: queries.doctors.list({}).queryKey })
-          }}
+          onClick={() => formRef.current?.submit()}
         >
           Save Changes
         </Button>

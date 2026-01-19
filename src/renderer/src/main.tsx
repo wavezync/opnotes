@@ -20,6 +20,7 @@ import { EditSurgery } from './routes/surgeries/edit-surgery'
 import { ViewSurgery } from './routes/surgeries/view-surgery'
 import { DoctorsIndex } from './routes/doctors/list-doctors'
 import { AddNewDoctor } from './routes/doctors/add-doctor'
+import { ViewDoctor, loader as doctorLoader } from './routes/doctors/view-doctor'
 import { EditDoctor } from './routes/doctors/edit-doctor'
 import { SurgierisIndex } from './routes/surgeries/list-surgeries'
 import { QuickAddSurgery } from './routes/surgeries/quick-add-surgery'
@@ -83,6 +84,11 @@ const router = createHashRouter([
       {
         path: '/doctors/add',
         element: <AddNewDoctor />
+      },
+      {
+        path: '/doctors/:id',
+        loader: doctorLoader(queryClient),
+        element: <ViewDoctor />
       },
       {
         path: '/doctors/:id/edit',

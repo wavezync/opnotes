@@ -395,3 +395,172 @@ export const deleteSurgeryById = async (id: number) => {
 
   return trx
 }
+
+export interface DoctorSurgeryResult {
+  id: number
+  patient_id: number
+  bht: string
+  title: string | null
+  ward: string | null
+  date: string | null
+  created_at: string
+  updated_at: string
+  patient_name: string | null
+  role: 'done_by' | 'assisted_by'
+}
+
+export const listSurgeriesByDoctorId = async (
+  doctorId: number,
+  filter: SurgeryFilter & { role?: 'done_by' | 'assisted_by' | 'all' }
+) => {
+  const {
+    search,
+    ward,
+    start_date,
+    end_date,
+    pageSize = 50,
+    page = 0,
+    sortBy = 'date',
+    sortOrder = 'desc',
+    role = 'all'
+  } = filter
+
+  // Get surgeries where doctor is in done_by table
+  const doneByQuery = db
+    .selectFrom('surgeries')
+    .innerJoin('surgery_doctors_done_by', 'surgery_doctors_done_by.surgery_id', 'surgeries.id')
+    .leftJoin('patients', 'patients.id', 'surgeries.patient_id')
+    .where('surgery_doctors_done_by.doctor_id', '=', doctorId)
+    .select([
+      'surgeries.id',
+      'surgeries.patient_id',
+      'surgeries.bht',
+      'surgeries.title',
+      'surgeries.ward',
+      'surgeries.date',
+      'surgeries.created_at',
+      'surgeries.updated_at',
+      'patients.name as patient_name',
+      sql<'done_by' | 'assisted_by'>`'done_by'`.as('role')
+    ])
+
+  // Get surgeries where doctor is in assisted_by table
+  const assistedByQuery = db
+    .selectFrom('surgeries')
+    .innerJoin(
+      'surgery_doctors_assisted_by',
+      'surgery_doctors_assisted_by.surgery_id',
+      'surgeries.id'
+    )
+    .leftJoin('patients', 'patients.id', 'surgeries.patient_id')
+    .where('surgery_doctors_assisted_by.doctor_id', '=', doctorId)
+    .select([
+      'surgeries.id',
+      'surgeries.patient_id',
+      'surgeries.bht',
+      'surgeries.title',
+      'surgeries.ward',
+      'surgeries.date',
+      'surgeries.created_at',
+      'surgeries.updated_at',
+      'patients.name as patient_name',
+      sql<'done_by' | 'assisted_by'>`'assisted_by'`.as('role')
+    ])
+
+  // Build the combined query based on role filter
+  let combinedQuery
+  if (role === 'done_by') {
+    combinedQuery = doneByQuery
+  } else if (role === 'assisted_by') {
+    combinedQuery = assistedByQuery
+  } else {
+    // Union both queries for 'all' role
+    combinedQuery = doneByQuery.union(assistedByQuery)
+  }
+
+  // Wrap in a subquery for filtering and sorting
+  let query = db.selectFrom(combinedQuery.as('doctor_surgeries')).selectAll()
+
+  // Apply search filter using bht or title
+  if (search) {
+    const searchTerm = `%${search}%`
+    query = query.where((eb) =>
+      eb.or([
+        eb('bht', 'like', searchTerm),
+        eb('title', 'like', searchTerm),
+        eb('patient_name', 'like', searchTerm)
+      ])
+    )
+  }
+
+  if (ward) {
+    query = query.where('ward', '=', ward)
+  }
+
+  if (start_date) {
+    query = query.where('date', '>=', start_date as unknown as string)
+  }
+
+  if (end_date) {
+    query = query.where('date', '<=', end_date as unknown as string)
+  }
+
+  // Apply sorting
+  switch (sortBy) {
+    case 'title':
+      query = query.orderBy('title', sortOrder)
+      break
+    case 'bht':
+      query = query.orderBy('bht', sortOrder)
+      break
+    case 'ward':
+      query = query.orderBy('ward', sortOrder)
+      break
+    case 'created_at':
+      query = query.orderBy('created_at', sortOrder)
+      break
+    case 'updated_at':
+      query = query.orderBy('updated_at', sortOrder)
+      break
+    case 'date':
+    default:
+      query = query.orderBy('date', sortOrder)
+      break
+  }
+
+  const surgeries = await query.limit(pageSize).offset(page * pageSize).execute()
+
+  // Get total count
+  const countQuery = db.selectFrom(combinedQuery.as('doctor_surgeries')).select((eb) =>
+    eb.fn.countAll<number>().as('total')
+  )
+
+  let filteredCountQuery = countQuery
+
+  if (search) {
+    const searchTerm = `%${search}%`
+    filteredCountQuery = db
+      .selectFrom(combinedQuery.as('doctor_surgeries'))
+      .where((eb) =>
+        eb.or([
+          eb('bht', 'like', searchTerm),
+          eb('title', 'like', searchTerm),
+          eb('patient_name', 'like', searchTerm)
+        ])
+      )
+      .select((eb) => eb.fn.countAll<number>().as('total'))
+  }
+
+  if (ward) {
+    filteredCountQuery = db
+      .selectFrom(combinedQuery.as('doctor_surgeries'))
+      .where('ward', '=', ward)
+      .select((eb) => eb.fn.countAll<number>().as('total'))
+  }
+
+  const totalResult = await filteredCountQuery.executeTakeFirst()
+  const total = totalResult?.total ?? 0
+  const pages = Math.ceil(total / pageSize)
+
+  return { data: surgeries as DoctorSurgeryResult[], total, pages }
+}
