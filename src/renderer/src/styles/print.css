@@ -1,5 +1,5 @@
 @media print {
-  /* Prevent page breaks inside elements */
+  /* Prevent page breaks inside small elements */
   .prose h1,
   .prose h2,
   .prose h3,
@@ -8,22 +8,6 @@
   .prose h6,
   .prose p,
   .prose blockquote {
-    page-break-inside: avoid;
-  }
-
-  /* Keep headings with following content */
-  .prose h1,
-  .prose h2,
-  .prose h3,
-  .prose h4,
-  .prose h5,
-  .prose h6 {
-    page-break-after: avoid;
-  }
-
-  /* Keep list items together */
-  .prose ul,
-  .prose ol {
     page-break-inside: avoid;
   }
 
@@ -40,11 +24,7 @@
     page-break-before: always;
   }
 
-  /* Keep important sections together */
-  .notes-section {
-    page-break-inside: avoid;
-  }
-
+  /* Keep small sections together */
   .doctors-section {
     page-break-inside: avoid;
   }
@@ -55,7 +35,6 @@
 
   .header-section {
     page-break-inside: avoid;
-    page-break-after: avoid;
   }
 
   @page {

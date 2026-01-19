@@ -537,7 +537,6 @@ body {
 /* Notes section styling */
 .notes-section {
   margin-top: 12px;
-  page-break-inside: avoid;
 }
 
 .section-header {
@@ -546,12 +545,6 @@ body {
   padding-bottom: 4px;
   margin-bottom: 8px;
   font-size: 18px;
-  page-break-after: avoid;
-}
-
-/* Prevent orphaned headers - keep with following content */
-.section-header + .prose {
-  page-break-before: avoid;
 }
 
 /* Print button */
