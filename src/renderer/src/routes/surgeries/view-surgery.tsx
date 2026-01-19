@@ -1,8 +1,8 @@
 import { Button } from '@renderer/components/ui/button'
+import { PageLayout, PageHeader } from '@renderer/components/layouts'
 import { useBreadcrumbs } from '@renderer/contexts/BreadcrumbContext'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
-  ArrowLeft,
   Edit,
   PlusIcon,
   Printer,
@@ -279,19 +279,14 @@ export const ViewSurgery = () => {
   const noFollowups = !isFollowupLoading && followups && followups.length === 0
 
   return (
-    <div className="h-full flex flex-col p-6 overflow-hidden">
-      {/* Header Section */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
-          <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-          <div className="h-12 w-12 rounded-xl bg-emerald-500/10 flex items-center justify-center">
-            <Stethoscope className="h-6 w-6 text-emerald-500" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight">{surgeryName}</h1>
-            <p className="text-sm text-muted-foreground">
+    <PageLayout
+      header={
+        <PageHeader
+          icon={Stethoscope}
+          iconColor="emerald"
+          title={surgeryName}
+          subtitle={
+            <>
               Surgery record for{' '}
               <Link
                 to={`/patients/${patient?.id}`}
@@ -299,28 +294,31 @@ export const ViewSurgery = () => {
               >
                 {ptName}
               </Link>
-            </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          {surgeryContext && (
-            <PrintDialog
-              templateType="surgery"
-              title={`${ptName} - ${surgeryName}`}
-              context={surgeryContext}
-            />
-          )}
-          <Button
-            variant="gradient"
-            onClick={() => navigate(`/patients/${patientId}/surgeries/${surgeryId}/edit`)}
-          >
-            <Edit className="h-4 w-4 mr-2" />
-            Edit
-          </Button>
-        </div>
-      </div>
-
-      {/* Main Content */}
+            </>
+          }
+          showBackButton
+          animate={false}
+          actions={
+            <>
+              {surgeryContext && (
+                <PrintDialog
+                  templateType="surgery"
+                  title={`${ptName} - ${surgeryName}`}
+                  context={surgeryContext}
+                />
+              )}
+              <Button
+                variant="gradient"
+                onClick={() => navigate(`/patients/${patientId}/surgeries/${surgeryId}/edit`)}
+              >
+                <Edit className="h-4 w-4 mr-2" />
+                Edit
+              </Button>
+            </>
+          }
+        />
+      }
+    >
       {patient && surgery && (
         <div className="flex-1 overflow-y-auto min-h-0 space-y-4">
           {/* Top Row: Details + Team */}
@@ -555,7 +553,7 @@ export const ViewSurgery = () => {
           </Card>
         </div>
       )}
-    </div>
+    </PageLayout>
   )
 }
 

@@ -1,8 +1,8 @@
 import { Button } from '@renderer/components/ui/button'
+import { DetailLayout, PageHeader } from '@renderer/components/layouts'
 import { useBreadcrumbs } from '@renderer/contexts/BreadcrumbContext'
 import { QueryClient, queryOptions, useQuery, useSuspenseQuery } from '@tanstack/react-query'
 import {
-  ArrowLeft,
   EditIcon,
   MoreHorizontal,
   PlusSquare,
@@ -555,46 +555,24 @@ export const ViewPatient = () => {
   const handleEdit = () => navigate(`/patients/${id}/edit`)
 
   return (
-    <div className="h-full flex flex-col p-6 overflow-hidden">
-      {/* Header Section */}
-      <div className="flex items-center justify-between mb-6 animate-fade-in-up">
-        <div className="flex items-center gap-3">
-          <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-          <div className="h-12 w-12 rounded-xl bg-emerald-500/10 flex items-center justify-center">
-            <User className="h-6 w-6 text-emerald-500" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight">{patient?.name || 'Patient'}</h1>
-            <p className="text-sm text-muted-foreground font-mono">
-              {patient?.phn}
-            </p>
-          </div>
-        </div>
-        <Button
-          variant="gradient"
-          leftIcon={<Edit className="h-4 w-4" />}
-          onClick={handleEdit}
-        >
-          Edit Patient
-        </Button>
-      </div>
-
-      {/* Main Content */}
-      <div className="flex-1 overflow-y-auto min-h-0">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 h-full">
-          {/* Left Sidebar - Patient Info */}
-          <div className="md:col-span-3">
-            <PatientSidebar patient={patient!} onEdit={handleEdit} />
-          </div>
-
-          {/* Main Content - Surgeries */}
-          <div className="md:col-span-9">
-            <PatientSurgeriesCard patientId={parseInt(id)} onAddSurgery={handleAddSurgery} />
-          </div>
-        </div>
-      </div>
-    </div>
+    <DetailLayout
+      header={
+        <PageHeader
+          icon={User}
+          iconColor="emerald"
+          title={patient?.name || 'Patient'}
+          subtitle={<span className="font-mono">{patient?.phn}</span>}
+          showBackButton
+          actions={
+            <Button variant="gradient" leftIcon={<Edit className="h-4 w-4" />} onClick={handleEdit}>
+              Edit Patient
+            </Button>
+          }
+        />
+      }
+      sidebar={<PatientSidebar patient={patient!} onEdit={handleEdit} />}
+    >
+      <PatientSurgeriesCard patientId={parseInt(id)} onAddSurgery={handleAddSurgery} />
+    </DetailLayout>
   )
 }

@@ -1,9 +1,10 @@
 import { Button } from '@renderer/components/ui/button'
+import { FormLayout, PageHeader } from '@renderer/components/layouts'
 import { useBreadcrumbs } from '@renderer/contexts/BreadcrumbContext'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { ArrowLeft, Save, Stethoscope } from 'lucide-react'
+import { Save, Stethoscope } from 'lucide-react'
 import { useEffect, useMemo, useRef } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { getPatientByIdQuery } from '../patients/edit-patient'
 import {
   AddOrEditSurgery,
@@ -15,7 +16,6 @@ import { useKeyboardEvent } from '@renderer/hooks/useKeyboardEvent'
 const getSurgeryByIdQuery = (id: number) => queries.surgeries.get(id)
 
 export const EditSurgery = () => {
-  const navigate = useNavigate()
   const queryClient = useQueryClient()
   const formRef = useRef<AddOrEditSurgeryRef>(null)
   const { patientId, surgeryId } = useParams()
@@ -51,19 +51,14 @@ export const EditSurgery = () => {
   }, [setBreadcrumbs])
 
   return (
-    <div className="h-full flex flex-col p-6 overflow-hidden">
-      {/* Header Section */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
-          <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-          <div className="h-12 w-12 rounded-xl bg-emerald-500/10 flex items-center justify-center">
-            <Stethoscope className="h-6 w-6 text-emerald-500" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight">Edit Surgery</h1>
-            <p className="text-sm text-muted-foreground">
+    <FormLayout
+      header={
+        <PageHeader
+          icon={Stethoscope}
+          iconColor="emerald"
+          title="Edit Surgery"
+          subtitle={
+            <>
               Editing{' '}
               <Link
                 to={`/patients/${patient?.id}/surgeries/${surgery?.id}`}
@@ -78,21 +73,23 @@ export const EditSurgery = () => {
               >
                 {ptName}
               </Link>
-            </p>
-          </div>
-        </div>
-        <Button
-          variant="gradient"
-          leftIcon={<Save className="h-4 w-4" />}
-          onClick={() => formRef.current?.submit()}
-        >
-          Save Changes
-        </Button>
-      </div>
-
-      {/* Form Content */}
-      <div className="flex-1 overflow-y-auto min-h-0">
-        {patient && surgery && (
+            </>
+          }
+          showBackButton
+          animate={false}
+          actions={
+            <Button
+              variant="gradient"
+              leftIcon={<Save className="h-4 w-4" />}
+              onClick={() => formRef.current?.submit()}
+            >
+              Save Changes
+            </Button>
+          }
+        />
+      }
+      form={
+        patient && surgery && (
           <AddOrEditSurgery
             ref={formRef}
             patientId={patient.id}
@@ -109,8 +106,8 @@ export const EditSurgery = () => {
               })
             }}
           />
-        )}
-      </div>
-    </div>
+        )
+      }
+    />
   )
 }

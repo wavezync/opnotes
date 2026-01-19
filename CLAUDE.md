@@ -122,6 +122,50 @@ This approach ensures all users get template updates when they run the new migra
 - Electron 28 + electron-vite
 - React 18 + TypeScript 5.3
 - Kysely (type-safe SQL) + better-sqlite3
-- Tailwind CSS + Radix UI + Shadcn components
+- Tailwind CSS 4 + Radix UI + Shadcn components
 - TipTap for rich text editing
 - React Query for data fetching
+
+## Frontend Design System
+
+**See [DESIGN_GUIDELINES.md](./DESIGN_GUIDELINES.md) for comprehensive UI/UX documentation.**
+
+### Quick Reference
+
+**Layout Components** (`src/renderer/src/components/layouts/`):
+- `PageLayout` - Base container with header for custom layouts
+- `DetailLayout` - Sidebar (3-col) + main content (9-col) for view pages
+- `FormLayout` - Form (2-col) + optional tips sidebar (1-col) for add/edit pages
+- `PageHeader` - Universal header with back button, icon, title, actions
+- `IconBox` - Colored icon container (sizes: sm/md/lg/xl)
+- `InfoItem` - Label + value display for info cards
+
+**Color Mapping**:
+- Patients → `emerald`
+- Doctors → `violet`
+- Surgeries → `emerald`
+- Tips/warnings → `amber`
+- Identifiers (PHN, BHT) → `blue`
+
+**Page Pattern Example**:
+```tsx
+<DetailLayout
+  header={
+    <PageHeader
+      icon={User}
+      iconColor="emerald"
+      title="Patient Name"
+      subtitle="PHN-12345"
+      showBackButton
+      actions={<Button variant="gradient">Edit</Button>}
+    />
+  }
+  sidebar={<SidebarContent />}
+>
+  <MainContent />
+</DetailLayout>
+```
+
+**Animation**: Use `animate-fade-in-up` for page entrance, stagger with `animationDelay`
+
+**Themes**: 12 themes defined in `src/renderer/src/styles/themes.css`, applied via `data-theme` attribute
