@@ -3,6 +3,7 @@ import { cn } from '@renderer/lib/utils'
 import { User, Hash, Calendar, MapPin, Phone, ArrowLeft } from 'lucide-react'
 import { Button } from '@renderer/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@renderer/components/ui/card'
+import { Link } from 'react-router-dom'
 
 interface SelectedPatientSidebarProps {
   patient: Patient
@@ -58,7 +59,9 @@ export function SelectedPatientSidebar({
       <CardContent className="pt-0 space-y-4">
         {/* Patient Name & Gender Badge */}
         <div>
-          <h3 className="text-lg font-semibold truncate">{patient.name}</h3>
+          <Link to={`/patients/${patient.id}`} className="text-lg font-semibold truncate hover:text-primary hover:underline transition-colors block">
+            {patient.name}
+          </Link>
           <span
             className={cn(
               'inline-flex px-2 py-0.5 rounded text-xs font-medium mt-1',

@@ -10,7 +10,7 @@ import { format } from 'date-fns'
 import { Save, UserCog, Hash, Cake, User, Building2, Calendar, Eye } from 'lucide-react'
 import { useEffect, useRef } from 'react'
 import { toast } from '@renderer/components/ui/sonner'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { Patient } from 'src/shared/types/db'
 import womenIcon from '../../../../../resources/woman.png?asset'
 import manIcon from '../../../../../resources/man.png?asset'
@@ -112,7 +112,9 @@ export const EditPatient = () => {
                         </div>
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="font-semibold truncate">{data.name || 'Unknown'}</p>
+                        <Link to={`/patients/${data.id}`} className="font-semibold truncate hover:text-primary hover:underline transition-colors block">
+                          {data.name || 'Unknown'}
+                        </Link>
                         <p className="text-sm text-muted-foreground font-mono">{data.phn}</p>
                       </div>
                     </div>
