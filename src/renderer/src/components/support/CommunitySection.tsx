@@ -1,39 +1,27 @@
 import { Card, CardContent } from '@renderer/components/ui/card'
 import { Button } from '@renderer/components/ui/button'
-import { MessageCircle, Bell, HelpCircle, Users, ExternalLink } from 'lucide-react'
+import { MessageCircle, Bell, HelpCircle, Users, ExternalLink, Sparkles } from 'lucide-react'
 import { EXTERNAL_LINKS } from '@shared/constants/links'
 import whatsappQr from '../../../../../resources/whatsapp-qr.png?asset'
 
 export const CommunitySection = () => {
   const benefits = [
     {
-      icon: <Bell className="h-5 w-5" />,
+      icon: <Bell className="h-4 w-4" />,
       title: 'Latest Updates',
-      description: 'Be the first to know about new releases and features.',
-      color: 'blue'
+      description: 'New releases & features'
     },
     {
-      icon: <HelpCircle className="h-5 w-5" />,
+      icon: <HelpCircle className="h-4 w-4" />,
       title: 'Quick Support',
-      description: 'Get help from the team and experienced users.',
-      color: 'emerald'
+      description: 'Help from the team'
     },
     {
-      icon: <Users className="h-5 w-5" />,
+      icon: <Users className="h-4 w-4" />,
       title: 'Connect',
-      description: 'Network with healthcare professionals worldwide.',
-      color: 'violet'
+      description: 'Healthcare professionals'
     }
   ]
-
-  const getColorClasses = (color: string) => {
-    const colors: Record<string, { bg: string; text: string }> = {
-      blue: { bg: 'bg-blue-500/10', text: 'text-blue-500' },
-      emerald: { bg: 'bg-emerald-500/10', text: 'text-emerald-500' },
-      violet: { bg: 'bg-violet-500/10', text: 'text-violet-500' }
-    }
-    return colors[color] || colors.blue
-  }
 
   return (
     <div className="space-y-6">
@@ -45,77 +33,92 @@ export const CommunitySection = () => {
         </p>
       </div>
 
-      {/* WhatsApp Hero */}
+      {/* Main Community Card */}
       <Card
         className="bg-gradient-to-br from-green-500/10 via-emerald-500/5 to-teal-500/10 border-green-500/20 overflow-hidden animate-fade-in-up"
         style={{ animationDelay: '50ms' }}
       >
-        <CardContent className="pt-8 pb-8 relative">
-          <div className="absolute top-0 right-0 w-48 h-48 bg-green-500/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
-          <div className="flex flex-col md:flex-row items-center gap-6 relative">
-            {/* QR Code */}
-            <div className="flex-shrink-0">
-              <div className="p-3 bg-white rounded-xl shadow-sm">
-                <img src={whatsappQr} alt="WhatsApp QR Code" className="w-32 h-32" />
+        <CardContent className="p-0">
+          <div className="flex flex-col md:flex-row">
+            {/* Left Section - Main Content */}
+            <div className="flex-1 p-6">
+              {/* Badge */}
+              <div className="flex items-center gap-2 mb-3">
+                <div className="h-8 w-8 rounded-lg bg-green-500/20 flex items-center justify-center">
+                  <MessageCircle className="h-4 w-4 text-green-600" />
+                </div>
+                <span className="text-xs font-medium text-green-600 bg-green-500/10 px-2 py-0.5 rounded-full">
+                  Active Community
+                </span>
               </div>
-              <p className="text-xs text-muted-foreground text-center mt-2">Scan to join</p>
+
+              <h3 className="text-xl font-bold mb-2">WhatsApp Community</h3>
+              <p className="text-sm text-muted-foreground mb-5">
+                Join our active WhatsApp community to get instant support, share feedback, and
+                connect with healthcare professionals using Op Notes.
+              </p>
+
+              {/* QR + Button row */}
+              <div className="flex items-center gap-4">
+                <div className="flex-shrink-0">
+                  <div className="p-2 bg-white rounded-lg shadow-sm ring-1 ring-green-500/10">
+                    <img src={whatsappQr} alt="WhatsApp QR Code" className="w-20 h-20" />
+                  </div>
+                  <p className="text-[10px] text-muted-foreground text-center mt-1">Scan to join</p>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Button
+                    className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white shadow-sm"
+                    onClick={() => window.open(EXTERNAL_LINKS.WHATSAPP_COMMUNITY, '_blank')}
+                  >
+                    <MessageCircle className="h-4 w-4 mr-2" />
+                    Join Community
+                    <ExternalLink className="h-3 w-3 ml-2" />
+                  </Button>
+                  <p className="text-xs text-muted-foreground">Or scan QR code</p>
+                </div>
+              </div>
             </div>
 
-            {/* Content */}
-            <div className="flex flex-col items-center md:items-start text-center md:text-left">
-              <div className="h-12 w-12 rounded-xl bg-green-500/20 flex items-center justify-center mb-3">
-                <MessageCircle className="h-6 w-6 text-green-500" />
+            {/* Right Section - Benefits */}
+            <div className="w-full md:w-56 flex-shrink-0 bg-gradient-to-b from-green-500/5 to-emerald-500/10 border-t md:border-t-0 md:border-l border-green-500/10 p-5">
+              <div className="flex items-center gap-2 mb-4">
+                <Sparkles className="h-4 w-4 text-green-600" />
+                <h4 className="text-sm font-semibold text-green-700 dark:text-green-400">
+                  Why Join?
+                </h4>
               </div>
-              <h3 className="text-xl font-bold mb-2">WhatsApp Community</h3>
-              <p className="text-muted-foreground max-w-sm mb-4">
-                Join our active WhatsApp community to get instant support, share feedback,
-                and connect with healthcare professionals using Op Notes.
-              </p>
-              <Button
-                className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white"
-                onClick={() => window.open(EXTERNAL_LINKS.WHATSAPP_COMMUNITY, '_blank')}
-              >
-                <MessageCircle className="h-4 w-4 mr-2" />
-                Join WhatsApp Community
-                <ExternalLink className="h-3 w-3 ml-2" />
-              </Button>
+              <div className="flex flex-row md:flex-col gap-4">
+                {benefits.map((benefit, index) => (
+                  <div
+                    key={benefit.title}
+                    className="flex items-start gap-3 flex-1 md:flex-none animate-fade-in-up"
+                    style={{ animationDelay: `${(index + 2) * 50}ms` }}
+                  >
+                    <div className="h-8 w-8 rounded-lg bg-white/80 dark:bg-white/10 flex items-center justify-center flex-shrink-0 shadow-sm">
+                      <span className="text-green-600">{benefit.icon}</span>
+                    </div>
+                    <div className="min-w-0">
+                      <h5 className="text-sm font-medium">{benefit.title}</h5>
+                      <p className="text-xs text-muted-foreground">{benefit.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Benefits Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {benefits.map((benefit, index) => {
-          const colorClasses = getColorClasses(benefit.color)
-          return (
-            <Card
-              key={benefit.title}
-              className="animate-fade-in-up"
-              style={{ animationDelay: `${(index + 2) * 50}ms` }}
-            >
-              <CardContent className="pt-5 pb-5 text-center">
-                <div
-                  className={`h-10 w-10 rounded-lg ${colorClasses.bg} flex items-center justify-center mx-auto mb-3`}
-                >
-                  <div className={colorClasses.text}>{benefit.icon}</div>
-                </div>
-                <h4 className="font-semibold text-sm mb-1">{benefit.title}</h4>
-                <p className="text-xs text-muted-foreground">{benefit.description}</p>
-              </CardContent>
-            </Card>
-          )
-        })}
-      </div>
-
       {/* Community Guidelines */}
       <div
-        className="text-center text-xs text-muted-foreground animate-fade-in-up"
+        className="flex items-center justify-center gap-2 text-xs text-muted-foreground animate-fade-in-up"
         style={{ animationDelay: '250ms' }}
       >
+        <Users className="h-3.5 w-3.5" />
         <p>
-          Our community is a friendly, respectful space for healthcare professionals.
-          Please be kind and helpful to fellow members.
+          A friendly, respectful space for healthcare professionals. Be kind and helpful to fellow
+          members.
         </p>
       </div>
     </div>
