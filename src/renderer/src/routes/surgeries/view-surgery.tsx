@@ -20,7 +20,7 @@ import {
   ClipboardList,
   FileOutput
 } from 'lucide-react'
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useCallback } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { getPatientByIdQuery } from '../patients/edit-patient'
 import { queries } from '@renderer/lib/queries'
@@ -29,7 +29,7 @@ import { PatientModel } from 'src/shared/models/PatientModel'
 import { Badge } from '@renderer/components/ui/badge'
 import { AddOrEditFollowup } from '@renderer/components/surgery/AddOrEditFollowup'
 import { Card, CardContent, CardHeader, CardTitle } from '@renderer/components/ui/card'
-import { cn, formatDate, formatDateTime, isEmptyHtml, unwrapResult } from '@renderer/lib/utils'
+import { cn, formatDateTime, unwrapResult } from '@renderer/lib/utils'
 import { Skeleton } from '@renderer/components/ui/skeleton'
 import { FollowupModel } from 'src/shared/models/FollowupModel'
 import {
@@ -43,16 +43,24 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from '@renderer/components/ui/alert-dialog'
-import { DoctorModel } from '@shared/models/DoctorModel'
 import { useSettings } from '@renderer/contexts/SettingsContext'
 import { createSurgeryContext, createFollowupContext } from '@renderer/lib/print'
 import { PrintDialog } from '@renderer/components/print/PrintDialog'
+import { toast } from '@renderer/components/ui/sonner'
+
+import {
+  InlineEditableRichText,
+  InlineEditableText,
+  InlineEditableDate,
+  InlineEditableDoctors,
+  EditableFieldCard
+} from '@renderer/components/surgery/inline-edit'
 
 const getSurgeryByIdQuery = (id: number) => queries.surgeries.get(id)
 const getSurgeryFollowupsQuery = (surgeryId: number) => queries.surgeries.getFollowups(surgeryId)
 
 // ============================================================
-// Rich Text Content Display
+// Rich Text Content Display (for followups)
 // ============================================================
 const RichTextContent = ({ content, className }: { content: string; className?: string }) => (
   <div
@@ -80,63 +88,27 @@ const EmptyState = ({ message, icon: Icon }: { message: string; icon?: React.Ele
 )
 
 // ============================================================
-// Info Item Component
+// Info Item Component (for non-editable display)
 // ============================================================
 interface InfoItemProps {
   icon: React.ElementType
   label: string
-  value: string | null | undefined
   iconBg: string
   iconColor: string
-  mono?: boolean
+  children: React.ReactNode
 }
 
-const InfoItem = ({ icon: Icon, label, value, iconBg, iconColor, mono }: InfoItemProps) => (
+const InfoItem = ({ icon: Icon, label, iconBg, iconColor, children }: InfoItemProps) => (
   <div className="flex items-center gap-3">
     <div className={cn('h-9 w-9 rounded-lg flex items-center justify-center flex-shrink-0', iconBg)}>
       <Icon className={cn('h-4 w-4', iconColor)} />
     </div>
     <div className="flex-1 min-w-0">
       <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{label}</p>
-      <p className={cn('text-sm font-medium truncate', mono && 'font-mono')}>{value || 'N/A'}</p>
+      {children}
     </div>
   </div>
 )
-
-// ============================================================
-// Doctor List Component
-// ============================================================
-interface DoctorListProps {
-  doctors: DoctorModel[] | undefined
-  emptyMessage: string
-}
-
-const DoctorList = ({ doctors, emptyMessage }: DoctorListProps) => {
-  if (!doctors || doctors.length === 0) {
-    return <p className="text-sm text-muted-foreground">{emptyMessage}</p>
-  }
-
-  return (
-    <ul className="space-y-1.5">
-      {doctors.map((doctor) => (
-        <li key={doctor.id} className="flex items-center gap-2 text-sm">
-          <div className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-          <span>
-            <Link
-              to={`/doctors/${doctor.id}/edit`}
-              className="hover:text-primary hover:underline transition-colors"
-            >
-              Dr. {doctor.name}
-            </Link>
-            {doctor.designation && (
-              <span className="text-muted-foreground ml-1">({doctor.designation})</span>
-            )}
-          </span>
-        </li>
-      ))}
-    </ul>
-  )
-}
 
 // ============================================================
 // Followup Card Component
@@ -245,6 +217,7 @@ export const ViewSurgery = () => {
   const { patientId, surgeryId } = useParams()
   const { setBreadcrumbs } = useBreadcrumbs()
   const { settings } = useSettings()
+  const queryClient = useQueryClient()
 
   const { data: patient } = useQuery({
     ...getPatientByIdQuery(parseInt(patientId!)),
@@ -278,6 +251,86 @@ export const ViewSurgery = () => {
   const surgeryContext = patient && surgery ? createSurgeryContext(patient, surgery, settings) : null
 
   const noFollowups = !isFollowupLoading && followups && followups.length === 0
+
+  // ============================================================
+  // Field Update Mutations
+  // ============================================================
+  const updateSurgeryMutation = useMutation({
+    mutationFn: async (data: { field: string; value: unknown }) => {
+      if (!surgery) throw new Error('Surgery not found')
+      const { result, error } = await window.api.invoke('updateSurgery', surgery.id, {
+        [data.field]: data.value
+      })
+      if (error) throw new Error(error.message)
+      return result
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queries.surgeries.get(parseInt(surgeryId!)).queryKey })
+      toast.success('Updated successfully')
+    },
+    onError: (error) => {
+      toast.error(`Failed to update: ${error.message}`)
+    }
+  })
+
+  const updateDoctorsDoneByMutation = useMutation({
+    mutationFn: async (doctorIds: number[]) => {
+      if (!surgery) throw new Error('Surgery not found')
+      return unwrapResult(window.api.invoke('updateSurgeryDoctorsDoneBy', surgery.id, doctorIds))
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queries.surgeries.get(parseInt(surgeryId!)).queryKey })
+      toast.success('Surgeons updated')
+    },
+    onError: (error) => {
+      toast.error(`Failed to update surgeons: ${error.message}`)
+    }
+  })
+
+  const updateDoctorsAssistedByMutation = useMutation({
+    mutationFn: async (doctorIds: number[]) => {
+      if (!surgery) throw new Error('Surgery not found')
+      return unwrapResult(window.api.invoke('updateSurgeryDoctorsAssistedBy', surgery.id, doctorIds))
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queries.surgeries.get(parseInt(surgeryId!)).queryKey })
+      toast.success('Assistants updated')
+    },
+    onError: (error) => {
+      toast.error(`Failed to update assistants: ${error.message}`)
+    }
+  })
+
+  // ============================================================
+  // Field Update Handlers
+  // ============================================================
+  const handleUpdateTextField = useCallback(
+    (field: string) => async (value: string) => {
+      await updateSurgeryMutation.mutateAsync({ field, value })
+    },
+    [updateSurgeryMutation]
+  )
+
+  const handleUpdateDateField = useCallback(
+    (field: string) => async (value: Date | null) => {
+      await updateSurgeryMutation.mutateAsync({ field, value: value ? +value : null })
+    },
+    [updateSurgeryMutation]
+  )
+
+  const handleUpdateDoneBy = useCallback(
+    async (doctorIds: number[]) => {
+      await updateDoctorsDoneByMutation.mutateAsync(doctorIds)
+    },
+    [updateDoctorsDoneByMutation]
+  )
+
+  const handleUpdateAssistedBy = useCallback(
+    async (doctorIds: number[]) => {
+      await updateDoctorsAssistedByMutation.mutateAsync(doctorIds)
+    },
+    [updateDoctorsAssistedByMutation]
+  )
 
   return (
     <PageLayout
@@ -313,7 +366,7 @@ export const ViewSurgery = () => {
                 onClick={() => navigate(`/patients/${patientId}/surgeries/${surgeryId}/edit`)}
               >
                 <Edit className="h-4 w-4 mr-2" />
-                Edit
+                Edit All
               </Button>
             </>
           }
@@ -341,39 +394,66 @@ export const ViewSurgery = () => {
                   <InfoItem
                     icon={Hash}
                     label="BHT"
-                    value={surgery.bht}
                     iconBg="bg-blue-500/10"
                     iconColor="text-blue-500"
-                    mono
-                  />
+                  >
+                    <InlineEditableText
+                      value={surgery.bht}
+                      onSave={handleUpdateTextField('bht')}
+                      emptyPlaceholder="Add BHT..."
+                      inputPlaceholder="BHT number"
+                      mono
+                    />
+                  </InfoItem>
                   <InfoItem
                     icon={Building2}
                     label="Ward"
-                    value={surgery.ward}
                     iconBg="bg-violet-500/10"
                     iconColor="text-violet-500"
-                  />
+                  >
+                    <InlineEditableText
+                      value={surgery.ward}
+                      onSave={handleUpdateTextField('ward')}
+                      emptyPlaceholder="Add ward..."
+                      inputPlaceholder="Ward name"
+                    />
+                  </InfoItem>
                   <InfoItem
                     icon={Calendar}
                     label="Surgery Date"
-                    value={surgery.date ? formatDate(surgery.date) : null}
                     iconBg="bg-emerald-500/10"
                     iconColor="text-emerald-500"
-                  />
+                  >
+                    <InlineEditableDate
+                      value={surgery.date}
+                      onSave={handleUpdateDateField('date')}
+                      emptyPlaceholder="Select date..."
+                    />
+                  </InfoItem>
                   <InfoItem
                     icon={Calendar}
                     label="Date of Admission"
-                    value={surgery.doa ? formatDate(surgery.doa) : null}
                     iconBg="bg-amber-500/10"
                     iconColor="text-amber-500"
-                  />
+                  >
+                    <InlineEditableDate
+                      value={surgery.doa}
+                      onSave={handleUpdateDateField('doa')}
+                      emptyPlaceholder="Select date..."
+                    />
+                  </InfoItem>
                   <InfoItem
                     icon={Calendar}
                     label="Date of Discharge"
-                    value={surgery.dod ? formatDate(surgery.dod) : null}
                     iconBg="bg-rose-500/10"
                     iconColor="text-rose-500"
-                  />
+                  >
+                    <InlineEditableDate
+                      value={surgery.dod}
+                      onSave={handleUpdateDateField('dod')}
+                      emptyPlaceholder="Select date..."
+                    />
+                  </InfoItem>
                 </div>
               </CardContent>
             </Card>
@@ -395,131 +475,97 @@ export const ViewSurgery = () => {
                   <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">
                     Done By
                   </p>
-                  <DoctorList doctors={surgery.doneBy} emptyMessage="No surgeons assigned" />
+                  <InlineEditableDoctors
+                    doctors={surgery.doneBy}
+                    onSave={handleUpdateDoneBy}
+                    emptyPlaceholder="No surgeons assigned"
+                    doctorTypeLabel="surgeons"
+                  />
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">
                     Assisted By
                   </p>
-                  <DoctorList doctors={surgery.assistedBy} emptyMessage="No assistants assigned" />
+                  <InlineEditableDoctors
+                    doctors={surgery.assistedBy}
+                    onSave={handleUpdateAssistedBy}
+                    emptyPlaceholder="No assistants assigned"
+                    doctorTypeLabel="assistants"
+                  />
                 </div>
               </CardContent>
             </Card>
           </div>
 
-          {/* Notes Row */}
-          <div className="grid grid-cols-1 2xl:grid-cols-3 gap-4">
-            {/* Operative Notes Card */}
-            <Card className="bg-gradient-to-br from-card to-card/80">
-              <CardHeader className="pb-3 pt-4">
-                <div className="flex items-center gap-2.5">
-                  <div className="h-8 w-8 rounded-lg bg-amber-500/10 flex items-center justify-center">
-                    <FileText className="h-4 w-4 text-amber-500" />
-                  </div>
-                  <CardTitle className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                    Operative Notes
-                  </CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent className="pt-0">
-                {!isEmptyHtml(surgery.notes) ? (
-                  <div className="p-4 rounded-lg bg-accent/30">
-                    <RichTextContent content={surgery.notes!} />
-                  </div>
-                ) : (
-                  <EmptyState message="No operative notes recorded" icon={FileText} />
-                )}
-              </CardContent>
-            </Card>
+          {/* Operative Notes Card */}
+          <EditableFieldCard
+            title="Operative Notes"
+            icon={FileText}
+            iconBgColor="bg-amber-500/10"
+            iconColor="text-amber-500"
+          >
+            <InlineEditableRichText
+              value={surgery.notes}
+              onSave={handleUpdateTextField('notes')}
+              emptyPlaceholder="Click to add operative notes..."
+            />
+          </EditableFieldCard>
 
-            {/* Post-Op Notes Card */}
-            <Card className="bg-gradient-to-br from-card to-card/80">
-              <CardHeader className="pb-3 pt-4">
-                <div className="flex items-center gap-2.5">
-                  <div className="h-8 w-8 rounded-lg bg-rose-500/10 flex items-center justify-center">
-                    <ClipboardPlus className="h-4 w-4 text-rose-500" />
-                  </div>
-                  <CardTitle className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                    Post-Operative Care
-                  </CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent className="pt-0">
-                {!isEmptyHtml(surgery.post_op_notes) ? (
-                  <div className="p-4 rounded-lg bg-accent/30">
-                    <RichTextContent content={surgery.post_op_notes!} />
-                  </div>
-                ) : (
-                  <EmptyState message="No post-operative notes recorded" icon={ClipboardPlus} />
-                )}
-              </CardContent>
-            </Card>
+          {/* Post-Op Notes Card */}
+          <EditableFieldCard
+            title="Post-Operative Care"
+            icon={ClipboardPlus}
+            iconBgColor="bg-rose-500/10"
+            iconColor="text-rose-500"
+          >
+            <InlineEditableRichText
+              value={surgery.post_op_notes}
+              onSave={handleUpdateTextField('post_op_notes')}
+              emptyPlaceholder="Click to add post-operative notes..."
+            />
+          </EditableFieldCard>
 
-            {/* Inward Management Card */}
-            <Card className="bg-gradient-to-br from-card to-card/80">
-              <CardHeader className="pb-3 pt-4">
-                <div className="flex items-center gap-2.5">
-                  <div className="h-8 w-8 rounded-lg bg-purple-500/10 flex items-center justify-center">
-                    <Pill className="h-4 w-4 text-purple-500" />
-                  </div>
-                  <CardTitle className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                    Inward Management
-                  </CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent className="pt-0">
-                {!isEmptyHtml(surgery.inward_management) ? (
-                  <div className="p-4 rounded-lg bg-accent/30">
-                    <RichTextContent content={surgery.inward_management!} />
-                  </div>
-                ) : (
-                  <EmptyState message="No inward management recorded" icon={Pill} />
-                )}
-              </CardContent>
-            </Card>
-          </div>
+          {/* Inward Management Card */}
+          <EditableFieldCard
+            title="Inward Management"
+            icon={Pill}
+            iconBgColor="bg-purple-500/10"
+            iconColor="text-purple-500"
+          >
+            <InlineEditableRichText
+              value={surgery.inward_management}
+              onSave={handleUpdateTextField('inward_management')}
+              emptyPlaceholder="Click to add inward management..."
+            />
+          </EditableFieldCard>
 
-          {/* Discharge Plan Card - only show if content exists */}
-          {!isEmptyHtml(surgery.discharge_plan) && (
-            <Card className="bg-gradient-to-br from-card to-card/80">
-              <CardHeader className="pb-3 pt-4">
-                <div className="flex items-center gap-2.5">
-                  <div className="h-8 w-8 rounded-lg bg-cyan-500/10 flex items-center justify-center">
-                    <ClipboardList className="h-4 w-4 text-cyan-500" />
-                  </div>
-                  <CardTitle className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                    Discharge Plan
-                  </CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <div className="p-4 rounded-lg bg-accent/30">
-                  <RichTextContent content={surgery.discharge_plan!} />
-                </div>
-              </CardContent>
-            </Card>
-          )}
+          {/* Discharge Plan Card - Always visible */}
+          <EditableFieldCard
+            title="Discharge Plan"
+            icon={ClipboardList}
+            iconBgColor="bg-cyan-500/10"
+            iconColor="text-cyan-500"
+          >
+            <InlineEditableRichText
+              value={surgery.discharge_plan}
+              onSave={handleUpdateTextField('discharge_plan')}
+              emptyPlaceholder="Click to add discharge plan..."
+            />
+          </EditableFieldCard>
 
-          {/* Referral Card - only show if content exists */}
-          {!isEmptyHtml(surgery.referral) && (
-            <Card className="bg-gradient-to-br from-card to-card/80">
-              <CardHeader className="pb-3 pt-4">
-                <div className="flex items-center gap-2.5">
-                  <div className="h-8 w-8 rounded-lg bg-teal-500/10 flex items-center justify-center">
-                    <FileOutput className="h-4 w-4 text-teal-500" />
-                  </div>
-                  <CardTitle className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                    Referral
-                  </CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <div className="p-4 rounded-lg bg-accent/30">
-                  <RichTextContent content={surgery.referral!} />
-                </div>
-              </CardContent>
-            </Card>
-          )}
+          {/* Referral Card - Always visible */}
+          <EditableFieldCard
+            title="Referral"
+            icon={FileOutput}
+            iconBgColor="bg-teal-500/10"
+            iconColor="text-teal-500"
+          >
+            <InlineEditableRichText
+              value={surgery.referral}
+              onSave={handleUpdateTextField('referral')}
+              emptyPlaceholder="Click to add referral..."
+            />
+          </EditableFieldCard>
 
           {/* Follow-ups Card */}
           <Card className="bg-gradient-to-br from-card to-card/80">
