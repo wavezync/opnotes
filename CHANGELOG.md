@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.0-alpha] - 2026-01-19
+
+### 🚀 Features
+
+- Add manual install option for downloaded updates
+- Move surgery templates to dedicated sidebar item
+- Add back navigation buttons to detail, edit, and add screens
+- Add discharge plan field to surgeries
+
+### 🐛 Bug Fixes
+
+- Reorder surgery fields - post-op care before inward management
+
+### 🚜 Refactor
+
+- Centralize default print templates into single source of truth
+- Extract reusable layout components and add design guidelines
+
+### ⚙️ Miscellaneous Tasks
+
+- Update CHANGELOG.md for v1.0.1-alpha [skip ci]
+- Bump version to 1.1.0-alpha
+
 ## [1.0.1-alpha] - 2026-01-19
 
 ### 🚀 Features
