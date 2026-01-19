@@ -6,6 +6,7 @@
     "src/renderer/src/**/*.tsx",
     "src/preload/*.d.ts",
     "src/shared/**/*",
+    "tests/setup/renderer-setup.ts"
   ],
   "compilerOptions": {
     "noUnusedLocals": false,
@@ -13,6 +14,7 @@
     "composite": true,
     "jsx": "react-jsx",
     "baseUrl": ".",
+    "types": ["@testing-library/jest-dom"],
     "paths": {
       "@renderer/*": [
         "src/renderer/src/*"
