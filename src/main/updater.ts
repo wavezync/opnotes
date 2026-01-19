@@ -1,4 +1,4 @@
-import { BrowserWindow, ipcMain } from 'electron'
+import { BrowserWindow, ipcMain, shell } from 'electron'
 import electronUpdater, { type AppUpdater, type UpdateInfo } from 'electron-updater'
 import { createBackup } from './backup'
 import { getAllSettings, updateSetting } from './repository/app-settings'
@@ -24,9 +24,11 @@ export interface UpdateStatusPayload {
     total: number
   }
   error?: string
+  downloadedFilePath?: string
 }
 
 let autoUpdater: AppUpdater | null = null
+let downloadedFilePath: string | null = null
 
 async function getUpdateChannelFromSettings(): Promise<UpdateChannel> {
   try {
@@ -103,12 +105,22 @@ export function setupAutoUpdater(): AppUpdater {
     })
   })
 
-  updater.on('update-downloaded', (info: UpdateInfo) => {
-    sendUpdateStatus({ status: 'ready', updateInfo: info })
+  updater.on('update-downloaded', (info) => {
+    // Capture the downloaded file path from the event
+    downloadedFilePath = info.downloadedFile || null
+    sendUpdateStatus({
+      status: 'ready',
+      updateInfo: info,
+      downloadedFilePath: downloadedFilePath || undefined
+    })
   })
 
   updater.on('error', (error: Error) => {
-    sendUpdateStatus({ status: 'error', error: error.message })
+    sendUpdateStatus({
+      status: 'error',
+      error: error.message,
+      downloadedFilePath: downloadedFilePath || undefined
+    })
   })
 
   return updater
@@ -155,5 +167,12 @@ export function registerUpdaterIpcHandlers(): void {
       console.error('Pre-update backup failed:', e)
     }
     autoUpdater.quitAndInstall()
+  })
+
+  ipcMain.handle('showDownloadedUpdate', async () => {
+    if (!downloadedFilePath) {
+      throw new Error('No downloaded update file')
+    }
+    shell.showItemInFolder(downloadedFilePath)
   })
 }

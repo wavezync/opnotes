@@ -41,6 +41,10 @@ const quitAndInstall = () => {
   return ipcRenderer.invoke('quitAndInstall')
 }
 
+const showDownloadedUpdate = async (): Promise<void> => {
+  return await ipcRenderer.invoke('showDownloadedUpdate')
+}
+
 const getUpdateChannel = async (): Promise<'stable' | 'beta' | 'alpha'> => {
   return await ipcRenderer.invoke('getUpdateChannel')
 }
@@ -91,6 +95,7 @@ const electronApi = {
   checkForUpdates,
   downloadUpdate,
   quitAndInstall,
+  showDownloadedUpdate,
   onUpdateStatus,
   getUpdateChannel,
   setUpdateChannel,

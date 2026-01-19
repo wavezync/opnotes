@@ -32,4 +32,5 @@ export interface UpdateStatusPayload {
     total: number
   }
   error?: string
+  downloadedFilePath?: string
 }

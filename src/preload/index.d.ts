@@ -11,6 +11,7 @@ type ElectronApi = ElectronAPI & {
   checkForUpdates: () => Promise<unknown>
   downloadUpdate: () => Promise<void>
   quitAndInstall: () => Promise<void>
+  showDownloadedUpdate: () => Promise<void>
   onUpdateStatus: (callback: (payload: UpdateStatusPayload) => void) => () => void
   getUpdateChannel: () => Promise<'stable' | 'beta' | 'alpha'>
   setUpdateChannel: (channel: 'stable' | 'beta' | 'alpha') => Promise<string>

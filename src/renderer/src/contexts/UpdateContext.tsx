@@ -3,17 +3,19 @@ import type { UpdateStatus, UpdateStatusPayload } from '../../../preload/interfa
 
 // Development mode simulation - set to true to test update UI states
 const DEV_SIMULATE_UPDATE = false
-const DEV_SIMULATE_STATE: UpdateStatus = 'available' // 'checking' | 'available' | 'downloading' | 'ready' | 'error'
+const DEV_SIMULATE_STATE: UpdateStatus = 'error' // 'checking' | 'available' | 'downloading' | 'ready' | 'error'
 
 export interface UpdateContextType {
   status: UpdateStatus
   updateInfo?: UpdateStatusPayload['updateInfo']
   progress?: UpdateStatusPayload['progress']
   error?: string
+  downloadedFilePath?: string
   checkForUpdates: () => void
   downloadUpdate: () => void
   installUpdate: () => void
   dismissError: () => void
+  showDownloadedUpdate: () => void
 }
 
 export const UpdateContext = createContext<UpdateContextType | null>(null)
@@ -34,6 +36,15 @@ const getSimulatedError = (): string | undefined => {
   return undefined
 }
 
+// Helper to get simulated downloaded file path
+const getSimulatedDownloadedFilePath = (): string | undefined => {
+  if (!DEV_SIMULATE_UPDATE) return undefined
+  if ((DEV_SIMULATE_STATE as UpdateStatus) === 'error' || (DEV_SIMULATE_STATE as UpdateStatus) === 'ready') {
+    return '/path/to/downloaded/update.dmg'
+  }
+  return undefined
+}
+
 export const UpdateProvider = ({ children }: { children: React.ReactNode }) => {
   const [status, setStatus] = useState<UpdateStatus>(DEV_SIMULATE_UPDATE ? DEV_SIMULATE_STATE : 'idle')
   const [updateInfo, setUpdateInfo] = useState<UpdateStatusPayload['updateInfo']>(
@@ -41,6 +52,9 @@ export const UpdateProvider = ({ children }: { children: React.ReactNode }) => {
   )
   const [progress, setProgress] = useState<UpdateStatusPayload['progress']>(getSimulatedProgress())
   const [error, setError] = useState<string | undefined>(getSimulatedError())
+  const [downloadedFilePath, setDownloadedFilePath] = useState<string | undefined>(
+    getSimulatedDownloadedFilePath()
+  )
 
   useEffect(() => {
     const cleanup = window.electronApi.onUpdateStatus((payload) => {
@@ -56,6 +70,10 @@ export const UpdateProvider = ({ children }: { children: React.ReactNode }) => {
 
       if (payload.error) {
         setError(payload.error)
+      }
+
+      if (payload.downloadedFilePath) {
+        setDownloadedFilePath(payload.downloadedFilePath)
       }
 
       if (payload.status === 'not-available') {
@@ -91,26 +109,36 @@ export const UpdateProvider = ({ children }: { children: React.ReactNode }) => {
     setError(undefined)
   }, [])
 
+  const showDownloadedUpdate = useCallback(() => {
+    window.electronApi.showDownloadedUpdate().catch((err) => {
+      console.error('Failed to show downloaded update:', err)
+    })
+  }, [])
+
   const contextValue = useMemo(
     () => ({
       status,
       updateInfo,
       progress,
       error,
+      downloadedFilePath,
       checkForUpdates,
       downloadUpdate,
       installUpdate,
-      dismissError
+      dismissError,
+      showDownloadedUpdate
     }),
     [
       status,
       updateInfo,
       progress,
       error,
+      downloadedFilePath,
       checkForUpdates,
       downloadUpdate,
       installUpdate,
-      dismissError
+      dismissError,
+      showDownloadedUpdate
     ]
   )
 

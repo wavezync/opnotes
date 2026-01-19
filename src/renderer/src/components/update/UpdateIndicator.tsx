@@ -12,7 +12,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle
 } from '@renderer/components/ui/alert-dialog'
-import { Download, Loader2, AlertCircle, RefreshCw, Sparkles, ArrowDownToLine } from 'lucide-react'
+import { Download, Loader2, AlertCircle, RefreshCw, Sparkles, ArrowDownToLine, FolderOpen } from 'lucide-react'
 import { cn } from '@renderer/lib/utils'
 
 function formatBytes(bytes: number): string {
@@ -23,16 +23,25 @@ function formatBytes(bytes: number): string {
   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`
 }
 
+function getShowInFileManagerText(): string {
+  const platform = window.electronApi.platform
+  if (platform === 'darwin') return 'Show in Finder'
+  if (platform === 'win32') return 'Show in Explorer'
+  return 'Show in File Manager'
+}
+
 export function UpdateIndicator() {
   const {
     status,
     updateInfo,
     progress,
     error,
+    downloadedFilePath,
     downloadUpdate,
     installUpdate,
     checkForUpdates,
-    dismissError
+    dismissError,
+    showDownloadedUpdate
   } = useUpdate()
   const [showRestartDialog, setShowRestartDialog] = useState(false)
   const [animatedPercent, setAnimatedPercent] = useState(0)
@@ -279,6 +288,19 @@ export function UpdateIndicator() {
                 Restart Now
               </AlertDialogAction>
             </AlertDialogFooter>
+            {/* Manual install fallback */}
+            {downloadedFilePath && (
+              <div className="pt-2 border-t border-border/50">
+                <button
+                  type="button"
+                  onClick={showDownloadedUpdate}
+                  className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <FolderOpen className="h-3 w-3" />
+                  {getShowInFileManagerText()}
+                </button>
+              </div>
+            )}
           </AlertDialogContent>
         </AlertDialog>
       </>
@@ -321,6 +343,30 @@ export function UpdateIndicator() {
             <div className="p-2.5 rounded-lg bg-muted/50 border border-border/30">
               <p className="text-xs text-muted-foreground">{error}</p>
             </div>
+
+            {/* Manual install option when file was downloaded */}
+            {downloadedFilePath && (
+              <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/20">
+                <div className="flex items-start gap-2">
+                  <FolderOpen className="h-4 w-4 text-amber-600 dark:text-amber-500 mt-0.5 shrink-0" />
+                  <div className="space-y-2">
+                    <p className="text-xs text-amber-700 dark:text-amber-400">
+                      The update was downloaded but installation failed. You can manually install
+                      from the downloaded file.
+                    </p>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="h-8 gap-1.5 text-xs border-amber-500/30 hover:bg-amber-500/10"
+                      onClick={showDownloadedUpdate}
+                    >
+                      <FolderOpen className="h-3.5 w-3.5" />
+                      {getShowInFileManagerText()}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
 
             <div className="flex gap-2">
               <Button
