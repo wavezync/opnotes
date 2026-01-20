@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.3-alpha] - 2026-01-20
+
+### 🚀 Features
+
+- Add sample data editor for template preview
+- Modernize error boundary with design system
+
+### 🐛 Bug Fixes
+
+- Error boundary button layout and add copy stack trace
+
+### ⚙️ Miscellaneous Tasks
+
+- Update CHANGELOG.md for v1.1.2-alpha [skip ci]
+- Bump version to 1.1.3-alpha
+
 ## [1.1.2-alpha] - 2026-01-19
 
 ### 🚀 Features
