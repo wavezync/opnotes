@@ -1,11 +1,21 @@
+import { useState } from 'react'
 import { Link, isRouteErrorResponse, useRouteError } from 'react-router-dom'
-import { AlertTriangle, Home, RefreshCw, FileWarning, ServerCrash } from 'lucide-react'
+import {
+  AlertTriangle,
+  Home,
+  RefreshCw,
+  FileWarning,
+  ServerCrash,
+  Copy,
+  Check
+} from 'lucide-react'
 import { Button } from '../ui/button'
 import { Card, CardContent } from '../ui/card'
 import { IconBox } from '../layouts/IconBox'
 
 export default function ErrorPage() {
   const error = useRouteError() as Error | Response | unknown
+  const [copied, setCopied] = useState(false)
   console.error(error)
 
   // Determine error type and message
@@ -32,6 +42,14 @@ export default function ErrorPage() {
 
   const handleReload = () => {
     window.location.reload()
+  }
+
+  const handleCopyStack = async () => {
+    if (error instanceof Error && error.stack) {
+      await navigator.clipboard.writeText(error.stack)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    }
   }
 
   return (
@@ -67,9 +85,23 @@ export default function ErrorPage() {
                 <summary className="text-xs text-muted-foreground cursor-pointer hover:text-foreground transition-colors">
                   Technical details
                 </summary>
-                <pre className="mt-2 p-3 bg-muted/50 rounded-lg text-xs font-mono text-muted-foreground overflow-auto max-h-32">
-                  {error.stack}
-                </pre>
+                <div className="relative mt-2">
+                  <pre className="p-3 pr-10 bg-muted/50 rounded-lg text-xs font-mono text-muted-foreground overflow-auto max-h-32">
+                    {error.stack}
+                  </pre>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute top-1.5 right-1.5 h-7 w-7 text-muted-foreground hover:text-foreground"
+                    onClick={handleCopyStack}
+                  >
+                    {copied ? (
+                      <Check className="h-3.5 w-3.5 text-emerald-500" />
+                    ) : (
+                      <Copy className="h-3.5 w-3.5" />
+                    )}
+                  </Button>
+                </div>
               </details>
             )}
 
@@ -83,12 +115,11 @@ export default function ErrorPage() {
               >
                 Try Again
               </Button>
-              <Button variant="gradient" className="flex-1" asChild>
-                <Link to="/">
-                  <Home className="h-4 w-4 mr-2" />
+              <Link to="/" className="flex-1">
+                <Button variant="gradient" className="w-full" leftIcon={<Home className="h-4 w-4" />}>
                   Go Home
-                </Link>
-              </Button>
+                </Button>
+              </Link>
             </div>
           </CardContent>
         </Card>
