@@ -1,17 +1,19 @@
 import { useMemo } from 'react'
-import { TemplateStructure, TemplateType } from '../../../../shared/types/template-blocks'
+import { ChevronDown, Database } from 'lucide-react'
+import { TemplateStructure } from '../../../../shared/types/template-blocks'
 import { renderTemplate } from '../../lib/template-renderer'
-import { getSampleContext } from '../../lib/template-context'
+import { useSampleData } from './SampleDataContext'
+import { SampleDataEditor } from './SampleDataEditor'
 import { Badge } from '../ui/badge'
 import { ScrollArea } from '../ui/scroll-area'
+import { cn } from '../../lib/utils'
 
 interface LivePreviewProps {
   templateStructure: TemplateStructure
-  templateType: TemplateType
 }
 
-export const LivePreview = ({ templateStructure, templateType }: LivePreviewProps) => {
-  const sampleContext = useMemo(() => getSampleContext(templateType), [templateType])
+export const LivePreview = ({ templateStructure }: LivePreviewProps) => {
+  const { sampleContext, isEditorOpen, toggleEditor, hasCustomizations } = useSampleData()
 
   const previewHtml = useMemo(() => {
     try {
@@ -23,30 +25,45 @@ export const LivePreview = ({ templateStructure, templateType }: LivePreviewProp
   }, [templateStructure, sampleContext])
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full overflow-hidden">
       {/* Preview Header */}
-      <div className="flex items-center justify-between px-4 py-2 border-b bg-muted/30">
+      <div className="flex-shrink-0 flex items-center justify-between px-4 py-2 border-b bg-muted/30">
         <span className="text-sm font-medium">Live Preview</span>
-        <Badge variant="secondary" className="text-xs">
+        <Badge
+          variant="secondary"
+          className={cn(
+            'text-xs cursor-pointer hover:bg-secondary/80 transition-colors select-none',
+            hasCustomizations && 'ring-1 ring-primary/30'
+          )}
+          onClick={toggleEditor}
+        >
+          <Database className="h-3 w-3 mr-1" />
           Sample Data
+          <ChevronDown
+            className={cn('h-3 w-3 ml-1 transition-transform', isEditorOpen && 'rotate-180')}
+          />
         </Badge>
       </div>
 
-      {/* Preview Content */}
-      <ScrollArea className="flex-1">
-        <div className="p-6 bg-muted/30 min-h-full">
-          <div className="flex justify-center">
-            {/* A4 Paper Simulation */}
-            <div
-              className="bg-white rounded shadow-xl border"
-              style={{
-                width: '210mm',
-                minHeight: '297mm',
-                maxWidth: '100%',
-                boxShadow:
-                  '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.05)'
-              }}
-            >
+      {/* Collapsible editor */}
+      {isEditorOpen && <SampleDataEditor />}
+
+      {/* Preview Content - scrollable within container */}
+      <div className="flex-1 min-h-0 overflow-hidden">
+        <ScrollArea className="h-full">
+          <div className="p-6 bg-muted/30">
+            <div className="flex justify-center">
+              {/* A4 Paper Simulation */}
+              <div
+                className="bg-white rounded shadow-xl border"
+                style={{
+                  width: '210mm',
+                  minHeight: '297mm',
+                  maxWidth: '100%',
+                  boxShadow:
+                    '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.05)'
+                }}
+              >
               {/* Print styles scoped to preview */}
               <style>
                 {`
@@ -175,10 +192,11 @@ export const LivePreview = ({ templateStructure, templateType }: LivePreviewProp
                 className="preview-content"
                 dangerouslySetInnerHTML={{ __html: previewHtml }}
               />
+              </div>
             </div>
           </div>
-        </div>
-      </ScrollArea>
+        </ScrollArea>
+      </div>
     </div>
   )
 }

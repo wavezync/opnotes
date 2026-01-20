@@ -22,6 +22,7 @@ import { BlockPalette } from './BlockPalette'
 import { TemplateCanvas } from './TemplateCanvas'
 import { PropertyPanel } from './PropertyPanel'
 import { LivePreview } from './LivePreview'
+import { SampleDataProvider } from './SampleDataContext'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs'
 
 interface TemplateBuilderProps {
@@ -172,72 +173,71 @@ export const TemplateBuilder = ({
   }
 
   return (
-    <DndContext
-      sensors={sensors}
-      collisionDetection={closestCenter}
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}
-      onDragOver={handleDragOver}
-    >
-      <div className="flex h-full">
-        {/* Left Panel: Block Palette */}
-        <BlockPalette />
+    <SampleDataProvider templateType={templateType}>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+        onDragOver={handleDragOver}
+      >
+        <div className="flex h-full">
+          {/* Left Panel: Block Palette */}
+          <BlockPalette />
 
-        {/* Center Panel: Canvas/Preview */}
-        <div className="flex-1 flex flex-col min-w-0">
-          <Tabs
-            value={activeTab}
-            onValueChange={(v) => setActiveTab(v as 'edit' | 'preview')}
-            className="flex-1 flex flex-col"
-          >
-            <div className="px-4 py-2 border-b bg-background">
-              <TabsList className="h-8">
-                <TabsTrigger value="edit" className="text-xs px-3">
-                  Edit
-                </TabsTrigger>
-                <TabsTrigger value="preview" className="text-xs px-3">
-                  Preview
-                </TabsTrigger>
-              </TabsList>
-            </div>
+          {/* Center Panel: Canvas/Preview */}
+          <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+            <Tabs
+              value={activeTab}
+              onValueChange={(v) => setActiveTab(v as 'edit' | 'preview')}
+              className="flex-1 flex flex-col overflow-hidden"
+            >
+              <div className="flex-shrink-0 px-4 py-2 border-b bg-background">
+                <TabsList className="h-8">
+                  <TabsTrigger value="edit" className="text-xs px-3">
+                    Edit
+                  </TabsTrigger>
+                  <TabsTrigger value="preview" className="text-xs px-3">
+                    Preview
+                  </TabsTrigger>
+                </TabsList>
+              </div>
 
-            <TabsContent value="edit" className="flex-1 m-0 overflow-hidden">
-              <TemplateCanvas
-                blocks={templateStructure.blocks}
-                selectedBlockId={selectedBlockId}
-                onSelectBlock={handleSelectBlock}
-                onDeleteBlock={handleDeleteBlock}
-              />
-            </TabsContent>
+              <TabsContent value="edit" className="flex-1 m-0 overflow-hidden">
+                <TemplateCanvas
+                  blocks={templateStructure.blocks}
+                  selectedBlockId={selectedBlockId}
+                  onSelectBlock={handleSelectBlock}
+                  onDeleteBlock={handleDeleteBlock}
+                />
+              </TabsContent>
 
-            <TabsContent value="preview" className="flex-1 m-0 overflow-hidden">
-              <LivePreview
-                templateStructure={templateStructure}
-                templateType={templateType}
-              />
-            </TabsContent>
-          </Tabs>
+              <TabsContent value="preview" className="flex-1 m-0 overflow-hidden">
+                <LivePreview templateStructure={templateStructure} />
+              </TabsContent>
+            </Tabs>
+          </div>
+
+          {/* Right Panel: Properties */}
+          <PropertyPanel
+            selectedBlock={selectedBlock}
+            onUpdateBlock={handleUpdateBlock}
+          />
         </div>
 
-        {/* Right Panel: Properties */}
-        <PropertyPanel
-          selectedBlock={selectedBlock}
-          onUpdateBlock={handleUpdateBlock}
-        />
-      </div>
-
-      {/* Drag Overlay */}
-      <DragOverlay>
-        {activeDragId && (
-          <div className="bg-card border border-primary shadow-lg rounded-md px-3 py-2 opacity-80">
-            <span className="text-sm font-medium">
-              {activeDragId.startsWith('palette-')
-                ? activeDragId.replace('palette-', '')
-                : 'Block'}
-            </span>
-          </div>
-        )}
-      </DragOverlay>
-    </DndContext>
+        {/* Drag Overlay */}
+        <DragOverlay>
+          {activeDragId && (
+            <div className="bg-card border border-primary shadow-lg rounded-md px-3 py-2 opacity-80">
+              <span className="text-sm font-medium">
+                {activeDragId.startsWith('palette-')
+                  ? activeDragId.replace('palette-', '')
+                  : 'Block'}
+              </span>
+            </div>
+          )}
+        </DragOverlay>
+      </DndContext>
+    </SampleDataProvider>
   )
 }
