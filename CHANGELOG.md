@@ -16,6 +16,11 @@ All notable changes to this project will be documented in this file.
 ### ⚙️ Miscellaneous Tasks
 
 - Update CHANGELOG.md for v1.1.2-alpha [skip ci]
+- Bump version to 1.1.3-alpha
+- Bump version to 1.2.0-alpha
+- Update CHANGELOG.md for v1.1.3-alpha [skip ci]
+- Update CHANGELOG.md for v1.2.0-alpha [skip ci]
+- Revert version to 1.1.2-alpha
 - Bump version to 1.2.0-alpha
 
 ## [1.1.2-alpha] - 2026-01-19
