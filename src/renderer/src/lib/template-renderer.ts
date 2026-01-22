@@ -117,8 +117,10 @@ const renderText = (block: TextBlock, context: TemplateContext): string => {
   const fontSizeClass = `text-${props.fontSize || 'base'}`
   const alignmentStyle = `text-align: ${props.alignment || 'left'}`
   const boldClass = props.bold ? 'bold' : ''
+  const italicClass = props.italic ? 'italic' : ''
+  const underlineClass = props.underline ? 'underline' : ''
 
-  return `<div class="${fontSizeClass} ${boldClass} keep-together" style="${alignmentStyle}">${content}</div>`
+  return `<div class="${fontSizeClass} ${boldClass} ${italicClass} ${underlineClass} keep-together" style="${alignmentStyle}">${content}</div>`
 }
 
 // Render data field block

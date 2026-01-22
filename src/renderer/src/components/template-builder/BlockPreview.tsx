@@ -55,7 +55,9 @@ export const BlockPreview = ({ block }: BlockPreviewProps) => {
             <div
               className={cn(
                 'mt-1 text-sm text-muted-foreground truncate max-w-md',
-                block.props.bold && 'font-semibold'
+                block.props.bold && 'font-semibold',
+                block.props.italic && 'italic',
+                block.props.underline && 'underline'
               )}
               dangerouslySetInnerHTML={{
                 __html: block.props.content.substring(0, 100)

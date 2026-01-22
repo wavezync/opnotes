@@ -29,6 +29,8 @@ export interface TextBlockProps {
   alignment: 'left' | 'center' | 'right'
   fontSize: 'sm' | 'base' | 'lg' | 'xl' | '2xl'
   bold: boolean
+  italic: boolean
+  underline: boolean
 }
 
 export interface TextBlock extends BaseBlock {

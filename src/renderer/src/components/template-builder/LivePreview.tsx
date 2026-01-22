@@ -101,6 +101,12 @@ export const LivePreview = ({ templateStructure }: LivePreviewProps) => {
                   .preview-content .bold {
                     font-weight: 700;
                   }
+                  .preview-content .italic {
+                    font-style: italic;
+                  }
+                  .preview-content .underline {
+                    text-decoration: underline;
+                  }
                   .preview-content .pt-1 {
                     padding-top: 2pt;
                   }

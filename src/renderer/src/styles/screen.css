@@ -175,6 +175,10 @@ body {
   font-style: italic;
 }
 
+.underline {
+  text-decoration: underline;
+}
+
 .text-center {
   text-align: center;
 }

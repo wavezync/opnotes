@@ -279,7 +279,9 @@ export const BLOCK_DEFINITIONS: BlockDefinition[] = [
       content: '',
       alignment: 'left',
       fontSize: 'base',
-      bold: false
+      bold: false,
+      italic: false,
+      underline: false
     }
   },
   {

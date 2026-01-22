@@ -88,6 +88,28 @@ export const TextProperties = ({ block, onUpdate }: TextPropertiesProps) => {
           onCheckedChange={(checked) => updateProps({ bold: checked })}
         />
       </div>
+
+      <div className="flex items-center justify-between">
+        <Label htmlFor="italic" className="text-sm">
+          Italic
+        </Label>
+        <Switch
+          id="italic"
+          checked={block.props.italic}
+          onCheckedChange={(checked) => updateProps({ italic: checked })}
+        />
+      </div>
+
+      <div className="flex items-center justify-between">
+        <Label htmlFor="underline" className="text-sm">
+          Underline
+        </Label>
+        <Switch
+          id="underline"
+          checked={block.props.underline}
+          onCheckedChange={(checked) => updateProps({ underline: checked })}
+        />
+      </div>
     </div>
   )
 }
