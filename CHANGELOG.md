@@ -4,11 +4,16 @@ All notable changes to this project will be documented in this file.
 
 ## [1.2.0] - 2026-01-22
 
+### 🐛 Bug Fixes
+
+- Sync print_templates with default_print_templates on migration
+
 ### ⚙️ Miscellaneous Tasks
 
 - Update CHANGELOG.md for v1.2.0-alpha [skip ci]
 - Release script [skip ci]
 - Bump version to 1.2.0
+- Update CHANGELOG.md for v1.2.0 [skip ci]
 
 ## [1.2.0-alpha] - 2026-01-21
 
