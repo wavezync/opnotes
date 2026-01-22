@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.1] - 2026-01-22
+
+### 🚀 Features
+
+- Add italic and underline text styles to template builder
+- Add dedicated surgery routes for correct sidebar navigation
+
+### 🐛 Bug Fixes
+
+- Enable vertical and horizontal scrolling in template builder
+- Make sidebar scrollable when window height is limited (#19)
+
+### ⚙️ Miscellaneous Tasks
+
+- Update CHANGELOG.md for v1.2.0 [skip ci]
+- Bump version to 1.2.1
+
 ## [1.2.0] - 2026-01-22
 
 ### 🐛 Bug Fixes
