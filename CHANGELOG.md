@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.0] - 2026-01-22
+
+### ⚙️ Miscellaneous Tasks
+
+- Update CHANGELOG.md for v1.2.0-alpha [skip ci]
+- Release script [skip ci]
+- Bump version to 1.2.0
+
 ## [1.2.0-alpha] - 2026-01-21
 
 ### 🚀 Features
