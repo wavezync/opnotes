@@ -203,7 +203,7 @@ export const TemplateBuilder = ({
                 </TabsList>
               </div>
 
-              <TabsContent value="edit" className="flex-1 m-0 overflow-hidden">
+              <TabsContent value="edit" className="flex-1 m-0 overflow-hidden relative">
                 <TemplateCanvas
                   blocks={templateStructure.blocks}
                   selectedBlockId={selectedBlockId}
@@ -212,7 +212,7 @@ export const TemplateBuilder = ({
                 />
               </TabsContent>
 
-              <TabsContent value="preview" className="flex-1 m-0 overflow-hidden">
+              <TabsContent value="preview" className="flex-1 m-0 overflow-hidden relative">
                 <LivePreview templateStructure={templateStructure} />
               </TabsContent>
             </Tabs>

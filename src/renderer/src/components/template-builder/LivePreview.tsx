@@ -5,7 +5,6 @@ import { renderTemplate } from '../../lib/template-renderer'
 import { useSampleData } from './SampleDataContext'
 import { SampleDataEditor } from './SampleDataEditor'
 import { Badge } from '../ui/badge'
-import { ScrollArea } from '../ui/scroll-area'
 import { cn } from '../../lib/utils'
 
 interface LivePreviewProps {
@@ -25,7 +24,7 @@ export const LivePreview = ({ templateStructure }: LivePreviewProps) => {
   }, [templateStructure, sampleContext])
 
   return (
-    <div className="flex flex-col h-full overflow-hidden">
+    <div className="absolute inset-0 flex flex-col overflow-hidden">
       {/* Preview Header */}
       <div className="flex-shrink-0 flex items-center justify-between px-4 py-2 border-b bg-muted/30">
         <span className="text-sm font-medium">Live Preview</span>
@@ -49,21 +48,19 @@ export const LivePreview = ({ templateStructure }: LivePreviewProps) => {
       {isEditorOpen && <SampleDataEditor />}
 
       {/* Preview Content - scrollable within container */}
-      <div className="flex-1 min-h-0 overflow-hidden">
-        <ScrollArea className="h-full">
-          <div className="p-6 bg-muted/30">
-            <div className="flex justify-center">
-              {/* A4 Paper Simulation */}
-              <div
-                className="bg-white rounded shadow-xl border"
-                style={{
-                  width: '210mm',
-                  minHeight: '297mm',
-                  maxWidth: '100%',
-                  boxShadow:
-                    '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.05)'
-                }}
-              >
+      <div className="flex-1 min-h-0 overflow-auto bg-muted/30">
+        <div className="p-6">
+          <div className="flex justify-center">
+            {/* A4 Paper Simulation */}
+            <div
+              className="bg-white rounded shadow-xl border"
+              style={{
+                width: '210mm',
+                minHeight: '297mm',
+                boxShadow:
+                  '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.05)'
+              }}
+            >
               {/* Print styles scoped to preview */}
               <style>
                 {`
@@ -192,10 +189,9 @@ export const LivePreview = ({ templateStructure }: LivePreviewProps) => {
                 className="preview-content"
                 dangerouslySetInnerHTML={{ __html: previewHtml }}
               />
-              </div>
             </div>
           </div>
-        </ScrollArea>
+        </div>
       </div>
     </div>
   )

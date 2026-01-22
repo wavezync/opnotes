@@ -116,10 +116,7 @@ export const TemplateCanvas = ({
   return (
     <div
       ref={setNodeRef}
-      className={cn(
-        'flex-1 p-4 overflow-y-auto bg-muted/30',
-        'min-h-0'
-      )}
+      className={cn('absolute inset-0 p-4 overflow-y-auto bg-muted/30')}
       onClick={() => onSelectBlock(null)}
     >
       <div
