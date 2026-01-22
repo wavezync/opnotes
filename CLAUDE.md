@@ -32,6 +32,7 @@ Use the release script to bump versions, create tags, and push:
 - `major` - Bump major version (1.0.0 → 2.0.0)
 - `minor` - Bump minor version (1.0.0 → 1.1.0)
 - `patch` - Bump patch version (1.0.0 → 1.0.1)
+- `promote` - Change channel only, no version bump
 
 **Channels (optional):**
 - `alpha` - Add `-alpha` suffix (pre-release)
@@ -44,6 +45,8 @@ Use the release script to bump versions, create tags, and push:
 ./scripts/release.sh patch beta     # 1.1.0-alpha → 1.1.1-beta
 ./scripts/release.sh major          # 1.1.1-beta → 2.0.0 (stable)
 ./scripts/release.sh patch stable   # 1.0.0-alpha → 1.0.1 (removes suffix)
+./scripts/release.sh promote beta   # 1.0.0-alpha → 1.0.0-beta
+./scripts/release.sh promote stable # 1.0.0-beta → 1.0.0
 ```
 
 The script will:

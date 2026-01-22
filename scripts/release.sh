@@ -20,6 +20,7 @@ usage() {
     echo "  major    - Bump major version (1.0.0 -> 2.0.0)"
     echo "  minor    - Bump minor version (1.0.0 -> 1.1.0)"
     echo "  patch    - Bump patch version (1.0.0 -> 1.0.1)"
+    echo "  promote  - Change channel only, no version bump"
     echo ""
     echo -e "${BLUE}Channels (optional):${NC}"
     echo "  alpha    - Add -alpha suffix"
@@ -31,6 +32,8 @@ usage() {
     echo "  $0 patch beta     # 1.1.0-alpha -> 1.1.1-beta"
     echo "  $0 major          # 1.1.1-beta -> 2.0.0"
     echo "  $0 patch stable   # 1.0.0-alpha -> 1.0.1"
+    echo "  $0 promote beta   # 1.0.0-alpha -> 1.0.0-beta"
+    echo "  $0 promote stable # 1.0.0-beta -> 1.0.0"
     exit 1
 }
 
@@ -42,7 +45,7 @@ fi
 BUMP_TYPE=$1
 CHANNEL=${2:-stable}
 
-if [[ ! "$BUMP_TYPE" =~ ^(major|minor|patch)$ ]]; then
+if [[ ! "$BUMP_TYPE" =~ ^(major|minor|patch|promote)$ ]]; then
     echo -e "${RED}Error:${NC} Invalid bump type '$BUMP_TYPE'"
     usage
 fi
@@ -83,6 +86,9 @@ case $BUMP_TYPE in
         ;;
     patch)
         PATCH=$((PATCH + 1))
+        ;;
+    promote)
+        # No version bump, just change channel
         ;;
 esac
 
