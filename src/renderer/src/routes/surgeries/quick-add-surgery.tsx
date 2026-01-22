@@ -94,7 +94,7 @@ export function QuickAddSurgery() {
       await queryClient.invalidateQueries({
         queryKey: queries.surgeries.list({ patient_id: selectedPatient.id }).queryKey
       })
-      navigate(`/patients/${selectedPatient.id}/surgeries/${surgery.id}`)
+      navigate(`/surgeries/${surgery.id}`)
     }
   }
 

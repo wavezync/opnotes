@@ -106,6 +106,14 @@ const router = createHashRouter([
         path: '/quick-surgery',
         element: <QuickAddSurgery />
       },
+      {
+        path: '/surgeries/:surgeryId',
+        element: <ViewSurgery />
+      },
+      {
+        path: '/surgeries/:surgeryId/edit',
+        element: <EditSurgery />
+      },
 
       {
         path: '/support',

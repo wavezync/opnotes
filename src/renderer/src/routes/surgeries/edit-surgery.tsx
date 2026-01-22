@@ -18,16 +18,23 @@ const getSurgeryByIdQuery = (id: number) => queries.surgeries.get(id)
 export const EditSurgery = () => {
   const queryClient = useQueryClient()
   const formRef = useRef<AddOrEditSurgeryRef>(null)
-  const { patientId, surgeryId } = useParams()
+  const { patientId: urlPatientId, surgeryId } = useParams()
   const { setBreadcrumbs } = useBreadcrumbs()
-  const { data: patient } = useQuery({
-    ...getPatientByIdQuery(parseInt(patientId!)),
-    enabled: !!patientId
-  })
+
+  // Detect navigation context - if urlPatientId is not present, we came from surgeries list
+  const isFromSurgeriesContext = !urlPatientId
 
   const { data: surgery } = useQuery({
     ...getSurgeryByIdQuery(parseInt(surgeryId!)),
     enabled: !!surgeryId
+  })
+
+  // Derive patientId from URL or from surgery data
+  const patientId = urlPatientId ? parseInt(urlPatientId) : surgery?.patient_id
+
+  const { data: patient } = useQuery({
+    ...getPatientByIdQuery(patientId!),
+    enabled: !!patientId
   })
 
   useKeyboardEvent({
@@ -47,8 +54,12 @@ export const EditSurgery = () => {
   const surgeryName = useMemo(() => surgery?.bht || 'Surgery', [surgery?.bht])
 
   useEffect(() => {
-    setBreadcrumbs([{ label: 'Surgeries', to: '/surgeries' }])
-  }, [setBreadcrumbs])
+    if (isFromSurgeriesContext) {
+      setBreadcrumbs([{ label: 'Surgeries', to: '/surgeries' }])
+    } else {
+      setBreadcrumbs([{ label: 'Patients', to: '/patients' }])
+    }
+  }, [setBreadcrumbs, isFromSurgeriesContext])
 
   return (
     <FormLayout
@@ -61,7 +72,11 @@ export const EditSurgery = () => {
             <>
               Editing{' '}
               <Link
-                to={`/patients/${patient?.id}/surgeries/${surgery?.id}`}
+                to={
+                  isFromSurgeriesContext
+                    ? `/surgeries/${surgery?.id}`
+                    : `/patients/${patient?.id}/surgeries/${surgery?.id}`
+                }
                 className="font-medium text-foreground font-mono hover:text-primary hover:underline transition-colors"
               >
                 {surgeryName}
@@ -96,7 +111,7 @@ export const EditSurgery = () => {
             surgery={surgery}
             onUpdated={async (_surgery) => {
               await queryClient.invalidateQueries({
-                queryKey: queries.surgeries.list({ patient_id: parseInt(patientId!) }).queryKey
+                queryKey: queries.surgeries.list({ patient_id: patientId! }).queryKey
               })
               await queryClient.invalidateQueries({
                 queryKey: queries.surgeries.get(parseInt(surgeryId!)).queryKey

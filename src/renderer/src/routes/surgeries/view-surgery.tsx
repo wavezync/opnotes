@@ -214,19 +214,25 @@ const FollowupShimmer = () => (
 // ============================================================
 export const ViewSurgery = () => {
   const navigate = useNavigate()
-  const { patientId, surgeryId } = useParams()
+  const { patientId: urlPatientId, surgeryId } = useParams()
   const { setBreadcrumbs } = useBreadcrumbs()
   const { settings } = useSettings()
   const queryClient = useQueryClient()
 
-  const { data: patient } = useQuery({
-    ...getPatientByIdQuery(parseInt(patientId!)),
-    enabled: !!patientId
-  })
+  // Detect navigation context - if urlPatientId is not present, we came from surgeries list
+  const isFromSurgeriesContext = !urlPatientId
 
   const { data: surgery } = useQuery({
     ...getSurgeryByIdQuery(parseInt(surgeryId!)),
     enabled: !!surgeryId
+  })
+
+  // Derive patientId from URL or from surgery data
+  const patientId = urlPatientId ? parseInt(urlPatientId) : surgery?.patient_id
+
+  const { data: patient } = useQuery({
+    ...getPatientByIdQuery(patientId!),
+    enabled: !!patientId
   })
 
   const { data: followups, isLoading: isFollowupLoading } = useQuery({
@@ -245,8 +251,12 @@ export const ViewSurgery = () => {
   )
 
   useEffect(() => {
-    setBreadcrumbs([{ label: 'Surgeries', to: '/surgeries' }])
-  }, [setBreadcrumbs])
+    if (isFromSurgeriesContext) {
+      setBreadcrumbs([{ label: 'Surgeries', to: '/surgeries' }])
+    } else {
+      setBreadcrumbs([{ label: 'Patients', to: '/patients' }])
+    }
+  }, [setBreadcrumbs, isFromSurgeriesContext])
 
   const surgeryContext = patient && surgery ? createSurgeryContext(patient, surgery, settings) : null
 
@@ -363,7 +373,13 @@ export const ViewSurgery = () => {
               )}
               <Button
                 variant="gradient"
-                onClick={() => navigate(`/patients/${patientId}/surgeries/${surgeryId}/edit`)}
+                onClick={() =>
+                  navigate(
+                    isFromSurgeriesContext
+                      ? `/surgeries/${surgeryId}/edit`
+                      : `/patients/${patientId}/surgeries/${surgeryId}/edit`
+                  )
+                }
               >
                 <Edit className="h-4 w-4 mr-2" />
                 Edit All

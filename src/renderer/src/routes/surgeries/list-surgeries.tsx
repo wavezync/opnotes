@@ -155,7 +155,7 @@ function SurgeryRow({
   return (
     <div
       className="group flex items-center gap-4 p-4 rounded-xl border bg-card hover:bg-accent/50 hover:border-primary/20 cursor-pointer"
-      onClick={() => onNavigate(`/patients/${surgery.patient_id}/surgeries/${surgery.id}`)}
+      onClick={() => onNavigate(`/surgeries/${surgery.id}`)}
     >
       <SurgeryIcon />
 
@@ -185,7 +185,7 @@ function SurgeryRow({
           className="h-8 w-8"
           onClick={(e) => {
             e.stopPropagation()
-            onNavigate(`/patients/${surgery.patient_id}/surgeries/${surgery.id}/edit`)
+            onNavigate(`/surgeries/${surgery.id}/edit`)
           }}
         >
           <Edit3 className="h-4 w-4" />
