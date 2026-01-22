@@ -70,9 +70,9 @@ export function Sidebar() {
   ]
 
   return (
-    <aside className="flex flex-col w-[88px] bg-gradient-to-b from-sidebar-background to-sidebar-background/95 border-r border-sidebar-border">
+    <aside className="flex flex-col w-[88px] bg-gradient-to-b from-sidebar-background to-sidebar-background/95 border-r border-sidebar-border overflow-y-auto">
       {/* OpNotes Logo */}
-      <div className="flex flex-col items-center justify-center gap-1 py-3 border-b border-sidebar-border">
+      <div className="flex-shrink-0 flex flex-col items-center justify-center gap-1 py-3 border-b border-sidebar-border">
         <img
           src={opNotesLogo}
           alt="OpNotes"
@@ -106,7 +106,7 @@ export function Sidebar() {
       </nav>
 
       {/* Bottom section */}
-      <div className="flex flex-col items-center py-4 px-2 border-t border-sidebar-border gap-1">
+      <div className="flex-shrink-0 flex flex-col items-center py-4 px-2 border-t border-sidebar-border gap-1">
         <NavItem
           to="/support"
           icon={<HeartHandshake className="h-5 w-5" />}
@@ -126,7 +126,7 @@ export function Sidebar() {
         href="https://wavezync.com"
         target="_blank"
         rel="noreferrer"
-        className="group flex flex-col items-center gap-1 py-3 px-2 border-t border-sidebar-border/50 transition-all duration-300 hover:bg-sidebar-accent/30"
+        className="flex-shrink-0 group flex flex-col items-center gap-1 py-3 px-2 border-t border-sidebar-border/50 transition-all duration-300 hover:bg-sidebar-accent/30"
       >
         <img
           src={wavezyncLogo}
