@@ -1,6 +1,6 @@
 {
   "name": "op-notes",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Op Notes",
   "main": "./out/main/index.js",
   "author": "Kasun Vithanage",
