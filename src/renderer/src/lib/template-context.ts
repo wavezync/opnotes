@@ -69,6 +69,7 @@ export const getSampleContext = (type: TemplateType): TemplateContext => {
     },
     settings: {
       hospital: 'General Hospital Colombo',
+      subtitle: 'Teaching Hospital',
       unit: 'Surgical Unit A',
       telephone: '+94 11 234 5678'
     }
@@ -135,6 +136,7 @@ export interface CreateContextParams {
   }
   settings: {
     hospital?: string
+    subtitle?: string
     unit?: string
     telephone?: string | null
   }
@@ -211,6 +213,7 @@ export const createTemplateContext = (params: CreateContextParams): TemplateCont
       : undefined,
     settings: {
       hospital: params.settings.hospital || 'Hospital Name',
+      subtitle: params.settings.subtitle || '',
       unit: params.settings.unit || 'Unit Name',
       telephone: params.settings.telephone || null
     }

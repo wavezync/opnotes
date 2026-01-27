@@ -16,6 +16,7 @@ import * as m_014_sync_default_templates from './migrations/014_sync_default_tem
 import * as m_015_add_discharge_plan from './migrations/015_add_discharge_plan'
 import * as m_016_update_default_templates_discharge_plan from './migrations/016_update_default_templates_discharge_plan'
 import * as m_017_sync_print_templates_with_defaults from './migrations/017_sync_print_templates_with_defaults'
+import * as m_018_subtitle_setting from './migrations/018_subtitle_setting'
 
 export default {
   '000_init': m_000_init,
@@ -35,5 +36,6 @@ export default {
   '014_sync_default_templates': m_014_sync_default_templates,
   '015_add_discharge_plan': m_015_add_discharge_plan,
   '016_update_default_templates_discharge_plan': m_016_update_default_templates_discharge_plan,
-  '017_sync_print_templates_with_defaults': m_017_sync_print_templates_with_defaults
+  '017_sync_print_templates_with_defaults': m_017_sync_print_templates_with_defaults,
+  '018_subtitle_setting': m_018_subtitle_setting
 }

@@ -31,6 +31,7 @@ type UpdateChannel = 'stable' | 'beta' | 'alpha'
 
 const formSchema = z.object({
   hospital: z.string(),
+  subtitle: z.string().optional(),
   unit: z.string(),
   telephone: z.string()
 })
@@ -44,6 +45,7 @@ export const GeneralSettings = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       hospital: '',
+      subtitle: '',
       unit: '',
       telephone: ''
     }
@@ -69,6 +71,7 @@ export const GeneralSettings = () => {
     if (settings) {
       form.reset({
         hospital: settings['hospital'] || '',
+        subtitle: settings['subtitle'] || '',
         unit: settings['unit'] || '',
         telephone: settings['telephone'] || ''
       })
@@ -145,6 +148,32 @@ export const GeneralSettings = () => {
                     </FormControl>
                     <FormDescription className="text-xs">
                       This will appear in the header of printed BHT reports
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                name="subtitle"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="h-6 w-6 rounded-md bg-blue-500/10 flex items-center justify-center">
+                        <Building2 className="h-3.5 w-3.5 text-blue-500" />
+                      </div>
+                      <FormLabel className="text-sm font-medium">Subtitle</FormLabel>
+                    </div>
+                    <FormControl>
+                      <Input
+                        placeholder="e.g., Teaching Hospital"
+                        {...field}
+                        className="h-11"
+                      />
+                    </FormControl>
+                    <FormDescription className="text-xs">
+                      Optional second line shown below Hospital Name in printed reports
                     </FormDescription>
                     <FormMessage />
                   </FormItem>

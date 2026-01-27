@@ -223,7 +223,14 @@ export const TEMPLATE_FIELDS: FieldDefinition[] = [
     label: 'Hospital Name',
     category: 'settings',
     description: 'Name of the hospital',
-    example: 'General Hospital Colombo'
+    example: 'National Cancer Institute'
+  },
+  {
+    path: 'settings.subtitle',
+    label: 'Subtitle',
+    category: 'settings',
+    description: 'Optional second line below hospital name',
+    example: 'Teaching Hospital'
   },
   {
     path: 'settings.unit',
@@ -263,6 +270,7 @@ export const BLOCK_DEFINITIONS: BlockDefinition[] = [
     description: 'Hospital header with name, unit, and contact info',
     defaultProps: {
       showHospital: true,
+      showSubtitle: true,
       showUnit: true,
       showTelephone: true,
       showLogo: false,

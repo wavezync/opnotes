@@ -95,11 +95,13 @@ export const SampleDataProvider = ({ templateType, children }: SampleDataProvide
   // Check if real settings are available
   const realSettings = useMemo(() => {
     const hospital = settings.hospital
+    const subtitle = settings.subtitle
     const unit = settings.unit
     const telephone = settings.telephone
 
     return {
       hospital: hospital || null,
+      subtitle: subtitle || null,
       unit: unit || null,
       telephone: telephone || null,
       hasAny: Boolean(hospital || unit || telephone)
@@ -116,6 +118,7 @@ export const SampleDataProvider = ({ templateType, children }: SampleDataProvide
         ...base,
         settings: {
           hospital: realSettings.hospital || base.settings.hospital,
+          subtitle: realSettings.subtitle || base.settings.subtitle,
           unit: realSettings.unit || base.settings.unit,
           telephone: realSettings.telephone || base.settings.telephone
         }
