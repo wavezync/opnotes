@@ -12,6 +12,7 @@ export interface BaseBlock {
 
 export interface HeaderBlockProps {
   showHospital: boolean
+  showSubtitle: boolean
   showUnit: boolean
   showTelephone: boolean
   showLogo: boolean
@@ -301,6 +302,7 @@ export interface TemplateContext {
   }
   settings: {
     hospital: string
+    subtitle: string
     unit: string
     telephone: string | null
   }

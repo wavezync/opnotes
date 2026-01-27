@@ -15,6 +15,7 @@ export const defaultSurgeryTemplate = {
       type: 'header',
       props: {
         showHospital: true,
+        showSubtitle: true,
         showUnit: true,
         showTelephone: true,
         showLogo: false,
@@ -193,6 +194,7 @@ export const defaultFollowupTemplate = {
       type: 'header',
       props: {
         showHospital: true,
+        showSubtitle: true,
         showUnit: true,
         showTelephone: true,
         showLogo: false,

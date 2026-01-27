@@ -91,6 +91,10 @@ const renderHeader = (block: HeaderBlock, context: TemplateContext): string => {
     html += `<h1 class="text-2xl bold">${escapeHtml(context.settings.hospital)}</h1>`
   }
 
+  if (props.showSubtitle && context.settings.subtitle) {
+    html += `<h2 class="text-xl pt-1">${escapeHtml(context.settings.subtitle)}</h2>`
+  }
+
   if (props.showUnit && context.settings.unit) {
     html += `<h2 class="text-lg pt-1">${escapeHtml(context.settings.unit)}</h2>`
   }

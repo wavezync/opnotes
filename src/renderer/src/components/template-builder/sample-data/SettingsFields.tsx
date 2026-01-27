@@ -18,26 +18,33 @@ export const SettingsFields = () => {
         </div>
       )}
 
-      {/* Hospital, Unit */}
+      {/* Hospital Name */}
+      <FieldInput
+        label="Hospital Name"
+        value={settings.hospital}
+        onChange={(v) => updateField('settings.hospital', v)}
+      />
+
+      {/* Subtitle */}
+      <FieldInput
+        label="Subtitle"
+        value={settings.subtitle}
+        onChange={(v) => updateField('settings.subtitle', v)}
+      />
+
+      {/* Unit, Telephone */}
       <div className="grid grid-cols-2 gap-2">
-        <FieldInput
-          label="Hospital Name"
-          value={settings.hospital}
-          onChange={(v) => updateField('settings.hospital', v)}
-        />
         <FieldInput
           label="Unit / Department"
           value={settings.unit}
           onChange={(v) => updateField('settings.unit', v)}
         />
+        <FieldInput
+          label="Telephone"
+          value={settings.telephone}
+          onChange={(v) => updateField('settings.telephone', v)}
+        />
       </div>
-
-      {/* Telephone */}
-      <FieldInput
-        label="Telephone"
-        value={settings.telephone}
-        onChange={(v) => updateField('settings.telephone', v)}
-      />
 
       {/* Note */}
       {!usingRealSettings && (

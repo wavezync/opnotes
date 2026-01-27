@@ -40,6 +40,7 @@ export const surgeryPrintData = (
   },
   settings: {
     hospital: settings?.hospital || '',
+    subtitle: settings?.subtitle || '',
     unit: settings?.unit || '',
     telephone: settings?.telephone || ''
   }
@@ -70,6 +71,7 @@ export const followupPrintData = (
   },
   settings: {
     hospital: settings?.hospital || '',
+    subtitle: settings?.subtitle || '',
     unit: settings?.unit || '',
     telephone: settings?.telephone || ''
   }
@@ -128,6 +130,7 @@ export const createSurgeryContext = (
   },
   settings: {
     hospital: settings?.hospital || 'Hospital Name',
+    subtitle: settings?.subtitle || '',
     unit: settings?.unit || 'Unit Name',
     telephone: settings?.telephone || null
   }

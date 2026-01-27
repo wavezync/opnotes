@@ -37,6 +37,17 @@ export const HeaderProperties = ({ block, onUpdate }: HeaderPropertiesProps) => 
         </div>
 
         <div className="flex items-center justify-between">
+          <Label htmlFor="showSubtitle" className="text-sm">
+            Show Subtitle
+          </Label>
+          <Switch
+            id="showSubtitle"
+            checked={block.props.showSubtitle}
+            onCheckedChange={(checked) => updateProps({ showSubtitle: checked })}
+          />
+        </div>
+
+        <div className="flex items-center justify-between">
           <Label htmlFor="showUnit" className="text-sm">
             Show Unit
           </Label>
