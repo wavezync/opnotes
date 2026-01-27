@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.2] - 2026-01-27
+
+### 🚀 Features
+
+- Add optional subtitle field for print header (#20)
+
+### ⚙️ Miscellaneous Tasks
+
+- Update CHANGELOG.md for v1.2.1 [skip ci]
+- Bump version to 1.2.2
+
 ## [1.2.1] - 2026-01-22
 
 ### 🚀 Features
